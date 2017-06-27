@@ -48,9 +48,10 @@ public class WorldRenderer implements Observer {
 
     private void updateGroup() {
         for (Position position : world.getActivePositions()) {
-            if (world.get(position).isPresent()) {
-                int x = (int) ((position.getX() - player.getPosition().getX()) * SIZE + center.getX());
-                int y = (int) ((position.getY() - player.getPosition().getY()) * SIZE + center.getY());
+            int x = (int) ((position.getX() - player.getPosition().getX()) * SIZE + center.getX());
+            int y = (int) ((position.getY() - player.getPosition().getY()) * SIZE + center.getY());
+
+            if (isOnScreen(x, y) && world.get(position).isPresent()) {
 
                 Rectangle rectangle = new Rectangle(x, y, SIZE, SIZE);
                 rectangle.setFill(world.get(position).get().getColor());
@@ -58,6 +59,14 @@ public class WorldRenderer implements Observer {
                 worldGroup.getChildren().add(rectangle);
             }
         }
+    }
+
+    /**
+     * Produce true if the given position is on the screen
+     */
+    private boolean isOnScreen(int x, int y) {
+        return ((0 <= x && x <= (center.getX() * 2)) &&
+                (0 <= y && y <= (center.getY() * 2)));
     }
 
     /**
