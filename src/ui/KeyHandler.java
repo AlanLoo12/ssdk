@@ -11,9 +11,11 @@ import static com.sun.javafx.scene.traversal.Direction.*;
  */
 class KeyHandler {
     private final Player player;
+    private final WorldRenderer worldRenderer;
 
-    KeyHandler(Player player) {
+    KeyHandler(Player player, WorldRenderer worldRenderer) {
         this.player = player;
+        this.worldRenderer = worldRenderer;
     }
 
     /**
@@ -34,6 +36,12 @@ class KeyHandler {
                     break;
                 case RIGHT:
                     player.move(RIGHT);
+                    break;
+                case EQUALS:
+                    worldRenderer.zoomIn();
+                    break;
+                case MINUS:
+                    worldRenderer.zoomOut();
                     break;
                 default:
                     break;

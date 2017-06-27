@@ -17,7 +17,7 @@ import java.util.Observer;
  * Renders the world on the scene
  */
 public class WorldRenderer implements Observer {
-    private static final int SIZE = 20;
+    private int scale = 20;
     private static final int BOUNDING_BOX_X = 10;
     private static final int BOUNDING_BOX_Y = 5;
     private static final Paint FLOOR_COLOR = Color.BEIGE;
@@ -54,6 +54,8 @@ public class WorldRenderer implements Observer {
     }
 
     private void updateGroup() {
+        worldGroup.getChildren().clear();
+
         for (Position position : world.getActivePositions()) {
 
             if (localWorldCenter.getX() - player.getPosition().getX() > BOUNDING_BOX_X) {
@@ -68,12 +70,12 @@ public class WorldRenderer implements Observer {
                 localWorldCenter = localWorldCenter.add(0,1);
             }
 
-            double x = (position.getX() - localWorldCenter.getX()) * SIZE + center.getX();
-            double y = (position.getY() - localWorldCenter.getY()) * SIZE + center.getY();
+            double x = (position.getX() - localWorldCenter.getX()) * scale + center.getX();
+            double y = (position.getY() - localWorldCenter.getY()) * scale + center.getY();
 
             if (isOnScreen(x, y)) {
 
-                Rectangle rectangle = new Rectangle(x, y, SIZE, SIZE);
+                Rectangle rectangle = new Rectangle(x, y, scale, scale);
 
                 if (world.get(position).isPresent()) {
                     rectangle.setFill(world.get(position).get().getColor());
@@ -105,7 +107,16 @@ public class WorldRenderer implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        worldGroup.getChildren().clear();
+        updateGroup();
+    }
+
+    void zoomIn() {
+        scale++;
+        updateGroup();
+    }
+
+    void zoomOut() {
+        scale = Math.max(scale - 1, 1);
         updateGroup();
     }
 }

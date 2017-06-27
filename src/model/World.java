@@ -7,8 +7,6 @@ import static model.Entity.EXIT;
  * A 2d integer array of enumerable objects
  */
 public class World extends Observable {
-    private static final int MAX_LENGTH = 100000;
-    private static final Random RANDOM = new Random();
     /**
      * The set of all walkable positions
      */
@@ -21,45 +19,17 @@ public class World extends Observable {
     public World() {
         isWalkable = new HashSet<>();
         world = new HashMap<>();
-
-        generate();
     }
 
-    /**
-     * The ultimate world generator
-     */
-    private void generate() {
-        Position position = new Position(0,0);
-        for (int i = 0; i < MAX_LENGTH; i++) {
-            setWalkable(position, true);
-
-            position = nextPosition(position);
-        }
-
-        put(position, EXIT);
-    }
-
-    private void setWalkable(Position position, boolean walkable) {
+    void setWalkable(Position position, boolean walkable) {
         if (walkable) {
             isWalkable.add(position);
         } else {
             isWalkable.remove(position);
         }
-    }
 
-    private Position nextPosition(Position position) {
-        switch (RANDOM.nextInt(4)) {
-            case 0:
-                return new Position(position.getX() + 1, position.getY());
-            case 1:
-                return new Position(position.getX() - 1, position.getY());
-            case 2:
-                return new Position(position.getX(), position.getY() + 1);
-            case 3:
-                return new Position(position.getX(), position.getY() - 1);
-            default:
-                return position;
-        }
+        setChanged();
+        notifyObservers();
     }
 
     /**

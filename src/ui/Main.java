@@ -1,5 +1,6 @@
 package ui;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -8,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Player;
 import model.World;
+import model.WorldGenerator;
 
 import static com.sun.javafx.scene.traversal.Direction.*;
 
@@ -30,8 +32,18 @@ public class Main extends Application {
         WorldRenderer worldRenderer = new WorldRenderer(WORLD, center, player);
         root.getChildren().add(worldRenderer.getGroup());
 
-        KeyHandler keyHandler = new KeyHandler(player);
+        KeyHandler keyHandler = new KeyHandler(player, worldRenderer);
         keyHandler.registerScene(scene);
+
+        WorldGenerator worldGenerator = new WorldGenerator(WORLD);
+
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                worldGenerator.tick();
+            }
+        };
+        timer.start();
     }
 
 
