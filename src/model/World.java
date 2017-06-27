@@ -45,9 +45,9 @@ public class World extends Observable {
                 return new Position(position.getX(), position.getY() + 1);
             case 3:
                 return new Position(position.getX(), position.getY() - 1);
+            default:
+                return position;
         }
-
-        return null;
     }
 
     private void generateSpiral() {
