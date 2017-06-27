@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Random;
 
 /**
- *
+ * A world generator
  */
 public class WorldGenerator {
     private static final Random RANDOM = new Random();
-    private static final int RANDOM_WALKER_SPAWN_CHANCE = 10000;
+    private static final int RANDOM_WALKER_SPAWN_CHANCE = 100000;
     private static final int CORRIDOR_BUILDER_SPAWN_CHANCE = 100000;
     private World world;
     private List<Position> randomWalkers;
@@ -25,7 +25,9 @@ public class WorldGenerator {
     }
 
     public void tick() {
-        for (int index = 0; index < randomWalkers.size(); index++) {
+
+        if (randomWalkers.size() > 0) {
+            int index = RANDOM.nextInt(randomWalkers.size());
             Position position = randomWalkers.get(index);
 
             world.setWalkable(position, true);
@@ -40,7 +42,8 @@ public class WorldGenerator {
             }
         }
 
-        for (int index = 0; index < corridorBuilders.size(); index++) {
+        if (corridorBuilders.size() > 0) {
+            int index = RANDOM.nextInt(corridorBuilders.size());
             Position position = corridorBuilders.get(index);
 
             for (int x = -1; x <= 1; x++) {

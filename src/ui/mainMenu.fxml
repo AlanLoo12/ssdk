@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ui.MainMenu"
+      prefHeight="400.0" prefWidth="600.0">
+
+    <HBox>
+        <Label text="Map Size: "/>
+        <Spinner fx:id="mapSize" min="0" initialValue="30000" max="10000000"/>
+    </HBox>
+
+    <HBox>
+        <Label text="Grow the world on the go: "/>
+        <CheckBox fx:id="generate" selected="true"/>
+    </HBox>
+
+    <Button text="Start" onAction="#handleStartButtonAction"/>
+</VBox>

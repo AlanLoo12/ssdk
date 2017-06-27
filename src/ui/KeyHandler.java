@@ -43,6 +43,10 @@ class KeyHandler {
                 case MINUS:
                     worldRenderer.zoomOut();
                     break;
+                case Q:
+                case ESCAPE:
+                    System.exit(0);
+                    break;
                 default:
                     break;
             }
