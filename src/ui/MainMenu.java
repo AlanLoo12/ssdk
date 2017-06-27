@@ -8,10 +8,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -23,7 +20,7 @@ import model.WorldGenerator;
 import java.io.IOException;
 
 /**
- *
+ * A controller class for the main menu
  */
 public class MainMenu {
     @FXML public CheckBox generate;
@@ -31,6 +28,9 @@ public class MainMenu {
     @FXML public ListView gameMode;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
+        Label selectedItem = (Label) gameMode.getSelectionModel().getSelectedItem();
+        System.out.println(selectedItem.getId());
+
         int initialMapSize = (int) mapSize.getValue();
 
         World world = new World();

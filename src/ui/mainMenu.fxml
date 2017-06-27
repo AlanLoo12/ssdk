@@ -7,12 +7,15 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="ui.MainMenu">
 
-    <HBox>
+    <VBox>
         <Label text="Game mode:"/>
-        <ListView fx:id="gameMode"/>
-    </HBox>
 
-
+        <ListView fx:id="gameMode">
+            <Label id="exit" text="Find the exit"/>
+            <Label id="hideAndSeek" text="Follow the rabbit"/>
+            <Label id="mine" text="Mine!"/>
+        </ListView>
+    </VBox>
 
     <HBox>
         <Label text="Map Size: "/>
