@@ -3,25 +3,26 @@ package model;
 import java.util.*;
 
 import static model.Entity.EXIT;
-import static model.Entity.FLOOR;
-
 /**
  * A 2d integer array of enumerable objects
  */
 public class World extends Observable {
-    private static final int MAX_ANGLE = (int) (40 * Math.PI);
     private static final int MAX_LENGTH = 100000;
     private static final Random RANDOM = new Random();
+    /**
+     * The set of all walkable positions
+     */
+    private Set<Position> isWalkable;
     private Map<Position, Entity> world;
 
     /**
      * Create an empty world, with no walkable nodes
      */
     public World() {
+        isWalkable = new HashSet<>();
         world = new HashMap<>();
 
         generate();
-        //generateSpiral();
     }
 
     /**
@@ -30,12 +31,20 @@ public class World extends Observable {
     private void generate() {
         Position position = new Position(0,0);
         for (int i = 0; i < MAX_LENGTH; i++) {
-            put(position, FLOOR);
+            setWalkable(position, true);
 
             position = nextPosition(position);
         }
 
         put(position, EXIT);
+    }
+
+    private void setWalkable(Position position, boolean walkable) {
+        if (walkable) {
+            isWalkable.add(position);
+        } else {
+            isWalkable.remove(position);
+        }
     }
 
     private Position nextPosition(Position position) {
@@ -50,15 +59,6 @@ public class World extends Observable {
                 return new Position(position.getX(), position.getY() - 1);
             default:
                 return position;
-        }
-    }
-
-    private void generateSpiral() {
-        for (float i = 0; i < MAX_ANGLE; i = i + 0.1f) {
-            put(new Position(
-                    (int)((i + 2)*Math.cos(i)),
-                    (int)((i + 2)*Math.sin(i))
-            ), FLOOR);
         }
     }
 
@@ -92,14 +92,18 @@ public class World extends Observable {
      * @return the set of all occupied positions
      */
     public Set<Position> getActivePositions() {
-        return world.keySet();
+        return isWalkable;
     }
 
     public Optional<Entity> get(Position position) {
-        return Optional.of(world.get(position));
+        if (world.containsKey(position)) {
+            return Optional.of(world.get(position));
+        } else {
+            return Optional.empty();
+        }
     }
 
     boolean isWalkable(Position position) {
-        return world.containsKey(position) && world.get(position).isWalkable();
+        return isWalkable.contains(position);
     }
 }

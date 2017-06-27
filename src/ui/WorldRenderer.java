@@ -3,6 +3,8 @@ package ui;
 import com.sun.istack.internal.NotNull;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import model.Player;
 import model.Position;
@@ -17,7 +19,8 @@ import java.util.Observer;
 public class WorldRenderer implements Observer {
     private static final int SIZE = 20;
     private static final int BOUNDING_BOX_X = 10;
-    private static final int BOUNDING_BOX_Y = 10;
+    private static final int BOUNDING_BOX_Y = 5;
+    private static final Paint FLOOR_COLOR = Color.BEIGE;
     private final Player player;
 
     private Group worldGroup;
@@ -52,8 +55,6 @@ public class WorldRenderer implements Observer {
 
     private void updateGroup() {
         for (Position position : world.getActivePositions()) {
-            //double x = (position.getX() - player.getPosition().getX()) * SIZE + center.getX();
-            //double y = (position.getY() - player.getPosition().getY()) * SIZE + center.getY();
 
             if (localWorldCenter.getX() - player.getPosition().getX() > BOUNDING_BOX_X) {
                 localWorldCenter = localWorldCenter.add(-1,0);
@@ -70,10 +71,15 @@ public class WorldRenderer implements Observer {
             double x = (position.getX() - localWorldCenter.getX()) * SIZE + center.getX();
             double y = (position.getY() - localWorldCenter.getY()) * SIZE + center.getY();
 
-            if (isOnScreen(x, y) && world.get(position).isPresent()) {
+            if (isOnScreen(x, y)) {
 
                 Rectangle rectangle = new Rectangle(x, y, SIZE, SIZE);
-                rectangle.setFill(world.get(position).get().getColor());
+
+                if (world.get(position).isPresent()) {
+                    rectangle.setFill(world.get(position).get().getColor());
+                } else {
+                    rectangle.setFill(FLOOR_COLOR);
+                }
 
                 worldGroup.getChildren().add(rectangle);
             }
