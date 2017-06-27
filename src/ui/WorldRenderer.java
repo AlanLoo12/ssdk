@@ -15,7 +15,7 @@ import java.util.Observer;
  * Renders the world on the scene
  */
 public class WorldRenderer implements Observer {
-    public static final int SIZE = 30;
+    private static final int SIZE = 30;
     private final Player player;
 
     private Group worldGroup;
@@ -26,7 +26,7 @@ public class WorldRenderer implements Observer {
      * Connect this renderer to the given world
      * @param world world to render
      */
-    public WorldRenderer(World world, Point2D center, Player player) {
+    WorldRenderer(World world, Point2D center, Player player) {
         worldGroup = new Group();
         this.world = world;
         this.center = center;
@@ -40,7 +40,7 @@ public class WorldRenderer implements Observer {
      * @return javafx group to put on the screen
      */
     @NotNull
-    public Group getGroup() {
+    Group getGroup() {
         updateGroup();
 
         return worldGroup;
@@ -48,12 +48,12 @@ public class WorldRenderer implements Observer {
 
     private void updateGroup() {
         for (Position position : world.getActivePositions()) {
-            if (!world.get(position).isEmpty()) {
+            if (world.get(position).isPresent()) {
                 int x = (int) ((position.getX() - player.getPosition().getX()) * SIZE + center.getX());
                 int y = (int) ((position.getY() - player.getPosition().getY()) * SIZE + center.getY());
 
                 Rectangle rectangle = new Rectangle(x, y, SIZE, SIZE);
-                rectangle.setFill(world.get(position).get(0).getColor());
+                rectangle.setFill(world.get(position).get().getColor());
 
                 worldGroup.getChildren().add(rectangle);
             }

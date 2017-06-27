@@ -2,14 +2,16 @@ package model;
 
 import java.util.*;
 
-import static model.Entity.WALL;
+import static model.Entity.FLOOR;
 
 /**
  * A 2d integer array of enumerable objects
  */
 public class World extends Observable {
     private static final int MAX_ANGLE = (int) (40 * Math.PI);
-    private Map<Position, List<Entity>> world;
+    private static final int MAX_LENGTH = 10000;
+    private static final Random RANDOM = new Random();
+    private Map<Position, Entity> world;
 
     /**
      * Create an empty world, with no walkable nodes
@@ -17,7 +19,35 @@ public class World extends Observable {
     public World() {
         world = new HashMap<>();
 
-        generateSpiral();
+        generate();
+        //generateSpiral();
+    }
+
+    /**
+     * The ultimate world generator
+     */
+    private void generate() {
+        Position position = new Position(0,0);
+        for (int i = 0; i < MAX_LENGTH; i++) {
+            put(position, FLOOR);
+
+            position = nextPosition(position);
+        }
+    }
+
+    private Position nextPosition(Position position) {
+        switch (RANDOM.nextInt(4)) {
+            case 0:
+                return new Position(position.getX() + 1, position.getY());
+            case 1:
+                return new Position(position.getX() - 1, position.getY());
+            case 2:
+                return new Position(position.getX(), position.getY() + 1);
+            case 3:
+                return new Position(position.getX(), position.getY() - 1);
+        }
+
+        return null;
     }
 
     private void generateSpiral() {
@@ -25,7 +55,7 @@ public class World extends Observable {
             put(new Position(
                     (int)((i + 2)*Math.cos(i)),
                     (int)((i + 2)*Math.sin(i))
-            ), WALL);
+            ), FLOOR);
         }
     }
 
@@ -34,15 +64,8 @@ public class World extends Observable {
      * @param position position at which to store the entity
      * @param entity entity to be stored
      */
-    public void put(Position position, Entity entity) {
-        if (world.containsKey(position)) {
-            world.get(position).add(entity);
-        } else {
-            List<Entity> entities = new ArrayList<>();
-            entities.add(entity);
-
-            world.put(position, entities);
-        }
+    void put(Position position, Entity entity) {
+        world.put(position, entity);
 
         setChanged();
         notifyObservers();
@@ -51,13 +74,10 @@ public class World extends Observable {
     /**
      * Remove the given entity at the specified position
      * @param position position at which to remove the entity
-     * @param entity entity to be removed
      */
-    public void remove(Position position, Entity entity) {
+    void remove(Position position) {
         if (world.containsKey(position)) {
-            List<Entity> entities = world.get(position);
-
-            entities.remove(entity);
+            world.remove(position);
 
             setChanged();
             notifyObservers();
@@ -72,20 +92,11 @@ public class World extends Observable {
         return world.keySet();
     }
 
-    public List<Entity> get(Position position) {
-        return world.get(position);
+    public Optional<Entity> get(Position position) {
+        return Optional.of(world.get(position));
     }
 
-    public boolean isWalkable(Position position) {
-        if (!world.containsKey(position)) {
-            return true;
-        } else {
-            for (Entity entity : world.get(position)) {
-                if (!entity.isWalkable()) {
-                    return false;
-                }
-            }
-            return true;
-        }
+    boolean isWalkable(Position position) {
+        return world.containsKey(position) && world.get(position).isWalkable();
     }
 }

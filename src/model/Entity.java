@@ -7,9 +7,8 @@ import org.jetbrains.annotations.Contract;
  * An entity that can occupy world position
  */
 public enum Entity {
-    CORRIDOR(true, Color.BEIGE),
     PLAYER(true, Color.DARKGOLDENROD),
-    WALL(false, Color.DARKBLUE);
+    FLOOR(true, Color.BEIGE);
 
     private boolean isWalkable;
     private Color color;

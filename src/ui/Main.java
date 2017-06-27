@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Player;
 import model.World;
@@ -11,7 +12,7 @@ import model.World;
 import static com.sun.javafx.scene.traversal.Direction.*;
 
 public class Main extends Application {
-    public static final World WORLD = new World();
+    private static final World WORLD = new World();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -20,6 +21,7 @@ public class Main extends Application {
 
         primaryStage.setTitle("Super Simple Dungeon K");
         Scene scene = new Scene(root, 800, 600);
+        scene.setFill(Color.BLACK);
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         primaryStage.show();

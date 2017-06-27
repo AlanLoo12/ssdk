@@ -2,7 +2,7 @@ package model;
 
 import com.sun.javafx.scene.traversal.Direction;
 
-import static com.sun.javafx.scene.traversal.Direction.UP;
+import java.util.Optional;
 
 /**
  * A player (yep, that's it).
@@ -23,7 +23,10 @@ public class Player {
         if (world.isWalkable(position.get(direction))) {
             Position nextPosition = position.get(direction);
 
-            world.remove(position, Entity.PLAYER);
+            world.remove(position);
+
+            Optional<Entity> entity = world.get(nextPosition);
+            entity.ifPresent(e -> world.put(position, e));
             world.put(nextPosition, Entity.PLAYER);
 
             position = nextPosition;
