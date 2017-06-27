@@ -33,13 +33,13 @@ public class WorldGenerator {
             world.setWalkable(position, true);
             randomWalkers.set(index, nextPosition(position, 1));
 
-            if (RANDOM.nextInt(RANDOM_WALKER_SPAWN_CHANCE) == 0) {
-                randomWalkers.add(position);
-            }
+            //if (RANDOM.nextInt(RANDOM_WALKER_SPAWN_CHANCE) == 0) {
+            //    randomWalkers.add(position);
+            //}
 
-            if (RANDOM.nextInt(CORRIDOR_BUILDER_SPAWN_CHANCE) == 0) {
-                corridorBuilders.add(position);
-            }
+            //if (RANDOM.nextInt(CORRIDOR_BUILDER_SPAWN_CHANCE) == 0) {
+            //    corridorBuilders.add(position);
+            //}
         }
 
         if (corridorBuilders.size() > 0) {

@@ -5,8 +5,14 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ui.MainMenu"
-      prefHeight="400.0" prefWidth="600.0">
+      fx:controller="ui.MainMenu">
+
+    <HBox>
+        <Label text="Game mode:"/>
+        <ListView fx:id="gameMode"/>
+    </HBox>
+
+
 
     <HBox>
         <Label text="Map Size: "/>

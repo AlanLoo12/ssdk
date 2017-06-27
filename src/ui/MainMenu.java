@@ -9,6 +9,7 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
@@ -27,6 +28,7 @@ import java.io.IOException;
 public class MainMenu {
     @FXML public CheckBox generate;
     @FXML public Spinner mapSize;
+    @FXML public ListView gameMode;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
         int initialMapSize = (int) mapSize.getValue();
