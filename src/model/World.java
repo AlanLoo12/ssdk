@@ -2,6 +2,7 @@ package model;
 
 import java.util.*;
 
+import static model.Entity.EXIT;
 import static model.Entity.FLOOR;
 
 /**
@@ -9,7 +10,7 @@ import static model.Entity.FLOOR;
  */
 public class World extends Observable {
     private static final int MAX_ANGLE = (int) (40 * Math.PI);
-    private static final int MAX_LENGTH = 10000;
+    private static final int MAX_LENGTH = 100000;
     private static final Random RANDOM = new Random();
     private Map<Position, Entity> world;
 
@@ -33,6 +34,8 @@ public class World extends Observable {
 
             position = nextPosition(position);
         }
+
+        put(position, EXIT);
     }
 
     private Position nextPosition(Position position) {

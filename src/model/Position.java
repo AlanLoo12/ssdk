@@ -2,6 +2,7 @@ package model;
 
 import com.sun.javafx.scene.traversal.Direction;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A position in 2d integer space
@@ -55,5 +56,10 @@ public final class Position {
             default:
                 return this;
         }
+    }
+
+    @NotNull
+    public Position add(int x, int y) {
+        return new Position(this.x + x, this.y + y);
     }
 }

@@ -15,11 +15,14 @@ import java.util.Observer;
  * Renders the world on the scene
  */
 public class WorldRenderer implements Observer {
-    private static final int SIZE = 30;
+    private static final int SIZE = 20;
+    private static final int BOUNDING_BOX_X = 10;
+    private static final int BOUNDING_BOX_Y = 10;
     private final Player player;
 
     private Group worldGroup;
     private World world;
+    private Position localWorldCenter;
     private Point2D center;
 
     /**
@@ -31,6 +34,7 @@ public class WorldRenderer implements Observer {
         this.world = world;
         this.center = center;
         this.player = player;
+        this.localWorldCenter = player.getPosition();
 
         world.addObserver(this);
     }
@@ -48,8 +52,23 @@ public class WorldRenderer implements Observer {
 
     private void updateGroup() {
         for (Position position : world.getActivePositions()) {
-            int x = (int) ((position.getX() - player.getPosition().getX()) * SIZE + center.getX());
-            int y = (int) ((position.getY() - player.getPosition().getY()) * SIZE + center.getY());
+            //double x = (position.getX() - player.getPosition().getX()) * SIZE + center.getX();
+            //double y = (position.getY() - player.getPosition().getY()) * SIZE + center.getY();
+
+            if (localWorldCenter.getX() - player.getPosition().getX() > BOUNDING_BOX_X) {
+                localWorldCenter = localWorldCenter.add(-1,0);
+            } else if (localWorldCenter.getX() - player.getPosition().getX() < - BOUNDING_BOX_X) {
+                localWorldCenter = localWorldCenter.add(1,0);
+            }
+
+            if (localWorldCenter.getY() - player.getPosition().getY() > BOUNDING_BOX_Y) {
+                localWorldCenter = localWorldCenter.add(0,-1);
+            } else if (localWorldCenter.getY() - player.getPosition().getY() < - BOUNDING_BOX_Y) {
+                localWorldCenter = localWorldCenter.add(0,1);
+            }
+
+            double x = (position.getX() - localWorldCenter.getX()) * SIZE + center.getX();
+            double y = (position.getY() - localWorldCenter.getY()) * SIZE + center.getY();
 
             if (isOnScreen(x, y) && world.get(position).isPresent()) {
 
@@ -64,7 +83,7 @@ public class WorldRenderer implements Observer {
     /**
      * Produce true if the given position is on the screen
      */
-    private boolean isOnScreen(int x, int y) {
+    private boolean isOnScreen(double x, double y) {
         return ((0 <= x && x <= (center.getX() * 2)) &&
                 (0 <= y && y <= (center.getY() * 2)));
     }

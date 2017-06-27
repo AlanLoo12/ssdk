@@ -26,11 +26,23 @@ public class Player {
             world.remove(position);
 
             Optional<Entity> entity = world.get(nextPosition);
+
+            if (entity.isPresent()) {
+                if (entity.get().equals(Entity.EXIT)) {
+                    winGame();
+                }
+            }
+
+
             entity.ifPresent(e -> world.put(position, e));
             world.put(nextPosition, Entity.PLAYER);
 
             position = nextPosition;
         }
+    }
+
+    private void winGame() {
+        System.out.println("YAY! You won the game!");
     }
 
     public Position getPosition() {

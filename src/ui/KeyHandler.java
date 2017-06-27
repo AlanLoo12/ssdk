@@ -9,10 +9,10 @@ import static com.sun.javafx.scene.traversal.Direction.*;
 /**
  * Handles keys
  */
-public class KeyHandler {
+class KeyHandler {
     private final Player player;
 
-    public KeyHandler(Player player) {
+    KeyHandler(Player player) {
         this.player = player;
     }
 
@@ -20,19 +20,19 @@ public class KeyHandler {
      * Add the key handler to the given scene
      * @param scene scene to which to add a key handler
      */
-    public void registerScene(Scene scene) {
-        scene.setOnKeyTyped(event -> {
-            switch (event.getCharacter()) {
-                case "w":
+    void registerScene(Scene scene) {
+        scene.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case UP:
                     player.move(UP);
                     break;
-                case "a":
+                case LEFT:
                     player.move(LEFT);
                     break;
-                case "s":
+                case DOWN:
                     player.move(DOWN);
                     break;
-                case "d":
+                case RIGHT:
                     player.move(RIGHT);
                     break;
                 default:

@@ -8,7 +8,8 @@ import org.jetbrains.annotations.Contract;
  */
 public enum Entity {
     PLAYER(true, Color.DARKGOLDENROD),
-    FLOOR(true, Color.BEIGE);
+    FLOOR(true, Color.BEIGE),
+    EXIT(true, Color.INDIGO);
 
     private boolean isWalkable;
     private Color color;
