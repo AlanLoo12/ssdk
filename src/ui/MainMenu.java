@@ -47,16 +47,16 @@ public class MainMenu {
 
         World world = new World();
         WorldGenerator worldGenerator = new WorldGenerator(world);
+        int initialMapSize = DEFAULT_MAP_SIZE;
+        try {
+            initialMapSize = Integer.parseInt(mapSize.getText());
+        } catch (NumberFormatException ignored) {}
+
+        for (int i = 0; i < initialMapSize; i++) {
+            worldGenerator.tick();
+        }
+
         if (selectedItem.equals("exit")) {
-            int initialMapSize = DEFAULT_MAP_SIZE;
-            try {
-                initialMapSize = Integer.parseInt(mapSize.getText());
-            } catch (NumberFormatException ignored) {}
-
-            for (int i = 0; i < initialMapSize; i++) {
-                worldGenerator.tick();
-            }
-
             List<Position> positionList = new ArrayList<>();
             positionList.addAll(world.getActivePositions());
 
