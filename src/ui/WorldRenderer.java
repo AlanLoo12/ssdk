@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import model.Entity;
 import model.Player;
 import model.Position;
 import model.World;
@@ -118,7 +119,8 @@ public class WorldRenderer implements Observer {
                             "\nYou " + (world.isWin()? "won" : "lost") +
                             "\nTime spent playing: " + player.getTime() + " s" +
                             "\nTotal number of moves made: " + player.getMoves() +
-                            "\nNumber of coins collected: " + player.getCoins());
+                            "\nNumber of coins collected: " + player.getCoins() +
+                            "\nDust piles collected: " + player.getInventory().getOrDefault(Entity.DUST, 0));
             endText.setFill(Color.WHITE);
 
             worldGroup.getChildren().add(endText);

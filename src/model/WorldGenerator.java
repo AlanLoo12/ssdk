@@ -31,6 +31,7 @@ public class WorldGenerator {
             Position position = randomWalkers.get(index);
 
             world.setWalkable(position, true);
+            addWalls(position);
             randomWalkers.set(index, nextPosition(position, 1));
 
             //if (RANDOM.nextInt(RANDOM_WALKER_SPAWN_CHANCE) == 0) {
@@ -53,6 +54,17 @@ public class WorldGenerator {
             }
 
             corridorBuilders.set(index, nextPosition(position, 3));
+        }
+    }
+
+    private void addWalls(Position position) {
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                if (!world.isWalkable(position.add(x, y))) {
+                    world.setWalkable(position.add(x, y), true);
+                    world.put(position.add(x, y), Entity.DUST);
+                }
+            }
         }
     }
 

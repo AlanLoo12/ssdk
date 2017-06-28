@@ -79,4 +79,8 @@ public class Player {
     public int getCoins() {
         return inventory.getOrDefault(Entity.COIN, 0);
     }
+
+    public Map<Entity, Integer> getInventory() {
+        return inventory;
+    }
 }
