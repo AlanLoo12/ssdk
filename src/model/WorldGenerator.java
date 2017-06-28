@@ -9,19 +9,16 @@ import java.util.Random;
  */
 public class WorldGenerator {
     private static final Random RANDOM = new Random();
-    private static final int RANDOM_WALKER_SPAWN_CHANCE = 100000;
-    private static final int CORRIDOR_BUILDER_SPAWN_CHANCE = 100000;
     private World world;
     private List<Position> randomWalkers;
-    private List<Position> corridorBuilders;
 
     public WorldGenerator(World world) {
         this.world = world;
 
         randomWalkers = new ArrayList<>();
         randomWalkers.add(new Position(0,0));
-
-        corridorBuilders = new ArrayList<>();
+        randomWalkers.add(new Position(0,0));
+        randomWalkers.add(new Position(0,0));
     }
 
     public void tick() {
@@ -30,39 +27,21 @@ public class WorldGenerator {
             int index = RANDOM.nextInt(randomWalkers.size());
             Position position = randomWalkers.get(index);
 
-            world.setWalkable(position, true);
+            world.setActive(position, true);
+            if (!world.isWalkable(position)) {
+                world.put(position, Entity.DUST);
+            }
             addWalls(position);
             randomWalkers.set(index, nextPosition(position, 1));
-
-            //if (RANDOM.nextInt(RANDOM_WALKER_SPAWN_CHANCE) == 0) {
-            //    randomWalkers.add(position);
-            //}
-
-            //if (RANDOM.nextInt(CORRIDOR_BUILDER_SPAWN_CHANCE) == 0) {
-            //    corridorBuilders.add(position);
-            //}
-        }
-
-        if (corridorBuilders.size() > 0) {
-            int index = RANDOM.nextInt(corridorBuilders.size());
-            Position position = corridorBuilders.get(index);
-
-            for (int x = -1; x <= 1; x++) {
-                for (int y = -1; y <= 1; y++) {
-                    world.setWalkable(position.add(x, y), true);
-                }
-            }
-
-            corridorBuilders.set(index, nextPosition(position, 3));
         }
     }
 
     private void addWalls(Position position) {
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
-                if (!world.isWalkable(position.add(x, y))) {
-                    world.setWalkable(position.add(x, y), true);
-                    world.put(position.add(x, y), Entity.DUST);
+                if (!world.isActive(position.add(x, y))) {
+                    world.setActive(position.add(x, y), true);
+                    world.put(position.add(x, y), Entity.WALL);
                 }
             }
         }

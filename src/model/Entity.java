@@ -10,6 +10,7 @@ public enum Entity {
     PLAYER(true, Color.DARKGOLDENROD),
     COIN(true, Color.DARKBLUE),
     DUST(true, Color.DARKGREY),
+    WALL(false, Color.RED),
     EXIT(true, Color.INDIGO);
 
     private boolean isWalkable;

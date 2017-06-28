@@ -1,8 +1,9 @@
 package model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 
-import static model.Entity.EXIT;
 /**
  * A 2d integer array of enumerable objects
  */
@@ -10,7 +11,7 @@ public class World extends Observable {
     /**
      * The set of all walkable positions
      */
-    private Set<Position> isWalkable;
+    private Set<Position> activePositions;
     private Map<Position, Entity> world;
     private boolean isEnded;
     private boolean win;
@@ -19,15 +20,15 @@ public class World extends Observable {
      * Create an empty world, with no walkable nodes
      */
     public World() {
-        isWalkable = new HashSet<>();
+        activePositions = new HashSet<>();
         world = new HashMap<>();
     }
 
-    void setWalkable(Position position, boolean walkable) {
-        if (walkable) {
-            isWalkable.add(position);
+    void setActive(Position position, boolean active) {
+        if (active) {
+            activePositions.add(position);
         } else {
-            isWalkable.remove(position);
+            activePositions.remove(position);
         }
 
         setChanged();
@@ -64,7 +65,7 @@ public class World extends Observable {
      * @return the set of all occupied positions
      */
     public Set<Position> getActivePositions() {
-        return isWalkable;
+        return activePositions;
     }
 
     public Optional<Entity> get(Position position) {
@@ -76,7 +77,9 @@ public class World extends Observable {
     }
 
     boolean isWalkable(Position position) {
-        return isWalkable.contains(position);
+        return activePositions.contains(position) &&
+                (!world.containsKey(position) ||
+                        world.get(position).isWalkable());
     }
 
     /**
@@ -94,5 +97,9 @@ public class World extends Observable {
 
     public boolean isWin() {
         return win;
+    }
+
+    boolean isActive(@NotNull Position position) {
+        return activePositions.contains(position);
     }
 }
