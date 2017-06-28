@@ -6,6 +6,7 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import model.Player;
 import model.Position;
 import model.World;
@@ -107,7 +108,21 @@ public class WorldRenderer implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        updateGroup();
+        if (!world.isEnded()) {
+            updateGroup();
+        } else {
+            worldGroup.getChildren().clear();
+
+            Text endText = new Text(center.getX(), center.getY(),
+                    "Well done!" +
+                            "\nYou " + (world.isWin()? "won" : "lost") +
+                            "\nTime spent playing: " + player.getTime() + " s" +
+                            "\nTotal number of moves made: " + player.getMoves() +
+                            "\nNumber of coins collected: " + player.getCoins());
+            endText.setFill(Color.WHITE);
+
+            worldGroup.getChildren().add(endText);
+        }
     }
 
     void zoomIn() {

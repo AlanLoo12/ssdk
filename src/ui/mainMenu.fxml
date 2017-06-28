@@ -19,7 +19,7 @@
 
     <HBox>
         <Label text="Map Size: "/>
-        <Spinner fx:id="mapSize" min="0" initialValue="30000" max="10000000"/>
+        <TextField fx:id="mapSize" text="1000"/>
     </HBox>
 
     <HBox>

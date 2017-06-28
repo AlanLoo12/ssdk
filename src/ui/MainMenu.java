@@ -14,41 +14,74 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.Player;
+import model.Position;
 import model.World;
 import model.WorldGenerator;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import static model.Entity.COIN;
+import static model.Entity.EXIT;
 
 /**
  * A controller class for the main menu
  */
 public class MainMenu {
+    private static final Random RANDOM = new Random();
+    private static final float COIN_DENSITY = 0.01f;
+    private static final int DEFAULT_MAP_SIZE = 30000;
     @FXML public CheckBox generate;
-    @FXML public Spinner mapSize;
+    @FXML public TextField mapSize;
     @FXML public ListView gameMode;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
-        Label selectedItem = (Label) gameMode.getSelectionModel().getSelectedItem();
-        System.out.println(selectedItem.getId());
-
-        int initialMapSize = (int) mapSize.getValue();
-
-        World world = new World();
-
-        WorldGenerator worldGenerator = new WorldGenerator(world);
-
-        for (int i = 0; i < initialMapSize; i++) {
-            worldGenerator.tick();
+        String selectedItem;
+        try {
+            selectedItem = ((Label) gameMode.getSelectionModel().getSelectedItem()).getId();
+        } catch (Exception e) {
+            selectedItem = "exit";
         }
 
-        if (generate.isSelected()) {
-            AnimationTimer timer = new AnimationTimer() {
-                @Override
-                public void handle(long l) {
-                    worldGenerator.tick();
-                }
-            };
-            timer.start();
+        World world = new World();
+        WorldGenerator worldGenerator = new WorldGenerator(world);
+        if (selectedItem.equals("exit")) {
+            int initialMapSize = DEFAULT_MAP_SIZE;
+            try {
+                initialMapSize = Integer.parseInt(mapSize.getText());
+            } catch (NumberFormatException ignored) {}
+
+            for (int i = 0; i < initialMapSize; i++) {
+                worldGenerator.tick();
+            }
+
+            List<Position> positionList = new ArrayList<>();
+            positionList.addAll(world.getActivePositions());
+
+            // Generate the coins
+            for (int i = 0; i < COIN_DENSITY * positionList.size(); i++) {
+                Position position = positionList.get(RANDOM.nextInt(positionList.size()));
+
+                world.put(position, COIN);
+            }
+
+            // Generate the exit
+            Position exit = positionList.get(RANDOM.nextInt(positionList.size()));
+
+            world.put(exit, EXIT);
+
+        } else {
+            if (generate.isSelected()) {
+                AnimationTimer timer = new AnimationTimer() {
+                    @Override
+                    public void handle(long l) {
+                        worldGenerator.tick();
+                    }
+                };
+                timer.start();
+            }
         }
 
         Group root = new Group();

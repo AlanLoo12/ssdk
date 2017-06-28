@@ -12,6 +12,8 @@ public class World extends Observable {
      */
     private Set<Position> isWalkable;
     private Map<Position, Entity> world;
+    private boolean isEnded;
+    private boolean win;
 
     /**
      * Create an empty world, with no walkable nodes
@@ -37,7 +39,7 @@ public class World extends Observable {
      * @param position position at which to store the entity
      * @param entity entity to be stored
      */
-    void put(Position position, Entity entity) {
+    public void put(Position position, Entity entity) {
         world.put(position, entity);
 
         setChanged();
@@ -75,5 +77,22 @@ public class World extends Observable {
 
     boolean isWalkable(Position position) {
         return isWalkable.contains(position);
+    }
+
+    /**
+     * Ends the world
+     * @param win if true, then it's a win, else its a lost
+     */
+    void end(boolean win) {
+        isEnded = true;
+        this.win = win;
+    }
+
+    public boolean isEnded() {
+        return isEnded;
+    }
+
+    public boolean isWin() {
+        return win;
     }
 }
