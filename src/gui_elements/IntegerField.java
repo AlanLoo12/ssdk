@@ -1,6 +1,5 @@
 package gui_elements;
 
-import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
@@ -16,5 +15,9 @@ public class IntegerField extends TextField {
                 t.consume();
             }
         });
+    }
+
+    public int getValue() {
+        return Integer.parseInt(getText());
     }
 }

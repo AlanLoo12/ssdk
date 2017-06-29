@@ -1,6 +1,5 @@
 package gui_elements;
 
-import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
@@ -8,8 +7,8 @@ import javafx.scene.input.KeyEvent;
 /**
  *
  */
-public class DoubleField extends TextField {
-    public DoubleField() {
+public class FloatField extends TextField {
+    public FloatField() {
         this.addEventFilter(KeyEvent.KEY_TYPED, t -> {
             char ar[] = t.getCharacter().toCharArray();
             char ch = ar[t.getCharacter().toCharArray().length - 1];
@@ -17,5 +16,9 @@ public class DoubleField extends TextField {
                 t.consume();
             }
         });
+    }
+
+    public float getValue() {
+        return Float.parseFloat(getText());
     }
 }

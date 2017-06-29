@@ -1,5 +1,6 @@
 package ui;
 
+import gui_elements.FloatField;
 import gui_elements.IntegerField;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
@@ -25,31 +26,29 @@ public class MainMenu {
     private static final float COIN_DENSITY = 0.01f;
 
     @FXML public CheckBox generateOnTheGo;
-    @FXML public TextField initialMapSize;
-    public CheckBox breedRandomWalkers;
-    public Spinner activeRandomWalkers;
-    public CheckBox generateExit;
-    public CheckBox generateDust;
-    public CheckBox generateWalls;
-    public IntegerField randomWalkersBirthChance;
-    public IntegerField randomWalkersDeathChance;
+    @FXML public IntegerField initialMapSize;
+    @FXML public CheckBox breedRandomWalkers;
+    @FXML public Spinner activeRandomWalkers;
+    @FXML public CheckBox generateExit;
+    @FXML public CheckBox generateDust;
+    @FXML public CheckBox generateWalls;
+    @FXML public FloatField randomWalkersBirthChance;
+    @FXML public FloatField randomWalkersDeathChance;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
         World world = new World();
         WorldGenerator worldGenerator = new WorldGenerator(world);
-        int initialMapSize = Integer.parseInt(this.initialMapSize.getText());
-
         // Configure the generator
         worldGenerator.generateRandomly(COIN, COIN_DENSITY);
         worldGenerator.setGenerateDust(generateDust.isSelected());
         worldGenerator.setGenerateWalls(generateWalls.isSelected());
         worldGenerator.setBreedRandomWalkers(breedRandomWalkers.isSelected());
-        worldGenerator.setRandomWalkersBirthChance(Float.parseFloat(randomWalkersBirthChance.getText()));
-        worldGenerator.setRandomWalkersDeathChance(Float.parseFloat(randomWalkersDeathChance.getText()));
+        worldGenerator.setRandomWalkersBirthChance(randomWalkersBirthChance.getValue());
+        worldGenerator.setRandomWalkersDeathChance(randomWalkersDeathChance.getValue());
         worldGenerator.setRandomWalkersToTick((Integer) activeRandomWalkers.getValue());
 
         // Generate
-        worldGenerator.tick(initialMapSize);
+        worldGenerator.tick(initialMapSize.getValue());
         if (generateExit.isSelected()) {
             worldGenerator.putAtTheWalkerTip(EXIT);
         }

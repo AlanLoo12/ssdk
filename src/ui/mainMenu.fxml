@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import gui_elements.IntegerField?>
+<?import gui_elements.FloatField?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="ui.MainMenu">
@@ -40,12 +41,12 @@
 
     <HBox>
         <Label text="Random Walkers Birth Chance: "/>
-        <IntegerField fx:id="randomWalkersBirthChance" text="0.00001"/>
+        <FloatField fx:id="randomWalkersBirthChance" text="0.00001"/>
     </HBox>
 
     <HBox>
         <Label text="Random Walkers Birth Chance: "/>
-        <IntegerField fx:id="randomWalkersDeathChance" text="0.000005"/>
+        <FloatField fx:id="randomWalkersDeathChance" text="0.000005"/>
     </HBox>
 
     <HBox>
