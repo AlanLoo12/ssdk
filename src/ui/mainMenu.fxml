@@ -3,30 +3,54 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import gui_elements.IntegerField?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="ui.MainMenu">
 
-    <!--
-    <VBox>
-        <Label text="Game mode:"/>
-
-        <ListView fx:id="gameMode">
-            <Label id="exit" text="Find the exit"/>
-            <Label id="hideAndSeek" text="Follow the rabbit"/>
-            <Label id="mine" text="Mine!"/>
-        </ListView>
-    </VBox>
-    -->
+    <HBox>
+        <Label text="Initial Map Size: "/>
+        <IntegerField fx:id="initialMapSize" text="30000"/>
+    </HBox>
 
     <HBox>
-        <Label text="Map Size: "/>
-        <TextField fx:id="mapSize" text="30000"/>
+        <Label text="Generate an exit: "/>
+        <CheckBox fx:id="generateExit"/>
+    </HBox>
+
+    <HBox>
+        <Label text="Generate dust: "/>
+        <CheckBox fx:id="generateDust"/>
+    </HBox>
+
+    <HBox>
+        <Label text="Generate walls: "/>
+        <CheckBox fx:id="generateWalls" selected="true"/>
+    </HBox>
+
+    <HBox>
+        <Label text="Breed random walkers: "/>
+        <CheckBox fx:id="breedRandomWalkers" selected="true"/>
+    </HBox>
+
+    <HBox>
+        <Label text="Active random walkers at a time: "/>
+        <Spinner fx:id="activeRandomWalkers" min="0" max="100" initialValue="4"/>
+    </HBox>
+
+    <HBox>
+        <Label text="Random Walkers Birth Chance: "/>
+        <IntegerField fx:id="randomWalkersBirthChance" text="0.00001"/>
+    </HBox>
+
+    <HBox>
+        <Label text="Random Walkers Birth Chance: "/>
+        <IntegerField fx:id="randomWalkersDeathChance" text="0.000005"/>
     </HBox>
 
     <HBox>
         <Label text="Grow the world on the go: "/>
-        <CheckBox fx:id="generate" selected="true"/>
+        <CheckBox fx:id="generateOnTheGo" selected="true"/>
     </HBox>
 
     <Button text="Start" onAction="#handleStartButtonAction"/>

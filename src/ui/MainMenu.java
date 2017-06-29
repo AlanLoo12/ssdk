@@ -1,12 +1,10 @@
 package ui;
 
+import gui_elements.IntegerField;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
@@ -14,14 +12,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.Player;
-import model.Position;
 import model.World;
 import model.WorldGenerator;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import static model.Entity.COIN;
 import static model.Entity.EXIT;
@@ -31,32 +23,38 @@ import static model.Entity.EXIT;
  */
 public class MainMenu {
     private static final float COIN_DENSITY = 0.01f;
-    private static final int DEFAULT_MAP_SIZE = 30000;
 
-    @FXML public CheckBox generate;
-    @FXML public TextField mapSize;
-    //@FXML public ListView gameMode;
+    @FXML public CheckBox generateOnTheGo;
+    @FXML public TextField initialMapSize;
+    public CheckBox breedRandomWalkers;
+    public Spinner activeRandomWalkers;
+    public CheckBox generateExit;
+    public CheckBox generateDust;
+    public CheckBox generateWalls;
+    public IntegerField randomWalkersBirthChance;
+    public IntegerField randomWalkersDeathChance;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
         World world = new World();
         WorldGenerator worldGenerator = new WorldGenerator(world);
-        int initialMapSize = DEFAULT_MAP_SIZE;
-        try {
-            initialMapSize = Integer.parseInt(mapSize.getText());
-        } catch (NumberFormatException ignored) {}
+        int initialMapSize = Integer.parseInt(this.initialMapSize.getText());
 
         // Configure the generator
         worldGenerator.generateRandomly(COIN, COIN_DENSITY);
-        worldGenerator.setBreedRandomWalkers(true);
-        worldGenerator.setRandomWalkersBreedChance(0.00001f);
-        worldGenerator.setRandomWalkersDieChance(0.000009f);
-        worldGenerator.setRandomWalkersToTick(4);
+        worldGenerator.setGenerateDust(generateDust.isSelected());
+        worldGenerator.setGenerateWalls(generateWalls.isSelected());
+        worldGenerator.setBreedRandomWalkers(breedRandomWalkers.isSelected());
+        worldGenerator.setRandomWalkersBirthChance(Float.parseFloat(randomWalkersBirthChance.getText()));
+        worldGenerator.setRandomWalkersDeathChance(Float.parseFloat(randomWalkersDeathChance.getText()));
+        worldGenerator.setRandomWalkersToTick((Integer) activeRandomWalkers.getValue());
 
         // Generate
         worldGenerator.tick(initialMapSize);
-        worldGenerator.putAtTheWalkerTip(EXIT);
+        if (generateExit.isSelected()) {
+            worldGenerator.putAtTheWalkerTip(EXIT);
+        }
 
-        if (generate.isSelected()) {
+        if (generateOnTheGo.isSelected()) {
             AnimationTimer timer = new AnimationTimer() {
                     @Override
                     public void handle(long l) {

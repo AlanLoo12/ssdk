@@ -1,7 +1,5 @@
 package model;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
-
 import java.util.*;
 
 /**
@@ -16,17 +14,21 @@ public class WorldGenerator {
      */
     private Map<Entity, Float> randomFillGenerators;
     private boolean breedRandomWalkers;
-    private float randomWalkersBreedChance;
+    private float randomWalkersBirthChance;
     private int randomWalkersToTick;
-    private float randomWalkersDieChance;
+    private float randomWalkersDeathChance;
+    private boolean generateDust;
+    private boolean generateWalls;
 
     public WorldGenerator(World world) {
         this.world = world;
         randomFillGenerators = new HashMap<>();
 
         breedRandomWalkers = true;
-        randomWalkersBreedChance = 0.0001f;
-        randomWalkersDieChance = randomWalkersBreedChance;
+        generateDust = true;
+        generateWalls = true;
+        randomWalkersBirthChance = 0.0001f;
+        randomWalkersDeathChance = randomWalkersBirthChance;
         randomWalkersToTick = 5;
 
         randomWalkers = new ArrayList<>();
@@ -42,7 +44,11 @@ public class WorldGenerator {
 
                 world.setActive(position, true);
                 if (!world.isWalkable(position)) {
-                    world.put(position, Entity.DUST);
+                    if (generateDust) {
+                        world.put(position, Entity.DUST);
+                    } else {
+                        world.remove(position);
+                    }
 
                     for (Entity entity : randomFillGenerators.keySet()) {
                         if (RANDOM.nextFloat() < randomFillGenerators.get(entity)) {
@@ -51,15 +57,17 @@ public class WorldGenerator {
                         }
                     }
                 }
-                addWalls(position);
+                if (generateWalls) {
+                    addWalls(position);
+                }
                 randomWalkers.set(walkerIndex, nextPosition(position, 1));
 
                 if (breedRandomWalkers) {
-                    if (RANDOM.nextFloat() < randomWalkersBreedChance) {
+                    if (RANDOM.nextFloat() < randomWalkersBirthChance) {
                         randomWalkers.add(position);
                     }
                     if (randomWalkers.size() > 1) {
-                        if (RANDOM.nextFloat() < randomWalkersDieChance) {
+                        if (RANDOM.nextFloat() < randomWalkersDeathChance) {
                             randomWalkers.remove(RANDOM.nextInt(randomWalkers.size()));
                         }
                     }
@@ -120,15 +128,23 @@ public class WorldGenerator {
         this.breedRandomWalkers = breedRandomWalkers;
     }
 
-    public void setRandomWalkersBreedChance(float randomWalkersBreedChance) {
-        this.randomWalkersBreedChance = randomWalkersBreedChance;
+    public void setRandomWalkersBirthChance(float randomWalkersBirthChance) {
+        this.randomWalkersBirthChance = randomWalkersBirthChance;
     }
 
     public void setRandomWalkersToTick(int randomWalkersToTick) {
         this.randomWalkersToTick = randomWalkersToTick;
     }
 
-    public void setRandomWalkersDieChance(float randomWalkersDieChance) {
-        this.randomWalkersDieChance = randomWalkersDieChance;
+    public void setRandomWalkersDeathChance(float randomWalkersDeathChance) {
+        this.randomWalkersDeathChance = randomWalkersDeathChance;
+    }
+
+    public void setGenerateDust(boolean generateDust) {
+        this.generateDust = generateDust;
+    }
+
+    public void setGenerateWalls(boolean generateWalls) {
+        this.generateWalls = generateWalls;
     }
 }
