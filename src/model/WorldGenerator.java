@@ -61,4 +61,8 @@ public class WorldGenerator {
                 return position;
         }
     }
+
+    public void generateRandomly(Entity entity, float density) {
+
+    }
 }

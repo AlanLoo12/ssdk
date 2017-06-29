@@ -3,6 +3,7 @@ package model;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A 2d integer array of enumerable objects
@@ -101,5 +102,9 @@ public class World extends Observable {
 
     boolean isActive(@NotNull Position position) {
         return activePositions.contains(position);
+    }
+
+    public Collection<? extends Position> getWalkablePositions() {
+        return activePositions.stream().filter(this::isWalkable).collect(Collectors.toSet());
     }
 }

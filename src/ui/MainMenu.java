@@ -58,9 +58,11 @@ public class MainMenu {
 
         if (selectedItem.equals("exit")) {
             List<Position> positionList = new ArrayList<>();
-            positionList.addAll(world.getActivePositions());
+            positionList.addAll(world.getWalkablePositions());
 
             // Generate the coins
+            //worldGenerator.generateRandomly(COIN, COIN_DENSITY);
+
             for (int i = 0; i < COIN_DENSITY * positionList.size(); i++) {
                 Position position = positionList.get(RANDOM.nextInt(positionList.size()));
 
