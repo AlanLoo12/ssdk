@@ -36,7 +36,6 @@ public class WorldGenerator {
     }
 
     public void tick() {
-
         if (randomWalkers.size() > 0) {
             for (int i = 0; i < randomWalkersToTick; i++) {
                 int walkerIndex = getWalkerIndex();

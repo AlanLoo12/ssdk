@@ -25,6 +25,11 @@
     </HBox>
 
     <HBox>
+        <Label text="Generate coins: "/>
+        <CheckBox fx:id="generateCoins"/>
+    </HBox>
+
+    <HBox>
         <Label text="Generate walls: "/>
         <CheckBox fx:id="generateWalls" selected="true"/>
     </HBox>
@@ -45,7 +50,7 @@
     </HBox>
 
     <HBox>
-        <Label text="Random Walkers Birth Chance: "/>
+        <Label text="Random Walkers Death Chance: "/>
         <FloatField fx:id="randomWalkersDeathChance" text="0.000005"/>
     </HBox>
 

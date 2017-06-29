@@ -34,12 +34,15 @@ public class MainMenu {
     @FXML public CheckBox generateWalls;
     @FXML public FloatField randomWalkersBirthChance;
     @FXML public FloatField randomWalkersDeathChance;
+    @FXML public CheckBox generateCoins;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
         World world = new World();
         WorldGenerator worldGenerator = new WorldGenerator(world);
         // Configure the generator
-        worldGenerator.generateRandomly(COIN, COIN_DENSITY);
+        if (generateCoins.isSelected()) {
+            worldGenerator.generateRandomly(COIN, COIN_DENSITY);
+        }
         worldGenerator.setGenerateDust(generateDust.isSelected());
         worldGenerator.setGenerateWalls(generateWalls.isSelected());
         worldGenerator.setBreedRandomWalkers(breedRandomWalkers.isSelected());
