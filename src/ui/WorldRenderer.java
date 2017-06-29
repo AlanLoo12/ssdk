@@ -1,11 +1,12 @@
 package ui;
 
-import com.sun.istack.internal.NotNull;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import model.Entity;
 import model.Player;
@@ -25,38 +26,31 @@ public class WorldRenderer implements Observer {
     private static final Paint FLOOR_COLOR = Color.BEIGE;
     private final Player player;
 
-    private Group worldGroup;
+    private Canvas worldCanvas;
     private World world;
     private Position localWorldCenter;
     private Point2D center;
+    private Group group;
 
     /**
      * Connect this renderer to the given world
      * @param world world to render
      */
-    WorldRenderer(World world, Point2D center, Player player) {
-        worldGroup = new Group();
+    WorldRenderer(World world, double width, double height, Player player) {
+        group = new Group();
+        worldCanvas = new Canvas(width, height);
+        group.getChildren().add(worldCanvas);
         this.world = world;
-        this.center = center;
+        this.center = new Point2D(width / 2, height / 2);
         this.player = player;
         this.localWorldCenter = player.getPosition();
 
         world.addObserver(this);
     }
 
-    /**
-     * Produce the javafx group to put on the screen
-     * @return javafx group to put on the screen
-     */
-    @NotNull
-    Group getGroup() {
-        updateGroup();
-
-        return worldGroup;
-    }
-
     private void updateGroup() {
-        worldGroup.getChildren().clear();
+        GraphicsContext graphicsContext = worldCanvas.getGraphicsContext2D();
+        clearCanvas(graphicsContext);
 
         for (Position position : world.getActivePositions()) {
 
@@ -76,18 +70,19 @@ public class WorldRenderer implements Observer {
             double y = (position.getY() - localWorldCenter.getY()) * scale + center.getY();
 
             if (isOnScreen(x, y)) {
-
-                Rectangle rectangle = new Rectangle(x, y, scale, scale);
-
                 if (world.get(position).isPresent()) {
-                    rectangle.setFill(world.get(position).get().getColor());
+                    graphicsContext.setFill(world.get(position).get().getColor());
                 } else {
-                    rectangle.setFill(FLOOR_COLOR);
+                    graphicsContext.setFill(FLOOR_COLOR);
                 }
 
-                worldGroup.getChildren().add(rectangle);
+                graphicsContext.fillRect(x, y, scale, scale);
             }
         }
+    }
+
+    private void clearCanvas(GraphicsContext graphicsContext) {
+        graphicsContext.clearRect(0,0, worldCanvas.getWidth(), worldCanvas.getHeight());
     }
 
     /**
@@ -112,7 +107,8 @@ public class WorldRenderer implements Observer {
         if (!world.isEnded()) {
             updateGroup();
         } else {
-            worldGroup.getChildren().clear();
+            GraphicsContext graphicsContext = worldCanvas.getGraphicsContext2D();
+            clearCanvas(graphicsContext);
 
             Text endText = new Text(center.getX(), center.getY(),
                     "Well done!" +
@@ -123,7 +119,8 @@ public class WorldRenderer implements Observer {
                             "\nDust piles collected: " + player.getInventory().getOrDefault(Entity.DUST, 0));
             endText.setFill(Color.WHITE);
 
-            worldGroup.getChildren().add(endText);
+            group.getChildren().clear();
+            group.getChildren().add(endText);
         }
     }
 
@@ -135,5 +132,9 @@ public class WorldRenderer implements Observer {
     void zoomOut() {
         scale = Math.max(scale - 1, 1);
         updateGroup();
+    }
+
+    Node getGroup() {
+        return group;
     }
 }

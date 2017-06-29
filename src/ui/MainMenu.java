@@ -35,7 +35,7 @@ public class MainMenu {
 
     @FXML public CheckBox generate;
     @FXML public TextField mapSize;
-    @FXML public ListView gameMode;
+    //@FXML public ListView gameMode;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
         World world = new World();
@@ -78,8 +78,7 @@ public class MainMenu {
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
-        Point2D center = new Point2D(scene.getWidth() / 2, scene.getHeight() / 2);
-        WorldRenderer worldRenderer = new WorldRenderer(world, center, player);
+        WorldRenderer worldRenderer = new WorldRenderer(world, scene.getWidth(), scene.getHeight(), player);
         root.getChildren().add(worldRenderer.getGroup());
 
         KeyHandler keyHandler = new KeyHandler(player, worldRenderer);
