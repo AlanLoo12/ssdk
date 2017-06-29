@@ -30,21 +30,14 @@ import static model.Entity.EXIT;
  * A controller class for the main menu
  */
 public class MainMenu {
-    private static final Random RANDOM = new Random();
     private static final float COIN_DENSITY = 0.01f;
     private static final int DEFAULT_MAP_SIZE = 30000;
+
     @FXML public CheckBox generate;
     @FXML public TextField mapSize;
     @FXML public ListView gameMode;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
-        String selectedItem;
-        try {
-            selectedItem = ((Label) gameMode.getSelectionModel().getSelectedItem()).getId();
-        } catch (Exception e) {
-            selectedItem = "exit";
-        }
-
         World world = new World();
         WorldGenerator worldGenerator = new WorldGenerator(world);
         int initialMapSize = DEFAULT_MAP_SIZE;
@@ -52,38 +45,24 @@ public class MainMenu {
             initialMapSize = Integer.parseInt(mapSize.getText());
         } catch (NumberFormatException ignored) {}
 
-        for (int i = 0; i < initialMapSize; i++) {
-            worldGenerator.tick();
-        }
+        // Configure the generator
+        worldGenerator.generateRandomly(COIN, COIN_DENSITY);
+        worldGenerator.setBreedRandomWalkers(true);
+        worldGenerator.setRandomWalkersBreedChance(0.0001f);
+        worldGenerator.setRandomWalkersToTick(4);
 
-        if (selectedItem.equals("exit")) {
-            List<Position> positionList = new ArrayList<>();
-            positionList.addAll(world.getWalkablePositions());
+        // Generate
+        worldGenerator.tick(initialMapSize);
+        worldGenerator.putAtTheWalkerTip(EXIT);
 
-            // Generate the coins
-            //worldGenerator.generateRandomly(COIN, COIN_DENSITY);
-
-            for (int i = 0; i < COIN_DENSITY * positionList.size(); i++) {
-                Position position = positionList.get(RANDOM.nextInt(positionList.size()));
-
-                world.put(position, COIN);
-            }
-
-            // Generate the exit
-            Position exit = positionList.get(RANDOM.nextInt(positionList.size()));
-
-            world.put(exit, EXIT);
-
-        } else {
-            if (generate.isSelected()) {
-                AnimationTimer timer = new AnimationTimer() {
+        if (generate.isSelected()) {
+            AnimationTimer timer = new AnimationTimer() {
                     @Override
                     public void handle(long l) {
                         worldGenerator.tick();
                     }
                 };
-                timer.start();
-            }
+            timer.start();
         }
 
         Group root = new Group();
