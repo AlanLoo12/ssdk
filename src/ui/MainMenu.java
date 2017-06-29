@@ -48,7 +48,8 @@ public class MainMenu {
         // Configure the generator
         worldGenerator.generateRandomly(COIN, COIN_DENSITY);
         worldGenerator.setBreedRandomWalkers(true);
-        worldGenerator.setRandomWalkersBreedChance(0.0001f);
+        worldGenerator.setRandomWalkersBreedChance(0.00001f);
+        worldGenerator.setRandomWalkersDieChance(0.000009f);
         worldGenerator.setRandomWalkersToTick(4);
 
         // Generate

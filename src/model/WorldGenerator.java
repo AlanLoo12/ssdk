@@ -18,6 +18,7 @@ public class WorldGenerator {
     private boolean breedRandomWalkers;
     private float randomWalkersBreedChance;
     private int randomWalkersToTick;
+    private float randomWalkersDieChance;
 
     public WorldGenerator(World world) {
         this.world = world;
@@ -25,6 +26,7 @@ public class WorldGenerator {
 
         breedRandomWalkers = true;
         randomWalkersBreedChance = 0.0001f;
+        randomWalkersDieChance = randomWalkersBreedChance;
         randomWalkersToTick = 5;
 
         randomWalkers = new ArrayList<>();
@@ -55,6 +57,11 @@ public class WorldGenerator {
                 if (breedRandomWalkers) {
                     if (RANDOM.nextFloat() < randomWalkersBreedChance) {
                         randomWalkers.add(position);
+                    }
+                    if (randomWalkers.size() > 1) {
+                        if (RANDOM.nextFloat() < randomWalkersDieChance) {
+                            randomWalkers.remove(RANDOM.nextInt(randomWalkers.size()));
+                        }
                     }
                 }
             }
@@ -119,5 +126,9 @@ public class WorldGenerator {
 
     public void setRandomWalkersToTick(int randomWalkersToTick) {
         this.randomWalkersToTick = randomWalkersToTick;
+    }
+
+    public void setRandomWalkersDieChance(float randomWalkersDieChance) {
+        this.randomWalkersDieChance = randomWalkersDieChance;
     }
 }
