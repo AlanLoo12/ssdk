@@ -8,6 +8,9 @@ import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -72,19 +75,28 @@ public class MainMenu {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initStyle(StageStyle.UNDECORATED);
-
         stage.setTitle("Super Simple Dungeon K");
-        Scene scene = new Scene(root, 800, 600);
-        scene.setFill(Color.BLACK);
-        stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
+
+        Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
+        scene.setFill(Color.BLACK);
+        stage.setScene(scene);
+
+        GridPane overlay = new GridPane();
+        BorderPane pane = new BorderPane();
+        pane.setLeft(overlay);
+        StackPane background = new StackPane(pane);
+
         WorldRenderer worldRenderer = new WorldRenderer(world, scene.getWidth(), scene.getHeight(), player);
-        root.getChildren().add(worldRenderer.getGroup());
+        background.getChildren().add(worldRenderer.getGroup());
+
+        InventoryRenderer inventoryRenderer = new InventoryRenderer(player);
+        background.getChildren().add(inventoryRenderer.getGroup());
+
+        scene.setRoot(background);
 
         KeyHandler keyHandler = new KeyHandler(player, worldRenderer);
         keyHandler.registerScene(scene);
-
-        stage.show();
     }
 }
