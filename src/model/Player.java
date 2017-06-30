@@ -16,6 +16,7 @@ public class Player {
     private Map<Entity, Integer> inventory;
     private int numberOfMoves;
     private long initialTime;
+    private Position selectedPosition;
 
     public Player(World world) {
         this.world = world;
@@ -82,5 +83,9 @@ public class Player {
 
     public Map<Entity, Integer> getInventory() {
         return inventory;
+    }
+
+    Position getSelectedPosition() {
+        return selectedPosition;
     }
 }

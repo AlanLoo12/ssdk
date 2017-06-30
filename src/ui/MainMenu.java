@@ -37,7 +37,7 @@ public class MainMenu {
     @FXML public CheckBox generateCoins;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
-        World world = new World();
+        World world = World.getInstance();
         WorldGenerator worldGenerator = new WorldGenerator(world);
         // Configure the generator
         if (generateCoins.isSelected()) {

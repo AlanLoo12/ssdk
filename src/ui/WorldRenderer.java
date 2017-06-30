@@ -22,6 +22,7 @@ import java.util.Set;
  * Renders the world on the scene
  */
 public class WorldRenderer implements Observer {
+    private static final int MIN_SCALE = 5;
     private int scale = 20;
     private static final int BOUNDING_BOX_X = 10;
     private static final int BOUNDING_BOX_Y = 5;
@@ -157,7 +158,7 @@ public class WorldRenderer implements Observer {
     }
 
     void zoomOut() {
-        scale = Math.max(scale - 1, 1);
+        scale = Math.max(scale - 1, MIN_SCALE);
         updateGroup();
     }
 

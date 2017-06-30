@@ -17,12 +17,22 @@ public class World extends Observable {
     private boolean isEnded;
     private boolean win;
 
+    private static World instance;
+
     /**
      * Create an empty world, with no walkable nodes
      */
-    public World() {
+    private World() {
         activePositions = new HashSet<>();
         world = new HashMap<>();
+    }
+
+    public static World getInstance() {
+        if (instance == null) {
+            instance = new World();
+        }
+
+        return instance;
     }
 
     void setActive(Position position, boolean active) {
@@ -41,7 +51,7 @@ public class World extends Observable {
      * @param position position at which to store the entity
      * @param entity entity to be stored
      */
-    public void put(Position position, Entity entity) {
+    void put(Position position, Entity entity) {
         world.put(position, entity);
 
         setChanged();
