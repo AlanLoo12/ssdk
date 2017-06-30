@@ -111,8 +111,8 @@ public class WorldRenderer implements Observer {
      * Produce true if the given position is on the screen
      */
     private boolean isOnScreen(Position position) {
-        int x = (position.getX() + localWorldCenter.getX());
-        int y = (position.getY() + localWorldCenter.getY());
+        int x = (position.getX() - localWorldCenter.getX());
+        int y = (position.getY() - localWorldCenter.getY());
 
         return ((- center.getX() / scale <= x && x <= center.getX() / scale) &&
                 (- center.getY() / scale <= y && y <= center.getY() / scale));
