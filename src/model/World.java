@@ -33,7 +33,7 @@ public class World extends Observable {
         }
 
         setChanged();
-        notifyObservers();
+        notifyObservers(position);
     }
 
     /**
@@ -45,7 +45,7 @@ public class World extends Observable {
         world.put(position, entity);
 
         setChanged();
-        notifyObservers();
+        notifyObservers(position);
     }
 
     /**
@@ -57,7 +57,7 @@ public class World extends Observable {
             world.remove(position);
 
             setChanged();
-            notifyObservers();
+            notifyObservers(position);
         }
     }
 

@@ -13,8 +13,10 @@ import model.Player;
 import model.Position;
 import model.World;
 
+import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 /**
  * Renders the world on the scene
@@ -46,30 +48,20 @@ public class WorldRenderer implements Observer {
         this.localWorldCenter = player.getPosition();
 
         world.addObserver(this);
+        updateGroup();
     }
 
     private void updateGroup() {
         GraphicsContext graphicsContext = worldCanvas.getGraphicsContext2D();
         clearCanvas(graphicsContext);
 
-        for (Position position : world.getActivePositions()) {
+        updateLocalWorldCenter();
 
-            if (localWorldCenter.getX() - player.getPosition().getX() > BOUNDING_BOX_X) {
-                localWorldCenter = localWorldCenter.add(-1,0);
-            } else if (localWorldCenter.getX() - player.getPosition().getX() < - BOUNDING_BOX_X) {
-                localWorldCenter = localWorldCenter.add(1,0);
-            }
+        for (Position position : computeVisiblePositions()) {
+            if (world.getActivePositions().contains(position)) {
+                double x = (position.getX() - localWorldCenter.getX()) * scale + center.getX();
+                double y = (position.getY() - localWorldCenter.getY()) * scale + center.getY();
 
-            if (localWorldCenter.getY() - player.getPosition().getY() > BOUNDING_BOX_Y) {
-                localWorldCenter = localWorldCenter.add(0,-1);
-            } else if (localWorldCenter.getY() - player.getPosition().getY() < - BOUNDING_BOX_Y) {
-                localWorldCenter = localWorldCenter.add(0,1);
-            }
-
-            double x = (position.getX() - localWorldCenter.getX()) * scale + center.getX();
-            double y = (position.getY() - localWorldCenter.getY()) * scale + center.getY();
-
-            if (isOnScreen(x, y)) {
                 if (world.get(position).isPresent()) {
                     graphicsContext.setFill(world.get(position).get().getColor());
                 } else {
@@ -81,6 +73,36 @@ public class WorldRenderer implements Observer {
         }
     }
 
+    private void updateLocalWorldCenter() {
+        if (localWorldCenter.getX() - player.getPosition().getX() > BOUNDING_BOX_X) {
+            localWorldCenter = localWorldCenter.add(-1,0);
+        } else if (localWorldCenter.getX() - player.getPosition().getX() < - BOUNDING_BOX_X) {
+            localWorldCenter = localWorldCenter.add(1,0);
+        }
+
+        if (localWorldCenter.getY() - player.getPosition().getY() > BOUNDING_BOX_Y) {
+            localWorldCenter = localWorldCenter.add(0,-1);
+        } else if (localWorldCenter.getY() - player.getPosition().getY() < - BOUNDING_BOX_Y) {
+            localWorldCenter = localWorldCenter.add(0,1);
+        }
+    }
+
+    private Set<Position> computeVisiblePositions() {
+        Set<Position> visiblePositions = new HashSet<>();
+        for (int x = (int) (-center.getX() / scale); x < center.getX() / scale; x++) {
+            for (int y = (int) (-center.getY() / scale); y < center.getY() / scale; y++) {
+                Position visiblePosition = new Position(
+                        x + localWorldCenter.getX(),
+                        y + localWorldCenter.getY());
+
+                visiblePositions.add(visiblePosition);
+            }
+        }
+
+
+        return visiblePositions;
+    }
+
     private void clearCanvas(GraphicsContext graphicsContext) {
         graphicsContext.clearRect(0,0, worldCanvas.getWidth(), worldCanvas.getHeight());
     }
@@ -88,9 +110,12 @@ public class WorldRenderer implements Observer {
     /**
      * Produce true if the given position is on the screen
      */
-    private boolean isOnScreen(double x, double y) {
-        return ((0 <= x && x <= (center.getX() * 2)) &&
-                (0 <= y && y <= (center.getY() * 2)));
+    private boolean isOnScreen(Position position) {
+        int x = (position.getX() + localWorldCenter.getX());
+        int y = (position.getY() + localWorldCenter.getY());
+
+        return ((- center.getX() / scale <= x && x <= center.getX() / scale) &&
+                (- center.getY() / scale <= y && y <= center.getY() / scale));
     }
 
     /**
@@ -105,7 +130,9 @@ public class WorldRenderer implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if (!world.isEnded()) {
-            updateGroup();
+            if (isOnScreen((Position) arg)) {
+                updateGroup();
+            }
         } else {
             GraphicsContext graphicsContext = worldCanvas.getGraphicsContext2D();
             clearCanvas(graphicsContext);
