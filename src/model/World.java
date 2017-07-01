@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static model.Entity.WALL;
+
 /**
  * A 2d integer array of enumerable objects
  */
@@ -52,10 +54,23 @@ public class World extends Observable {
      * @param entity entity to be stored
      */
     void put(Position position, Entity entity) {
+        activateNeighbours(position);
         world.put(position, entity);
 
         setChanged();
         notifyObservers(position);
+    }
+
+    private void activateNeighbours(Position position) {
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                Position positionTry = position.add(x,y);
+                if (!activePositions.contains(positionTry)) {
+                    activePositions.add(positionTry);
+                    world.put(positionTry, WALL);
+                }
+            }
+        }
     }
 
     /**
@@ -116,5 +131,9 @@ public class World extends Observable {
 
     public Collection<? extends Position> getWalkablePositions() {
         return activePositions.stream().filter(this::isWalkable).collect(Collectors.toSet());
+    }
+
+    boolean contains(Position position) {
+        return world.containsKey(position);
     }
 }

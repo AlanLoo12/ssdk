@@ -25,8 +25,14 @@ public enum Entity implements InventoryItem {
         this.color = color;
 
         applyFunc = (player -> {
-            //Position selectedPosition = player.getSelectedPosition();
-            return false; // stub
+            Position selectedPosition = player.getPosition().get(player.getLookDirection());
+            if (World.getInstance().contains(selectedPosition)) {
+                return false;
+            } else {
+                player.getInventory().take(this, 1);
+                World.getInstance().put(selectedPosition, this);
+                return true;
+            }
         });
     }
 

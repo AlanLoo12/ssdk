@@ -55,6 +55,18 @@ class KeyHandler {
                     case RIGHT:
                         player.move(RIGHT);
                         break;
+                    case W:
+                        player.look(UP);
+                        break;
+                    case A:
+                        player.look(LEFT);
+                        break;
+                    case S:
+                        player.look(DOWN);
+                        break;
+                    case D:
+                        player.look(RIGHT);
+                        break;
                     case EQUALS:
                         worldRenderer.zoomIn();
                         break;
@@ -71,6 +83,9 @@ class KeyHandler {
                     case X:
                         player.selectNextInventoryItem();
                         break;
+                    case ENTER:
+                    case R:
+                        player.useInventoryItem();
                     default:
                         break;
                 }

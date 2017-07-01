@@ -33,8 +33,6 @@ public class Player extends Observable {
     }
 
     public void move(Direction direction) {
-        look(direction);
-
         if (world.isWalkable(position.get(direction))) {
             Position nextPosition = position.get(direction);
 
@@ -117,5 +115,12 @@ public class Player extends Observable {
 
     public Direction getLookDirection() {
         return lookDirection;
+    }
+
+    /**
+     * Uses the selected inventory item
+     */
+    public void useInventoryItem() {
+        inventory.get(selectedInventoryItem).ifPresent(inventoryItem -> inventoryItem.use(this));
     }
 }

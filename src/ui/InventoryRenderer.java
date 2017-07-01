@@ -43,15 +43,13 @@ class InventoryRenderer implements Observer {
     private void updateItems(Player player) {
         items.getChildren().clear();
 
-        int position = 0;
         for (InventoryItem inventoryItem : player.getInventory().keySet()) {
             int quantity = player.getInventory().get(inventoryItem);
-            if (position == player.getSelectedInventoryItem()) {
+            if (player.getInventory().getPosition(inventoryItem) == player.getSelectedInventoryItem()) {
                 items.getChildren().add(new Text("> " + inventoryItem.toString() + " - " + quantity));
             } else {
                 items.getChildren().add(new Text(inventoryItem.toString() + " - " + quantity));
             }
-            position++;
         }
     }
 
