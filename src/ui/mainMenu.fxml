@@ -28,12 +28,12 @@
 
     <HBox>
         <Label text="Generate dust: "/>
-        <CheckBox fx:id="generateDust"/>
+        <CheckBox fx:id="generateDust" selected="true"/>
     </HBox>
 
     <HBox>
         <Label text="Generate coins: "/>
-        <CheckBox fx:id="generateCoins"/>
+        <CheckBox fx:id="generateCoins" selected="true"/>
     </HBox>
 
     <HBox>

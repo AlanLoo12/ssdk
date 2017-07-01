@@ -10,19 +10,21 @@ import java.util.Optional;
 /**
  * A player (yep, that's it).
  */
-public class Player {
+public class Player extends Observable {
     private World world;
     private Position position;
-    private Map<Entity, Integer> inventory;
+    private Inventory inventory;
     private int numberOfMoves;
     private long initialTime;
     private Position selectedPosition;
+    private int selectedInventoryItem;
 
     public Player(World world) {
         this.world = world;
-        inventory = new HashMap<>();
+        inventory = new Inventory();
         numberOfMoves = 0;
         initialTime = System.currentTimeMillis();
+        selectedInventoryItem = 0;
 
         position = new Position(0,0);
 
@@ -41,11 +43,7 @@ public class Player {
                 if (entity.get().equals(Entity.EXIT)) {
                     world.end(true);
                 } else {
-                    if (inventory.containsKey(entity.get())) {
-                        inventory.put(entity.get(), inventory.get(entity.get()) + 1);
-                    } else {
-                        inventory.put(entity.get(), 1);
-                    }
+                    inventory.add(entity.get());
                 }
             }
 
@@ -77,15 +75,36 @@ public class Player {
         return numberOfMoves;
     }
 
-    public int getCoins() {
-        return inventory.getOrDefault(Entity.COIN, 0);
-    }
-
-    public Map<Entity, Integer> getInventory() {
+    public Inventory getInventory() {
         return inventory;
     }
 
     Position getSelectedPosition() {
         return selectedPosition;
+    }
+
+    public void selectPreviousInventoryItem() {
+        if (inventory.size() > 0) {
+            selectedInventoryItem = selectedInventoryItem - 1;
+            if (selectedInventoryItem < 0) {
+                selectedInventoryItem = inventory.size() - 1;
+            }
+
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+    public void selectNextInventoryItem() {
+        if (inventory.size() > 0) {
+            selectedInventoryItem = (selectedInventoryItem + 1) % inventory.size();
+
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+    public int getSelectedInventoryItem() {
+        return selectedInventoryItem;
     }
 }

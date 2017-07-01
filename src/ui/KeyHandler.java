@@ -47,6 +47,12 @@ class KeyHandler {
                 case ESCAPE:
                     System.exit(0);
                     break;
+                case Z:
+                    player.selectPreviousInventoryItem();
+                    break;
+                case X:
+                    player.selectNextInventoryItem();
+                    break;
                 default:
                     break;
             }

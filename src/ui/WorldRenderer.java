@@ -91,7 +91,7 @@ public class WorldRenderer implements Observer {
     private Set<Position> computeVisiblePositions() {
         Set<Position> visiblePositions = new HashSet<>();
         for (int x = (int) (-center.getX() / scale); x < center.getX() / scale; x++) {
-            for (int y = (int) (-center.getY() / scale); y < center.getY() / scale; y++) {
+            for (int y = (int) (-center.getY() / scale - 1); y < center.getY() / scale; y++) {
                 Position visiblePosition = new Position(
                         x + localWorldCenter.getX(),
                         y + localWorldCenter.getY());
@@ -143,8 +143,8 @@ public class WorldRenderer implements Observer {
                             "\nYou " + (world.isWin()? "won" : "lost") +
                             "\nTime spent playing: " + player.getTime() + " s" +
                             "\nTotal number of moves made: " + player.getMoves() +
-                            "\nNumber of coins collected: " + player.getCoins() +
-                            "\nDust piles collected: " + player.getInventory().getOrDefault(Entity.DUST, 0));
+                            "\nNumber of coins collected: " + player.getInventory().get(Entity.COIN) +
+                            "\nDust piles collected: " + player.getInventory().get(Entity.DUST));
             endText.setFill(Color.BLACK);
 
             group.getChildren().clear();
