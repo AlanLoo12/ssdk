@@ -5,13 +5,12 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.Effect;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
-import model.Entity;
-import model.Player;
-import model.Position;
-import model.World;
+import model.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Observable;
@@ -38,6 +37,7 @@ public class WorldRenderer implements Observer {
     /**
      * Connect this renderer to the given world
      * @param world world to render
+     *
      */
     WorldRenderer(World world, double width, double height, Player player) {
         group = new Group();
@@ -49,6 +49,7 @@ public class WorldRenderer implements Observer {
         this.localWorldCenter = player.getPosition();
 
         world.addObserver(this);
+        player.addObserver(this);
         updateGroup();
     }
 
@@ -56,12 +57,13 @@ public class WorldRenderer implements Observer {
         GraphicsContext graphicsContext = worldCanvas.getGraphicsContext2D();
         clearCanvas(graphicsContext);
 
-        updateLocalWorldCenter();
+        //updateLocalWorldCenter();
+        localWorldCenter = player.getPosition();
 
         for (Position position : computeVisiblePositions()) {
             if (world.getActivePositions().contains(position)) {
-                double x = (position.getX() - localWorldCenter.getX()) * scale + center.getX();
-                double y = (position.getY() - localWorldCenter.getY()) * scale + center.getY();
+                double x = getScreenX(position);
+                double y = getScreenY(position);
 
                 if (world.get(position).isPresent()) {
                     graphicsContext.setFill(world.get(position).get().getColor());
@@ -72,6 +74,18 @@ public class WorldRenderer implements Observer {
                 graphicsContext.fillRect(x, y, scale, scale);
             }
         }
+
+        graphicsContext.setFill(Color.rgb(100,100,100,0.5));
+        Position lookPosition = player.getPosition().get(player.getLookDirection());
+        graphicsContext.strokeRect(getScreenX(lookPosition), getScreenY(lookPosition), scale, scale);
+    }
+
+    private double getScreenY(Position position) {
+        return (position.getY() - localWorldCenter.getY()) * scale + center.getY();
+    }
+
+    private double getScreenX(Position position) {
+        return (position.getX() - localWorldCenter.getX()) * scale + center.getX();
     }
 
     private void updateLocalWorldCenter() {
@@ -111,7 +125,7 @@ public class WorldRenderer implements Observer {
     /**
      * Produce true if the given position is on the screen
      */
-    private boolean isOnScreen(Position position) {
+    private boolean isOnScreen(@NotNull Position position) {
         int x = (position.getX() - localWorldCenter.getX());
         int y = (position.getY() - localWorldCenter.getY());
 
@@ -131,7 +145,7 @@ public class WorldRenderer implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if (!world.isEnded()) {
-            if (isOnScreen((Position) arg)) {
+            if (arg == null || isOnScreen((Position) arg)) {
                 updateGroup();
             }
         } else {

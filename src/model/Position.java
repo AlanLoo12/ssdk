@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
  * A position in 2d integer space
  */
 public final class Position {
+    public static final Position ORIGIN = new Position(0,0);
+
     private int x;
     private int y;
 

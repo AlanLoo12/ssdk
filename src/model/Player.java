@@ -16,8 +16,8 @@ public class Player extends Observable {
     private Inventory inventory;
     private int numberOfMoves;
     private long initialTime;
-    private Position selectedPosition;
     private int selectedInventoryItem;
+    private Direction lookDirection;
 
     public Player(World world) {
         this.world = world;
@@ -25,6 +25,7 @@ public class Player extends Observable {
         numberOfMoves = 0;
         initialTime = System.currentTimeMillis();
         selectedInventoryItem = 0;
+        lookDirection = Direction.UP;
 
         position = new Position(0,0);
 
@@ -32,6 +33,8 @@ public class Player extends Observable {
     }
 
     public void move(Direction direction) {
+        look(direction);
+
         if (world.isWalkable(position.get(direction))) {
             Position nextPosition = position.get(direction);
 
@@ -47,11 +50,10 @@ public class Player extends Observable {
                 }
             }
 
-            world.put(nextPosition, Entity.PLAYER);
-
             position = nextPosition;
-
             numberOfMoves++;
+
+            world.put(nextPosition, Entity.PLAYER);
         }
     }
 
@@ -79,10 +81,6 @@ public class Player extends Observable {
         return inventory;
     }
 
-    Position getSelectedPosition() {
-        return selectedPosition;
-    }
-
     public void selectPreviousInventoryItem() {
         if (inventory.size() > 0) {
             selectedInventoryItem = selectedInventoryItem - 1;
@@ -106,5 +104,18 @@ public class Player extends Observable {
 
     public int getSelectedInventoryItem() {
         return selectedInventoryItem;
+    }
+
+    public void look(Direction lookDirection) {
+        if (!lookDirection.equals(this.lookDirection)) {
+            this.lookDirection = lookDirection;
+
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+    public Direction getLookDirection() {
+        return lookDirection;
     }
 }
