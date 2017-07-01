@@ -5,6 +5,7 @@ import gui_elements.IntegerField;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -83,16 +84,17 @@ public class MainMenu {
         scene.setFill(Color.BLACK);
         stage.setScene(scene);
 
-        GridPane overlay = new GridPane();
-        BorderPane pane = new BorderPane();
-        pane.setLeft(overlay);
-        StackPane background = new StackPane(pane);
+        StackPane background = new StackPane();
 
         WorldRenderer worldRenderer = new WorldRenderer(world, scene.getWidth(), scene.getHeight(), player);
         background.getChildren().add(worldRenderer.getGroup());
 
         InventoryRenderer inventoryRenderer = new InventoryRenderer(player);
-        background.getChildren().add(inventoryRenderer.getGroup());
+        GridPane innerGrid = new GridPane();
+        innerGrid.setAlignment(Pos.TOP_RIGHT);
+        innerGrid.add(inventoryRenderer.getGroup(), 0, 0);
+
+        background.getChildren().add(innerGrid);
 
         scene.setRoot(background);
 

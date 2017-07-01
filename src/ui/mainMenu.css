@@ -1,0 +1,14 @@
+.root{
+    -fx-background-image: url("menu_bg.jpg");
+    -fx-background-repeat: stretch;
+    -fx-background-size: 810 610;
+    -fx-background-position: center center;
+
+    -fx-font-size: 18px;
+    -fx-font-family: "Arial Black";
+    -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );
+}
+
+.label{
+    -fx-text-fill: white;
+}

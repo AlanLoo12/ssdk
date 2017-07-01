@@ -14,9 +14,10 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
 
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root, 800, 600);
 
         stage.setTitle("Super Simple Dungeon K");
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }

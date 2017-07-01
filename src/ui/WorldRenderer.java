@@ -145,7 +145,7 @@ public class WorldRenderer implements Observer {
                             "\nTotal number of moves made: " + player.getMoves() +
                             "\nNumber of coins collected: " + player.getCoins() +
                             "\nDust piles collected: " + player.getInventory().getOrDefault(Entity.DUST, 0));
-            endText.setFill(Color.WHITE);
+            endText.setFill(Color.BLACK);
 
             group.getChildren().clear();
             group.getChildren().add(endText);
