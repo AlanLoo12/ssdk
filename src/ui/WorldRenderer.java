@@ -5,7 +5,6 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.Effect;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
@@ -76,7 +75,7 @@ public class WorldRenderer implements Observer {
         }
 
         graphicsContext.setFill(Color.rgb(100,100,100,0.5));
-        Position lookPosition = player.getPosition().get(player.getLookDirection());
+        Position lookPosition = player.getPosition().add(player.getLookDirection());
         graphicsContext.strokeRect(getScreenX(lookPosition), getScreenY(lookPosition), scale, scale);
     }
 

@@ -1,6 +1,5 @@
 package model;
 
-import com.sun.javafx.scene.traversal.Direction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,6 +8,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class Position {
     public static final Position ORIGIN = new Position(0,0);
+    public static final Position UP = new Position(0,-1);
+    public static final Position DOWN = new Position(0,1);
+    public static final Position LEFT = new Position(-1,0);
+    public static final Position RIGHT = new Position(1,0);
 
     private int x;
     private int y;
@@ -45,19 +48,8 @@ public final class Position {
         return y;
     }
 
-    public Position get(Direction direction) {
-        switch (direction) {
-            case UP:
-                return new Position(x, y - 1);
-            case DOWN:
-                return new Position(x, y + 1);
-            case LEFT:
-                return new Position(x - 1, y);
-            case RIGHT:
-                return new Position(x + 1, y);
-            default:
-                return this;
-        }
+    public Position add(Position position) {
+        return this.add(position.x, position.y);
     }
 
     @NotNull

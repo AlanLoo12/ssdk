@@ -3,7 +3,7 @@ package tests;
 import model.Position;
 import org.junit.Test;
 
-import static com.sun.javafx.scene.traversal.Direction.*;
+import static model.Position.*;
 import static org.junit.Assert.*;
 
 /**
@@ -23,9 +23,9 @@ public class PositionTest {
     public void testGet() {
         Position position = new Position(0,0);
 
-        assertEquals(new Position(0, -1), position.get(UP));
-        assertEquals(new Position(0, 1), position.get(DOWN));
-        assertEquals(new Position(1, 0), position.get(RIGHT));
-        assertEquals(new Position(-1, 0), position.get(LEFT));
+        assertEquals(new Position(0, -1), position.add(UP));
+        assertEquals(new Position(0, 1), position.add(DOWN));
+        assertEquals(new Position(1, 0), position.add(RIGHT));
+        assertEquals(new Position(-1, 0), position.add(LEFT));
     }
 }

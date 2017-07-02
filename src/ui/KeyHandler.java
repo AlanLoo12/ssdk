@@ -1,10 +1,9 @@
 package ui;
 
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import model.Player;
 
-import static com.sun.javafx.scene.traversal.Direction.*;
+import static model.Position.*;
 
 /**
  * Handles keys
@@ -67,6 +66,40 @@ class KeyHandler {
                     case D:
                         player.look(RIGHT);
                         break;
+
+
+
+                    case T:
+                        player.look(UP);
+                        break;
+                    case U:
+                        player.look(UP.add(RIGHT));
+                        break;
+                    case Y:
+                        player.look(UP.add(LEFT));
+                        break;
+                    case G:
+                        player.look(LEFT);
+                        break;
+                    case F:
+                        player.look(DOWN);
+                        break;
+
+                    case V:
+                        player.look(DOWN.add(LEFT));
+                        break;
+
+                    case B:
+                        player.look(DOWN.add(RIGHT));
+                        break;
+                    case H:
+                        player.look(RIGHT);
+                        break;
+
+                    case C:
+                        player.look(ORIGIN);
+                        break;
+
                     case EQUALS:
                         worldRenderer.zoomIn();
                         break;

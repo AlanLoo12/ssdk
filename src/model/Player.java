@@ -1,9 +1,5 @@
 package model;
 
-import com.sun.javafx.scene.traversal.Direction;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Optional;
 
@@ -17,7 +13,7 @@ public class Player extends Observable {
     private int numberOfMoves;
     private long initialTime;
     private int selectedInventoryItem;
-    private Direction lookDirection;
+    private Position lookDirection;
 
     public Player(World world) {
         this.world = world;
@@ -25,16 +21,16 @@ public class Player extends Observable {
         numberOfMoves = 0;
         initialTime = System.currentTimeMillis();
         selectedInventoryItem = 0;
-        lookDirection = Direction.UP;
+        lookDirection = Position.ORIGIN;
 
         position = new Position(0,0);
 
         world.put(position, Entity.PLAYER);
     }
 
-    public void move(Direction direction) {
-        if (world.isWalkable(position.get(direction))) {
-            Position nextPosition = position.get(direction);
+    public void move(Position direction) {
+        if (world.isWalkable(position.add(direction))) {
+            Position nextPosition = position.add(direction);
 
             world.remove(position);
 
@@ -104,7 +100,7 @@ public class Player extends Observable {
         return selectedInventoryItem;
     }
 
-    public void look(Direction lookDirection) {
+    public void look(Position lookDirection) {
         if (!lookDirection.equals(this.lookDirection)) {
             this.lookDirection = lookDirection;
 
@@ -113,7 +109,7 @@ public class Player extends Observable {
         }
     }
 
-    public Direction getLookDirection() {
+    public Position getLookDirection() {
         return lookDirection;
     }
 

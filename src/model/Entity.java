@@ -1,6 +1,5 @@
 package model;
 
-import com.sun.org.apache.xpath.internal.functions.FunctionOneArg;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.Contract;
 
@@ -25,7 +24,7 @@ public enum Entity implements InventoryItem {
         this.color = color;
 
         applyFunc = (player -> {
-            Position selectedPosition = player.getPosition().get(player.getLookDirection());
+            Position selectedPosition = player.getPosition().add(player.getLookDirection());
             if (World.getInstance().contains(selectedPosition)) {
                 return false;
             } else {
