@@ -5,13 +5,10 @@ Super Simple Dungeon K (K is for Crawler)
 * Left/Right/Up/Down keys do what they are supposed to do
 * Use -/= to zoom
 * Use z/x to select the inventory item
-* Press R or ENTER to use the inventory item
-* Ctrl + Left/Right/Up/Down or W/A/S/D to look
-* T/F - look up/down
-* Y/U look up left/right
-* G/H look left/right
-* V/B look down left/right
-* C to look under
+* Press ENTER to use the inventory item
+* T/Y/U to look up row
+* F/G/H to look middle row
+* C/V/B to look down row
 
 ## Idea:
 * Player needs to travel the cave to find the way out
