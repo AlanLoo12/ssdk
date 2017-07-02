@@ -9,6 +9,28 @@ import static model.Entity.WALL;
 
 /**
  * A 2d integer array of enumerable objects
+ *
+ * World consists of several layers:
+ *      * floor
+ *      * wall
+ *      * items
+ *      * creatures
+ *      * plants
+ *      * environment
+ *
+ *      Both floor and wall can contain nodes of type Block (they must be not passable)
+ *      I.e. player should not fall under the floor and should not pass through the walls
+ *
+ *      Items can contain nodes of type Item (things like food, bones, socks, ...)
+ *
+ *      Plants can contain things of type Plant
+ *
+ *      Creatures can contain things of type Creature (player, mobs, NPC, ...)
+ *
+ *      Environment can contain things of type Environment (gas, water, lava, ...)
+ *
+ *      Invariant: at each moment, one position at each layer can contain only one thing.
+ *      I.e. at maximum, there could be 6 things of different types at each position
  */
 public class World extends Observable {
     /**
