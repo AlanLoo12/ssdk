@@ -17,8 +17,6 @@ import java.util.Observer;
  *
  */
 class InventoryRenderer implements Observer {
-    private static final int MAX_VISIBLE_ITEMS_AT_A_TIME = 5;
-
     private Player player;
     private Group group;
     private VBox items;

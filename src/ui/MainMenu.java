@@ -89,11 +89,17 @@ public class MainMenu {
         background.getChildren().add(worldRenderer.getGroup());
 
         InventoryRenderer inventoryRenderer = new InventoryRenderer(player);
-        GridPane innerGrid = new GridPane();
-        innerGrid.setAlignment(Pos.TOP_RIGHT);
-        innerGrid.add(inventoryRenderer.getGroup(), 0, 0);
+        GridPane inventoryGrid = new GridPane();
+        inventoryGrid.setAlignment(Pos.TOP_RIGHT);
+        inventoryGrid.add(inventoryRenderer.getGroup(), 0, 0);
 
-        background.getChildren().add(innerGrid);
+        StatisticsRenderer statisticsRenderer = new StatisticsRenderer(world);
+        GridPane statisticsGrid = new GridPane();
+        statisticsGrid.setAlignment(Pos.TOP_LEFT);
+        statisticsGrid.add(statisticsRenderer.getGroup(), 0, 0);
+
+        background.getChildren().add(inventoryGrid);
+        background.getChildren().add(statisticsGrid);
 
         scene.setRoot(background);
 

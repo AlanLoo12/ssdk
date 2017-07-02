@@ -136,4 +136,8 @@ public class World extends Observable {
     boolean contains(Position position) {
         return world.containsKey(position);
     }
+
+    public int size() {
+        return world.size();
+    }
 }
