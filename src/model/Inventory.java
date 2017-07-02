@@ -22,15 +22,7 @@ public class Inventory extends Observable {
      * @param inventoryItem inventory item to be added
      */
     void add(InventoryItem inventoryItem) {
-        if (inventory.containsKey(inventoryItem)) {
-            inventory.put(inventoryItem, inventory.get(inventoryItem) + 1);
-        } else {
-            inventory.put(inventoryItem, 1);
-            itemsOrder.add(inventoryItem);
-        }
-
-        setChanged();
-        notifyObservers();
+        add(inventoryItem, 1);
     }
 
     /**
@@ -85,5 +77,17 @@ public class Inventory extends Observable {
 
     public int getPosition(InventoryItem inventoryItem) {
         return itemsOrder.indexOf(inventoryItem);
+    }
+
+    public void add(InventoryItem inventoryItem, int quantity) {
+        if (inventory.containsKey(inventoryItem)) {
+            inventory.put(inventoryItem, inventory.get(inventoryItem) + quantity);
+        } else {
+            inventory.put(inventoryItem, quantity);
+            itemsOrder.add(inventoryItem);
+        }
+
+        setChanged();
+        notifyObservers();
     }
 }

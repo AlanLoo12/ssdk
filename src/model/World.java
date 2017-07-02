@@ -79,6 +79,7 @@ public class World extends Observable {
      */
     void remove(Position position) {
         if (world.containsKey(position)) {
+            activateNeighbours(position);
             world.remove(position);
 
             setChanged();

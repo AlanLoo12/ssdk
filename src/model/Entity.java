@@ -35,6 +35,7 @@ public enum Entity implements InventoryItem {
         });
     }
 
+    @Override
     @Contract(pure = true)
     public Color getColor() {
         return color;

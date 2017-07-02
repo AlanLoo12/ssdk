@@ -18,6 +18,8 @@ public class Player extends Observable {
     public Player(World world) {
         this.world = world;
         inventory = new Inventory();
+        inventory.add(Item.PICK_AXE);
+
         numberOfMoves = 0;
         initialTime = System.currentTimeMillis();
         selectedInventoryItem = 0;
