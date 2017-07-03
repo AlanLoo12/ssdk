@@ -30,7 +30,6 @@ public class MainMenu {
     @FXML public CheckBox breedRandomWalkers;
     @FXML public Spinner activeRandomWalkers;
     @FXML public CheckBox generateExit;
-    @FXML public CheckBox generateWalls;
     @FXML public FloatField randomWalkersBirthChance;
     @FXML public FloatField randomWalkersDeathChance;
 
@@ -39,7 +38,6 @@ public class MainMenu {
         WorldGenerator worldGenerator = new WorldGenerator(world);
 
         // Configure the generator
-        worldGenerator.setGenerateWalls(generateWalls.isSelected());
         worldGenerator.setBreedRandomWalkers(breedRandomWalkers.isSelected());
         worldGenerator.setRandomWalkersBirthChance(randomWalkersBirthChance.getValue());
         worldGenerator.setRandomWalkersDeathChance(randomWalkersDeathChance.getValue());

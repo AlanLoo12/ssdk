@@ -27,11 +27,6 @@
     </HBox>
 
     <HBox>
-        <Label text="Generate walls: "/>
-        <CheckBox fx:id="generateWalls" selected="true"/>
-    </HBox>
-
-    <HBox>
         <Label text="Breed random walkers: "/>
         <CheckBox fx:id="breedRandomWalkers" selected="true"/>
     </HBox>

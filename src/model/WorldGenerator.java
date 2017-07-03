@@ -8,7 +8,7 @@ import static model.Item.WALL;
 /**
  * A world generator
  */
-public class WorldGenerator {
+public class WorldGenerator implements Observer {
     private static final Random RANDOM = new Random();
     private World world;
     private List<Position> randomWalkers;
@@ -21,11 +21,14 @@ public class WorldGenerator {
     private int randomWalkersToTick;
     private float randomWalkersDeathChance;
     private boolean generateWalls;
+    private boolean ignoreNotification;
 
     public WorldGenerator(World world) {
         this.world = world;
+        world.addObserver(this);
         randomFillGenerators = new HashMap<>();
 
+        ignoreNotification = false;
         breedRandomWalkers = true;
         generateWalls = true;
         randomWalkersBirthChance = 0.0001f;
@@ -45,6 +48,8 @@ public class WorldGenerator {
                 world.add(position, Item.FLOOR);
                 world.remove(position, Item.WALL);
 
+                addWalls(position);
+
                 for (Item item : randomFillGenerators.keySet()) {
                     if (RANDOM.nextFloat() < randomFillGenerators.get(item)) {
                         world.add(position, item);
@@ -52,11 +57,7 @@ public class WorldGenerator {
                     }
                 }
 
-                if (generateWalls) {
-                    addWalls(position);
-                }
-
-                randomWalkers.set(walkerIndex, nextPosition(position, 1));
+                randomWalkers.set(walkerIndex, nextPosition(position));
 
                 if (breedRandomWalkers) {
                     if (RANDOM.nextFloat() < randomWalkersBirthChance) {
@@ -80,23 +81,29 @@ public class WorldGenerator {
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
                 if (!world.contains(position.add(x, y), FLOOR)) {
-                    world.add(position.add(x, y), FLOOR);
+                    ignoreNotification();
+
                     world.add(position.add(x, y), WALL);
+                    world.add(position.add(x, y), FLOOR);
                 }
             }
         }
     }
 
-    private Position nextPosition(Position position, int step) {
+    private void ignoreNotification() {
+        ignoreNotification = true;
+    }
+
+    private Position nextPosition(Position position) {
         switch (RANDOM.nextInt(4)) {
             case 0:
-                return new Position(position.getX() + step, position.getY());
+                return new Position(position.getX() + 1, position.getY());
             case 1:
-                return new Position(position.getX() - step, position.getY());
+                return new Position(position.getX() - 1, position.getY());
             case 2:
-                return new Position(position.getX(), position.getY() + step);
+                return new Position(position.getX(), position.getY() + 1);
             case 3:
-                return new Position(position.getX(), position.getY() - step);
+                return new Position(position.getX(), position.getY() - 1);
             default:
                 return position;
         }
@@ -138,5 +145,22 @@ public class WorldGenerator {
 
     public void setGenerateWalls(boolean generateWalls) {
         this.generateWalls = generateWalls;
+    }
+
+    /**
+     * This method is called whenever the observed object is changed. An
+     * application calls an <tt>Observable</tt> object's
+     * <code>notifyObservers</code> method to have all the object's
+     * observers notified of the change.
+     *
+     * @param o   the observable object.
+     * @param arg an argument passed to the <code>notifyObservers</code>
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg != null && !ignoreNotification) {
+            addWalls((Position) arg);
+            ignoreNotification = false;
+        }
     }
 }
