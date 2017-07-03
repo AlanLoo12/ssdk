@@ -11,14 +11,6 @@ import java.util.function.Function;
 public enum Item {
     FLOOR(Color.DARKGREY),
 
-    COIN(Color.GOLD),
-
-    WATER(Color.DARKBLUE),
-    PLANT(Color.GREEN),
-
-    MOUSE(Color.SANDYBROWN),
-    CAT(Color.AZURE),
-
     PLAYER(Color.DARKGOLDENROD),
 
     EXIT(Color.BLACK),

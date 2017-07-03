@@ -173,8 +173,7 @@ public class WorldRenderer implements Observer {
                     "Well done!" +
                             "\nYou " + (world.isWin()? "won" : "lost") +
                             "\nTime spent playing: " + player.getTime() + " s" +
-                            "\nTotal number of moves made: " + player.getMoves() +
-                            "\nNumber of coins collected: " + player.getInventory().get(Item.COIN));
+                            "\nTotal number of moves made: " + player.getMoves());
             endText.setFill(BLACK);
 
             group.getChildren().clear();
