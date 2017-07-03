@@ -8,6 +8,8 @@ import model.World;
 import java.util.Observable;
 import java.util.Observer;
 
+import static javafx.scene.paint.Color.WHITE;
+
 /**
  *
  */
@@ -23,7 +25,9 @@ public class StatisticsRenderer implements Observer {
 
         VBox statistics = new VBox();
         data = new VBox();
-        statistics.getChildren().add(new Text("Statistics:"));
+        Text title = new Text("Statistics:");
+        title.setFill(WHITE);
+        statistics.getChildren().add(title);
         statistics.getChildren().add(data);
 
         world.addObserver(this);
@@ -35,7 +39,9 @@ public class StatisticsRenderer implements Observer {
     private void updateStatistics(World world) {
         data.getChildren().clear();
 
-        data.getChildren().add(new Text("World size: " + world.size()));
+        Text worldSize = new Text("World size: " + world.size());
+        worldSize.setFill(WHITE);
+        data.getChildren().add(worldSize);
     }
 
     /**

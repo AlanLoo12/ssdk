@@ -20,7 +20,6 @@ public class WorldGenerator implements Observer {
     private float randomWalkersBirthChance;
     private int randomWalkersToTick;
     private float randomWalkersDeathChance;
-    private boolean generateWalls;
     private boolean ignoreNotification;
 
     public WorldGenerator(World world) {
@@ -30,7 +29,6 @@ public class WorldGenerator implements Observer {
 
         ignoreNotification = false;
         breedRandomWalkers = true;
-        generateWalls = true;
         randomWalkersBirthChance = 0.0001f;
         randomWalkersDeathChance = randomWalkersBirthChance;
         randomWalkersToTick = 5;
@@ -141,10 +139,6 @@ public class WorldGenerator implements Observer {
 
     public void setRandomWalkersDeathChance(float randomWalkersDeathChance) {
         this.randomWalkersDeathChance = randomWalkersDeathChance;
-    }
-
-    public void setGenerateWalls(boolean generateWalls) {
-        this.generateWalls = generateWalls;
     }
 
     /**

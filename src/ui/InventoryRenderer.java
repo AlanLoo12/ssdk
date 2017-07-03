@@ -10,6 +10,8 @@ import model.Item;
 import java.util.Observable;
 import java.util.Observer;
 
+import static javafx.scene.paint.Color.WHITE;
+
 /**
  *
  */
@@ -23,9 +25,13 @@ class InventoryRenderer implements Observer {
 
         group = new Group();
 
+        //group.getStylesheets().add("ui/inventory.css");
+
         VBox inventory = new VBox();
         items = new VBox();
-        inventory.getChildren().add(new Text("Inventory:"));
+        Text title = new Text("Inventory:");
+        title.setFill(WHITE);
+        inventory.getChildren().add(title);
         inventory.getChildren().add(items);
 
         player.getInventory().addObserver(this);
@@ -40,11 +46,18 @@ class InventoryRenderer implements Observer {
 
         for (Item item : player.getInventory().keySet()) {
             int quantity = player.getInventory().get(item);
+
+            String string;
             if (player.getInventory().getPosition(item) == player.getSelectedItem()) {
-                items.getChildren().add(new Text("> " + item.toString() + " - " + quantity));
+                string = "> " + item.toString() + " - " + quantity;
             } else {
-                items.getChildren().add(new Text(item.toString() + " - " + quantity));
+                string = item.toString() + " - " + quantity;
             }
+
+            Text text = new Text(string);
+            text.setFill(WHITE);
+
+            items.getChildren().add(text);
         }
     }
 
