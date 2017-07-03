@@ -12,7 +12,7 @@ public class WorldGenerator {
     /**
      * Entities that are randomly generated with the specified probability
      */
-    private Map<Entity, Float> randomFillGenerators;
+    private Map<Item, Float> randomFillGenerators;
     private boolean breedRandomWalkers;
     private float randomWalkersBirthChance;
     private int randomWalkersToTick;
@@ -44,14 +44,14 @@ public class WorldGenerator {
                 world.setActive(position, true);
                 if (!world.isWalkable(position)) {
                     if (generateDust) {
-                        world.put(position, Entity.DUST);
+                        world.put(position, Item.DUST);
                     } else {
                         world.remove(position);
                     }
 
-                    for (Entity entity : randomFillGenerators.keySet()) {
-                        if (RANDOM.nextFloat() < randomFillGenerators.get(entity)) {
-                            world.put(position, entity);
+                    for (Item item : randomFillGenerators.keySet()) {
+                        if (RANDOM.nextFloat() < randomFillGenerators.get(item)) {
+                            world.put(position, item);
                             break;
                         }
                     }
@@ -84,7 +84,7 @@ public class WorldGenerator {
             for (int y = -1; y <= 1; y++) {
                 if (!world.isActive(position.add(x, y))) {
                     world.setActive(position.add(x, y), true);
-                    world.put(position.add(x, y), Entity.WALL);
+                    world.put(position.add(x, y), Item.WALL);
                 }
             }
         }
@@ -105,16 +105,16 @@ public class WorldGenerator {
         }
     }
 
-    public void generateRandomly(Entity entity, float density) throws IllegalArgumentException {
+    public void generateRandomly(Item item, float density) throws IllegalArgumentException {
         if (density < 0 || density > 1) {
             throw new IllegalArgumentException("Density must be between 0 and 1");
         }
 
-        randomFillGenerators.put(entity, density);
+        randomFillGenerators.put(item, density);
     }
 
-    public void putAtTheWalkerTip(Entity entity) {
-        world.put(randomWalkers.get(getWalkerIndex()), entity);
+    public void putAtTheWalkerTip(Item item) {
+        world.put(randomWalkers.get(getWalkerIndex()), item);
     }
 
     public void tick(int initialMapSize) {

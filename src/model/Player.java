@@ -12,7 +12,7 @@ public class Player extends Observable {
     private Inventory inventory;
     private int numberOfMoves;
     private long initialTime;
-    private int selectedInventoryItem;
+    private int selectedItem;
     private Position lookDirection;
 
     public Player(World world) {
@@ -22,12 +22,12 @@ public class Player extends Observable {
 
         numberOfMoves = 0;
         initialTime = System.currentTimeMillis();
-        selectedInventoryItem = 0;
+        selectedItem = 0;
         lookDirection = Position.ORIGIN;
 
         position = new Position(0,0);
 
-        world.put(position, Entity.PLAYER);
+        world.put(position, Item.PLAYER);
     }
 
     public void move(Position direction) {
@@ -36,10 +36,10 @@ public class Player extends Observable {
 
             world.remove(position);
 
-            Optional<Entity> entity = world.get(nextPosition);
+            Optional<Item> entity = world.get(nextPosition);
 
             if (entity.isPresent()) {
-                if (entity.get().equals(Entity.EXIT)) {
+                if (entity.get().equals(Item.EXIT)) {
                     world.end(true);
                 } else {
                     inventory.add(entity.get());
@@ -49,7 +49,7 @@ public class Player extends Observable {
             position = nextPosition;
             numberOfMoves++;
 
-            world.put(nextPosition, Entity.PLAYER);
+            world.put(nextPosition, Item.PLAYER);
         }
     }
 
@@ -77,11 +77,11 @@ public class Player extends Observable {
         return inventory;
     }
 
-    public void selectPreviousInventoryItem() {
+    public void selectPreviousItem() {
         if (inventory.size() > 0) {
-            selectedInventoryItem = selectedInventoryItem - 1;
-            if (selectedInventoryItem < 0) {
-                selectedInventoryItem = inventory.size() - 1;
+            selectedItem = selectedItem - 1;
+            if (selectedItem < 0) {
+                selectedItem = inventory.size() - 1;
             }
 
             setChanged();
@@ -89,17 +89,17 @@ public class Player extends Observable {
         }
     }
 
-    public void selectNextInventoryItem() {
+    public void selectNextItem() {
         if (inventory.size() > 0) {
-            selectedInventoryItem = (selectedInventoryItem + 1) % inventory.size();
+            selectedItem = (selectedItem + 1) % inventory.size();
 
             setChanged();
             notifyObservers();
         }
     }
 
-    public int getSelectedInventoryItem() {
-        return selectedInventoryItem;
+    public int getSelectedItem() {
+        return selectedItem;
     }
 
     public void look(Position lookDirection) {
@@ -118,7 +118,7 @@ public class Player extends Observable {
     /**
      * Uses the selected inventory item
      */
-    public void useInventoryItem() {
-        inventory.get(selectedInventoryItem).ifPresent(inventoryItem -> inventoryItem.use(this));
+    public void useItem() {
+        inventory.get(selectedItem).ifPresent(Item -> Item.use(this));
     }
 }

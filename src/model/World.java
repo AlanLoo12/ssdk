@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static model.Entity.WALL;
+import static model.Item.WALL;
 
 /**
  * A 2d integer array of enumerable objects
@@ -18,7 +18,7 @@ import static model.Entity.WALL;
  *      * plants
  *      * environment
  *
- *      Both floor and wall can contain nodes of type Block (they must be not passable)
+ *      Both floor and wall can contain nodes of type Item (they must be not passable)
  *      I.e. player should not fall under the floor and should not pass through the walls
  *
  *      Items can contain nodes of type Item (things like food, bones, socks, ...)
@@ -37,7 +37,7 @@ public class World extends Observable {
      * The set of all walkable positions
      */
     private Set<Position> activePositions;
-    private Map<Position, Entity> world;
+    private Map<Position, Item> world;
     private boolean isEnded;
     private boolean win;
 
@@ -71,13 +71,13 @@ public class World extends Observable {
     }
 
     /**
-     * Put the given entity at the specified position
-     * @param position position at which to store the entity
-     * @param entity entity to be stored
+     * Put the given item at the specified position
+     * @param position position at which to store the item
+     * @param item item to be stored
      */
-    void put(Position position, Entity entity) {
+    void put(Position position, Item item) {
         activateNeighbours(position);
-        world.put(position, entity);
+        world.put(position, item);
 
         setChanged();
         notifyObservers(position);
@@ -117,7 +117,7 @@ public class World extends Observable {
         return activePositions;
     }
 
-    public Optional<Entity> get(Position position) {
+    public Optional<Item> get(Position position) {
         if (world.containsKey(position)) {
             return Optional.of(world.get(position));
         } else {

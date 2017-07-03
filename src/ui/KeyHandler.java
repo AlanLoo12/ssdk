@@ -74,13 +74,13 @@ class KeyHandler {
                     System.exit(0);
                     break;
                 case Z:
-                    player.selectPreviousInventoryItem();
+                    player.selectPreviousItem();
                     break;
                 case X:
-                    player.selectNextInventoryItem();
+                    player.selectNextItem();
                     break;
                 case ENTER:
-                    player.useInventoryItem();
+                    player.useItem();
                 default:
                     break;
                 }

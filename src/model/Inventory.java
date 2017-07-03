@@ -6,8 +6,8 @@ import java.util.*;
  * An inventory that player can hold
  */
 public class Inventory extends Observable {
-    private Map<InventoryItem, Integer> inventory;
-    private List<InventoryItem> itemsOrder;
+    private Map<Item, Integer> inventory;
+    private List<Item> itemsOrder;
 
     /**
      * Create a new empty inventory
@@ -19,22 +19,22 @@ public class Inventory extends Observable {
 
     /**
      * Add the given inventory item to this inventory
-     * @param inventoryItem inventory item to be added
+     * @param item inventory item to be added
      */
-    void add(InventoryItem inventoryItem) {
-        add(inventoryItem, 1);
+    public void add(Item item) {
+        add(item, 1);
     }
 
     /**
      * Produce the quantity of the given inventory item currently present
-     * @param inventoryItem inventory item to count
+     * @param item inventory item to count
      * @return quantity of the given inventory item currently present
      */
-    public int get(InventoryItem inventoryItem) {
-        return inventory.getOrDefault(inventoryItem, 0);
+    public int get(Item item) {
+        return inventory.getOrDefault(item, 0);
     }
 
-    public Set<InventoryItem> keySet() {
+    public Set<Item> keySet() {
         return inventory.keySet();
     }
 
@@ -42,11 +42,11 @@ public class Inventory extends Observable {
         return inventory.size();
     }
 
-    Optional<InventoryItem> get(int selectedInventoryItem) {
-        if (itemsOrder.size() <= selectedInventoryItem) {
+    Optional<Item> get(int selectedItem) {
+        if (itemsOrder.size() <= selectedItem) {
             return Optional.empty();
         } else {
-            return Optional.of(itemsOrder.get(selectedInventoryItem));
+            return Optional.of(itemsOrder.get(selectedItem));
         }
     }
 
@@ -59,32 +59,32 @@ public class Inventory extends Observable {
      *     If the given quantity is larger than the amount of item in the invenory,
      *     nullify the amount present
      * </p>
-     * @param inventoryItem item to be reduced
+     * @param item item to be reduced
      * @param quantity how many items should be taken
      */
-    void take(InventoryItem inventoryItem, int quantity) {
-        if (inventory.containsKey(inventoryItem)) {
-            if (inventory.get(inventoryItem) - quantity > 0) {
-                inventory.put(inventoryItem, inventory.get(inventoryItem) - quantity);
+    void take(Item item, int quantity) {
+        if (inventory.containsKey(item)) {
+            if (inventory.get(item) - quantity > 0) {
+                inventory.put(item, inventory.get(item) - quantity);
             } else {
-                inventory.remove(inventoryItem);
-                itemsOrder.remove(inventoryItem);
+                inventory.remove(item);
+                itemsOrder.remove(item);
             }
             setChanged();
             notifyObservers();
         }
     }
 
-    public int getPosition(InventoryItem inventoryItem) {
-        return itemsOrder.indexOf(inventoryItem);
+    public int getPosition(Item item) {
+        return itemsOrder.indexOf(item);
     }
 
-    public void add(InventoryItem inventoryItem, int quantity) {
-        if (inventory.containsKey(inventoryItem)) {
-            inventory.put(inventoryItem, inventory.get(inventoryItem) + quantity);
+    public void add(Item item, int quantity) {
+        if (inventory.containsKey(item)) {
+            inventory.put(item, inventory.get(item) + quantity);
         } else {
-            inventory.put(inventoryItem, quantity);
-            itemsOrder.add(inventoryItem);
+            inventory.put(item, quantity);
+            itemsOrder.add(item);
         }
 
         setChanged();

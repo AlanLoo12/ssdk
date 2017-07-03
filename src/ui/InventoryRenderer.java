@@ -2,14 +2,11 @@ package ui;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import model.InventoryItem;
 import model.Player;
+import model.Item;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -41,12 +38,12 @@ class InventoryRenderer implements Observer {
     private void updateItems(Player player) {
         items.getChildren().clear();
 
-        for (InventoryItem inventoryItem : player.getInventory().keySet()) {
-            int quantity = player.getInventory().get(inventoryItem);
-            if (player.getInventory().getPosition(inventoryItem) == player.getSelectedInventoryItem()) {
-                items.getChildren().add(new Text("> " + inventoryItem.toString() + " - " + quantity));
+        for (Item item : player.getInventory().keySet()) {
+            int quantity = player.getInventory().get(item);
+            if (player.getInventory().getPosition(item) == player.getSelectedItem()) {
+                items.getChildren().add(new Text("> " + item.toString() + " - " + quantity));
             } else {
-                items.getChildren().add(new Text(inventoryItem.toString() + " - " + quantity));
+                items.getChildren().add(new Text(item.toString() + " - " + quantity));
             }
         }
     }

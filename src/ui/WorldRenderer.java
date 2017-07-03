@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import model.*;
+import model.Item;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -156,8 +157,8 @@ public class WorldRenderer implements Observer {
                             "\nYou " + (world.isWin()? "won" : "lost") +
                             "\nTime spent playing: " + player.getTime() + " s" +
                             "\nTotal number of moves made: " + player.getMoves() +
-                            "\nNumber of coins collected: " + player.getInventory().get(Entity.COIN) +
-                            "\nDust piles collected: " + player.getInventory().get(Entity.DUST));
+                            "\nNumber of coins collected: " + player.getInventory().get(Item.COIN) +
+                            "\nDust piles collected: " + player.getInventory().get(Item.DUST));
             endText.setFill(Color.BLACK);
 
             group.getChildren().clear();

@@ -19,8 +19,7 @@ import model.Player;
 import model.World;
 import model.WorldGenerator;
 
-import static model.Entity.COIN;
-import static model.Entity.EXIT;
+import static model.Item.*;
 
 /**
  * A controller class for the main menu
@@ -45,6 +44,10 @@ public class MainMenu {
         // Configure the generator
         if (generateCoins.isSelected()) {
             worldGenerator.generateRandomly(COIN, COIN_DENSITY);
+            worldGenerator.generateRandomly(PLANT, COIN_DENSITY);
+            worldGenerator.generateRandomly(WATER, COIN_DENSITY);
+            worldGenerator.generateRandomly(CAT, COIN_DENSITY);
+            worldGenerator.generateRandomly(MOUSE, COIN_DENSITY);
         }
         worldGenerator.setGenerateDust(generateDust.isSelected());
         worldGenerator.setGenerateWalls(generateWalls.isSelected());
