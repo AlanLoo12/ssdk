@@ -27,16 +27,6 @@
     </HBox>
 
     <HBox>
-        <Label text="Generate dust: "/>
-        <CheckBox fx:id="generateDust" selected="true"/>
-    </HBox>
-
-    <HBox>
-        <Label text="Generate coins: "/>
-        <CheckBox fx:id="generateCoins" selected="true"/>
-    </HBox>
-
-    <HBox>
         <Label text="Generate walls: "/>
         <CheckBox fx:id="generateWalls" selected="true"/>
     </HBox>

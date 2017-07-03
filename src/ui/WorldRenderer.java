@@ -17,6 +17,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 
+import static javafx.scene.paint.Color.BLACK;
+
 /**
  * Renders the world on the scene
  */
@@ -61,12 +63,12 @@ public class WorldRenderer implements Observer {
         localWorldCenter = player.getPosition();
 
         for (Position position : computeVisiblePositions()) {
-            if (world.getActivePositions().contains(position)) {
+            if (world.contains(position)) {
                 double x = getScreenX(position);
                 double y = getScreenY(position);
 
-                if (world.get(position).isPresent()) {
-                    graphicsContext.setFill(world.get(position).get().getColor());
+                if (world.contains(position)) {
+                    graphicsContext.setFill(getColor(position));
                 } else {
                     graphicsContext.setFill(FLOOR_COLOR);
                 }
@@ -78,6 +80,20 @@ public class WorldRenderer implements Observer {
         graphicsContext.setFill(Color.rgb(100,100,100,0.5));
         Position lookPosition = player.getPosition().add(player.getLookDirection());
         graphicsContext.strokeRect(getScreenX(lookPosition), getScreenY(lookPosition), scale, scale);
+    }
+
+    private Paint getColor(Position position) {
+        int highestItemSoFar = -1;
+        Color highestColorSoFar = BLACK;
+
+        for (Item item : World.getInstance().get(position)) {
+            if (item.getIndex() > highestItemSoFar) {
+                highestColorSoFar = item.getColor();
+                highestItemSoFar = item.getIndex();
+            }
+        }
+
+        return highestColorSoFar;
     }
 
     private double getScreenY(Position position) {
@@ -104,7 +120,7 @@ public class WorldRenderer implements Observer {
 
     private Set<Position> computeVisiblePositions() {
         Set<Position> visiblePositions = new HashSet<>();
-        for (int x = (int) (-center.getX() / scale); x < center.getX() / scale; x++) {
+        for (int x = (int) (-center.getX() / scale - 1); x < center.getX() / scale; x++) {
             for (int y = (int) (-center.getY() / scale - 1); y < center.getY() / scale; y++) {
                 Position visiblePosition = new Position(
                         x + localWorldCenter.getX(),
@@ -119,7 +135,8 @@ public class WorldRenderer implements Observer {
     }
 
     private void clearCanvas(GraphicsContext graphicsContext) {
-        graphicsContext.clearRect(0,0, worldCanvas.getWidth(), worldCanvas.getHeight());
+        graphicsContext.setFill(BLACK);
+        graphicsContext.fillRect(0,0, worldCanvas.getWidth(), worldCanvas.getHeight());
     }
 
     /**
@@ -157,9 +174,8 @@ public class WorldRenderer implements Observer {
                             "\nYou " + (world.isWin()? "won" : "lost") +
                             "\nTime spent playing: " + player.getTime() + " s" +
                             "\nTotal number of moves made: " + player.getMoves() +
-                            "\nNumber of coins collected: " + player.getInventory().get(Item.COIN) +
-                            "\nDust piles collected: " + player.getInventory().get(Item.DUST));
-            endText.setFill(Color.BLACK);
+                            "\nNumber of coins collected: " + player.getInventory().get(Item.COIN));
+            endText.setFill(BLACK);
 
             group.getChildren().clear();
             group.getChildren().add(endText);

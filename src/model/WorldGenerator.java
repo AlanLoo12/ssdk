@@ -2,6 +2,9 @@ package model;
 
 import java.util.*;
 
+import static model.Item.FLOOR;
+import static model.Item.WALL;
+
 /**
  * A world generator
  */
@@ -17,7 +20,6 @@ public class WorldGenerator {
     private float randomWalkersBirthChance;
     private int randomWalkersToTick;
     private float randomWalkersDeathChance;
-    private boolean generateDust;
     private boolean generateWalls;
 
     public WorldGenerator(World world) {
@@ -25,7 +27,6 @@ public class WorldGenerator {
         randomFillGenerators = new HashMap<>();
 
         breedRandomWalkers = true;
-        generateDust = true;
         generateWalls = true;
         randomWalkersBirthChance = 0.0001f;
         randomWalkersDeathChance = randomWalkersBirthChance;
@@ -41,24 +42,20 @@ public class WorldGenerator {
                 int walkerIndex = getWalkerIndex();
                 Position position = randomWalkers.get(walkerIndex);
 
-                world.setActive(position, true);
-                if (!world.isWalkable(position)) {
-                    if (generateDust) {
-                        world.put(position, Item.DUST);
-                    } else {
-                        world.remove(position);
-                    }
+                world.add(position, Item.FLOOR);
+                world.remove(position, Item.WALL);
 
-                    for (Item item : randomFillGenerators.keySet()) {
-                        if (RANDOM.nextFloat() < randomFillGenerators.get(item)) {
-                            world.put(position, item);
-                            break;
-                        }
+                for (Item item : randomFillGenerators.keySet()) {
+                    if (RANDOM.nextFloat() < randomFillGenerators.get(item)) {
+                        world.add(position, item);
+                        break;
                     }
                 }
+
                 if (generateWalls) {
                     addWalls(position);
                 }
+
                 randomWalkers.set(walkerIndex, nextPosition(position, 1));
 
                 if (breedRandomWalkers) {
@@ -82,9 +79,9 @@ public class WorldGenerator {
     private void addWalls(Position position) {
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
-                if (!world.isActive(position.add(x, y))) {
-                    world.setActive(position.add(x, y), true);
-                    world.put(position.add(x, y), Item.WALL);
+                if (!world.contains(position.add(x, y), FLOOR)) {
+                    world.add(position.add(x, y), FLOOR);
+                    world.add(position.add(x, y), WALL);
                 }
             }
         }
@@ -114,7 +111,7 @@ public class WorldGenerator {
     }
 
     public void putAtTheWalkerTip(Item item) {
-        world.put(randomWalkers.get(getWalkerIndex()), item);
+        world.add(randomWalkers.get(getWalkerIndex()), item);
     }
 
     public void tick(int initialMapSize) {
@@ -137,10 +134,6 @@ public class WorldGenerator {
 
     public void setRandomWalkersDeathChance(float randomWalkersDeathChance) {
         this.randomWalkersDeathChance = randomWalkersDeathChance;
-    }
-
-    public void setGenerateDust(boolean generateDust) {
-        this.generateDust = generateDust;
     }
 
     public void setGenerateWalls(boolean generateWalls) {

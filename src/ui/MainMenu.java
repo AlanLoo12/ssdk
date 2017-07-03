@@ -25,31 +25,20 @@ import static model.Item.*;
  * A controller class for the main menu
  */
 public class MainMenu {
-    private static final float COIN_DENSITY = 0.01f;
-
     @FXML public CheckBox generateOnTheGo;
     @FXML public IntegerField initialMapSize;
     @FXML public CheckBox breedRandomWalkers;
     @FXML public Spinner activeRandomWalkers;
     @FXML public CheckBox generateExit;
-    @FXML public CheckBox generateDust;
     @FXML public CheckBox generateWalls;
     @FXML public FloatField randomWalkersBirthChance;
     @FXML public FloatField randomWalkersDeathChance;
-    @FXML public CheckBox generateCoins;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
         World world = World.getInstance();
         WorldGenerator worldGenerator = new WorldGenerator(world);
+
         // Configure the generator
-        if (generateCoins.isSelected()) {
-            worldGenerator.generateRandomly(COIN, COIN_DENSITY);
-            worldGenerator.generateRandomly(PLANT, COIN_DENSITY);
-            worldGenerator.generateRandomly(WATER, COIN_DENSITY);
-            worldGenerator.generateRandomly(CAT, COIN_DENSITY);
-            worldGenerator.generateRandomly(MOUSE, COIN_DENSITY);
-        }
-        worldGenerator.setGenerateDust(generateDust.isSelected());
         worldGenerator.setGenerateWalls(generateWalls.isSelected());
         worldGenerator.setBreedRandomWalkers(breedRandomWalkers.isSelected());
         worldGenerator.setRandomWalkersBirthChance(randomWalkersBirthChance.getValue());

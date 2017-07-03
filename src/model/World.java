@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static model.Item.FLOOR;
 import static model.Item.WALL;
 
 /**
@@ -31,26 +32,31 @@ import static model.Item.WALL;
  *
  *      Invariant: at each moment, one position at each layer can contain only one thing.
  *      I.e. at maximum, there could be 6 things of different types at each position
+ *      <p>
+ *          Better idea: for each Item, generate a level and simply store positions which have that item
+ *      </p>
  */
 public class World extends Observable {
-    /**
-     * The set of all walkable positions
-     */
-    private Set<Position> activePositions;
-    private Map<Position, Item> world;
+    private Map<Item, Set<Position>> worldLayers;
     private boolean isEnded;
     private boolean win;
 
     private static World instance;
 
     /**
-     * Create an empty world, with no walkable nodes
+     * Create an empty world
      */
     private World() {
-        activePositions = new HashSet<>();
-        world = new HashMap<>();
+        worldLayers = new HashMap<>();
+
+        wipeClean();
     }
 
+    /**
+     * Return an instance of the world, if there is one
+     * Othrewise create one and return it
+     * @return an instance of the world
+     */
     public static World getInstance() {
         if (instance == null) {
             instance = new World();
@@ -59,85 +65,44 @@ public class World extends Observable {
         return instance;
     }
 
-    void setActive(Position position, boolean active) {
-        if (active) {
-            activePositions.add(position);
-        } else {
-            activePositions.remove(position);
-        }
-
-        setChanged();
-        notifyObservers(position);
-    }
-
     /**
      * Put the given item at the specified position
      * @param position position at which to store the item
      * @param item item to be stored
      */
-    void put(Position position, Item item) {
-        activateNeighbours(position);
-        world.put(position, item);
+    void add(Position position, Item item) {
+        worldLayers.get(item).add(position);
 
         setChanged();
         notifyObservers(position);
-    }
-
-    private void activateNeighbours(Position position) {
-        for (int x = -1; x <= 1; x++) {
-            for (int y = -1; y <= 1; y++) {
-                Position positionTry = position.add(x,y);
-                if (!activePositions.contains(positionTry)) {
-                    activePositions.add(positionTry);
-                    world.put(positionTry, WALL);
-                }
-            }
-        }
     }
 
     /**
      * Remove the given entity at the specified position
      * @param position position at which to remove the entity
      */
-    void remove(Position position) {
-        if (world.containsKey(position)) {
-            activateNeighbours(position);
-            world.remove(position);
-
+    void remove(Position position, Item item) {
+        if (worldLayers.get(item).remove(position)) {
             setChanged();
             notifyObservers(position);
         }
     }
 
-    /**
-     * Produce the set of all occupied positions
-     * @return the set of all occupied positions
-     */
-    public Set<Position> getActivePositions() {
-        return activePositions;
-    }
+    public Set<Item> get(Position position) {
+        Set<Item> items = new HashSet<>();
 
-    public Optional<Item> get(Position position) {
-        if (world.containsKey(position)) {
-            return Optional.of(world.get(position));
-        } else {
-            return Optional.empty();
+        for (Item item : worldLayers.keySet()) {
+            if (worldLayers.get(item).contains(position)) {
+                items.add(item);
+            }
         }
+
+        return items;
     }
 
     boolean isWalkable(Position position) {
-        return activePositions.contains(position) &&
-                (!world.containsKey(position) ||
-                        world.get(position).isWalkable());
-    }
-
-    /**
-     * Ends the world
-     * @param win if true, then it's a win, else its a lost
-     */
-    void end(boolean win) {
-        isEnded = true;
-        this.win = win;
+        return (worldLayers.get(FLOOR).contains(position) &&
+                !worldLayers.get(WALL).contains(position));
     }
 
     public boolean isEnded() {
@@ -148,19 +113,51 @@ public class World extends Observable {
         return win;
     }
 
-    boolean isActive(@NotNull Position position) {
-        return activePositions.contains(position);
-    }
+    public boolean contains(Position position) {
+        for (Set<Position> layer : worldLayers.values()) {
+            if (layer.contains(position)) {
+                return true;
+            }
+        }
 
-    public Collection<? extends Position> getWalkablePositions() {
-        return activePositions.stream().filter(this::isWalkable).collect(Collectors.toSet());
-    }
-
-    boolean contains(Position position) {
-        return world.containsKey(position);
+        return false;
     }
 
     public int size() {
-        return world.size();
+        int sizeSoFar = 0;
+        for (Set<Position> layer : worldLayers.values()) {
+            sizeSoFar += layer.size();
+        }
+
+        return sizeSoFar;
+    }
+
+    boolean contains(@NotNull Position position, Item wall) {
+        return worldLayers.get(wall).contains(position);
+    }
+
+    /**
+     * Destroy the world and bring it to the original state
+     */
+    void wipeClean() {
+        worldLayers.clear();
+
+        for (Item item : Item.values()) {
+            worldLayers.put(item, new HashSet<>());
+        }
+    }
+
+    /**
+     * Produces true if all layers contain no positions, false otherwise
+     * @return true if all layers contain no positions, false otherwise
+     */
+    boolean isEmpty() {
+        for (Set<Position> positions : worldLayers.values()) {
+            if (!positions.isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

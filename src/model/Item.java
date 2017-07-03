@@ -1,9 +1,6 @@
 package model;
 
 import javafx.scene.paint.Color;
-import model.Player;
-import model.Position;
-import model.World;
 import org.jetbrains.annotations.Contract;
 
 import java.util.function.Function;
@@ -12,29 +9,32 @@ import java.util.function.Function;
  * An entity that can occupy world position
  */
 public enum Item {
-    PLAYER(Color.DARKGOLDENROD),
+    FLOOR(Color.DARKGREY),
+
+    COIN(Color.GOLD),
+
+    WATER(Color.DARKBLUE),
+    PLANT(Color.GREEN),
+
     MOUSE(Color.SANDYBROWN),
     CAT(Color.AZURE),
-    COIN(Color.GOLD),
-    DUST(Color.DARKGREY),
-    WALL(Color.RED),
-    PLANT(Color.GREEN),
-    WATER(Color.DARKBLUE),
+
+    PLAYER(Color.DARKGOLDENROD),
+
     EXIT(Color.BLACK),
+
+    WALL(Color.DARKRED),
     PICK_AXE(Color.rgb(183, 124, 99),
-            player -> {
-                Position selectedPosition = player.getPosition().add(player.getLookDirection());
+    player -> {
+        Position selectedPosition = player.getPosition().add(player.getLookDirection());
 
-                World.getInstance()
-                        .get(selectedPosition)
-                        .filter(entity -> !entity.isWalkable())
-                        .ifPresent(entity -> {
-                            World.getInstance().remove(selectedPosition);
-                            player.getInventory().add(entity);
-                        });
+        if (World.getInstance().contains(selectedPosition, WALL)) {
+            World.getInstance().remove(selectedPosition, WALL);
+            player.getInventory().add(WALL);
+        }
 
-                return true; // stub
-            });
+        return true; // stub
+    });
 
     private Color color;
     private Function<Player, Boolean> applyFunc;
@@ -44,11 +44,11 @@ public enum Item {
 
         applyFunc = (player -> {
             Position selectedPosition = player.getPosition().add(player.getLookDirection());
-            if (World.getInstance().contains(selectedPosition)) {
+            if (World.getInstance().contains(selectedPosition, this)) {
                 return false;
             } else {
                 player.getInventory().take(this, 1);
-                World.getInstance().put(selectedPosition, this);
+                World.getInstance().add(selectedPosition, this);
                 return true;
             }
         });
@@ -71,5 +71,18 @@ public enum Item {
     @Contract(pure = true)
     public boolean isWalkable() {
         return !this.equals(WALL);
+    }
+
+    public int getIndex() {
+        int indexSoFar = 0;
+        for (Item item : Item.values()) {
+            if (this.equals(item)) {
+                return indexSoFar;
+            } else {
+                indexSoFar++;
+            }
+        }
+
+        return -1;
     }
 }

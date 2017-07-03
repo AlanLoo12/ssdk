@@ -2,6 +2,10 @@ package model;
 
 import java.util.Observable;
 import java.util.Optional;
+import java.util.Set;
+
+import static model.Item.FLOOR;
+import static model.Item.WALL;
 
 /**
  * A player (yep, that's it).
@@ -27,29 +31,21 @@ public class Player extends Observable {
 
         position = new Position(0,0);
 
-        world.put(position, Item.PLAYER);
+        world.add(position, Item.PLAYER);
     }
 
     public void move(Position direction) {
         if (world.isWalkable(position.add(direction))) {
             Position nextPosition = position.add(direction);
 
-            world.remove(position);
+            world.remove(position, Item.PLAYER);
 
-            Optional<Item> entity = world.get(nextPosition);
-
-            if (entity.isPresent()) {
-                if (entity.get().equals(Item.EXIT)) {
-                    world.end(true);
-                } else {
-                    inventory.add(entity.get());
-                }
-            }
+            Set<Item> items = world.get(nextPosition);
 
             position = nextPosition;
             numberOfMoves++;
 
-            world.put(nextPosition, Item.PLAYER);
+            world.add(nextPosition, Item.PLAYER);
         }
     }
 
