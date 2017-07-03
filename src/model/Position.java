@@ -56,4 +56,8 @@ public final class Position {
     public Position add(int x, int y) {
         return new Position(this.x + x, this.y + y);
     }
+
+    public Position multiply(int scale) {
+        return new Position(x * 2, y * 2);
+    }
 }
