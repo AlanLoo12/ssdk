@@ -1,5 +1,7 @@
 package model;
 
+import javafx.geometry.Pos;
+
 import java.util.*;
 
 import static model.Item.FLOOR;
@@ -53,6 +55,69 @@ public class WorldGenerator implements Observer {
     }
 
     public void tick() {
+        tickRandomWalkers();
+        tickTunnelWalkers();
+    }
+
+    private void tickTunnelWalkers() {
+        // recognize
+        // generate space
+        // filter space
+        // generate
+        // shift
+
+        Set<Position> toAdd = new HashSet<>();
+        Set<Position> toRemove = new HashSet<>();
+
+        for (Position tunnelWalker : tunnelWalkers) {
+            Set<Position> walls = new HashSet<>();
+            walls.add(tunnelWalker.add(UP).add(LEFT));
+            walls.add(tunnelWalker.add(UP).add(RIGHT));
+            walls.add(tunnelWalker.add(DOWN).add(LEFT));
+            walls.add(tunnelWalker.add(DOWN).add(RIGHT));
+
+            generateTunnelBlock(toAdd, tunnelWalker, walls);
+            buildTunnelBlock(tunnelWalker, walls);
+
+            toRemove.add(tunnelWalker);
+        }
+        tunnelWalkers.removeAll(toRemove);
+        tunnelWalkers.addAll(toAdd);
+    }
+
+    private void buildTunnelBlock(Position tunnelWalker, Set<Position> walls) {
+        for (Position neighbour : NEIGHBOURS) {
+            ignoreNotification();
+            world.add(tunnelWalker.add(neighbour), FLOOR);
+        }
+        ignoreNotification();
+        world.add(tunnelWalker, FLOOR);
+
+        for (Position wall : walls) {
+            world.add(wall, FLOOR);
+            world.add(wall, WALL);
+        }
+    }
+
+    private void generateTunnelBlock(Set<Position> toAdd, Position tunnelWalker, Set<Position> walls) {
+        for (Position neighbour : NEIGHBOURS) {
+            Position friend = tunnelWalker.add(neighbour);
+            if (world.contains(friend, WALL)) {
+                walls.add(friend);
+            } else if (!world.contains(friend, FLOOR)) {
+                if (RANDOM.nextInt(2) == 1 &&
+                        !world.contains(friend, FLOOR)
+                        && walls.size() <= 6) {
+                    world.add(tunnelWalker.add(neighbour), WALL);
+                    walls.add(tunnelWalker.add(neighbour));
+                } else {
+                    toAdd.add(tunnelWalker.add(neighbour.multiply(2)));
+                }
+            }
+        }
+    }
+
+    private void tickRandomWalkers() {
         if (randomWalkers.size() > 0) {
             for (int i = 0; i < randomWalkersToTick; i++) {
                 int walkerIndex = getWalkerIndex();
@@ -84,53 +149,6 @@ public class WorldGenerator implements Observer {
                 }
             }
         }
-
-        // recognize
-        // generate space
-        // filter space
-        // generate
-        // shift
-
-        Set<Position> toAdd = new HashSet<>();
-        Set<Position> toRemove = new HashSet<>();
-
-        for (Position tunnelWalker : tunnelWalkers) {
-                Set<Position> walls = new HashSet<>();
-                walls.add(tunnelWalker.add(UP).add(LEFT));
-                walls.add(tunnelWalker.add(UP).add(RIGHT));
-                walls.add(tunnelWalker.add(DOWN).add(LEFT));
-                walls.add(tunnelWalker.add(DOWN).add(RIGHT));
-
-                for (Position neighbour : NEIGHBOURS) {
-                    if (world.contains(tunnelWalker.add(neighbour), WALL)) {
-                        walls.add(tunnelWalker.add(neighbour));
-                    } else if (RANDOM.nextInt(3) == 1 &&
-                            !world.contains(tunnelWalker.add(neighbour), FLOOR)) {
-                        world.add(tunnelWalker.add(neighbour), WALL);
-                        walls.add(tunnelWalker.add(neighbour));
-                    } else {
-                        toAdd.add(tunnelWalker.add(neighbour.multiply(2)));
-                    }
-                }
-
-                for (Position neighbour : NEIGHBOURS) {
-                    ignoreNotification();
-                    world.add(tunnelWalker.add(neighbour), FLOOR);
-                }
-                ignoreNotification();
-                world.add(tunnelWalker, FLOOR);
-
-                for (Position wall : walls) {
-                    ignoreNotification();
-                    world.add(wall, FLOOR);
-                    ignoreNotification();
-                    world.add(wall, WALL);
-                }
-
-                toRemove.add(tunnelWalker);
-        }
-        tunnelWalkers.removeAll(toRemove);
-        tunnelWalkers.addAll(toAdd);
     }
 
     private int getWalkerIndex() {
