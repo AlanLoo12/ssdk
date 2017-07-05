@@ -35,9 +35,10 @@ public class MainMenu {
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
         World world = World.getInstance();
-        WorldGenerator worldGenerator = new WorldGenerator(world);
+        WorldGenerator worldGenerator = world.getGenerator();
 
         // Configure the generator
+        worldGenerator.generateRandomly(PLANT, 0.001f);
         worldGenerator.setBreedRandomWalkers(breedRandomWalkers.isSelected());
         worldGenerator.setRandomWalkersBirthChance(randomWalkersBirthChance.getValue());
         worldGenerator.setRandomWalkersDeathChance(randomWalkersDeathChance.getValue());

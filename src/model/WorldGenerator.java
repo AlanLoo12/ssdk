@@ -1,17 +1,15 @@
 package model;
 
-import javafx.geometry.Pos;
-
 import java.util.*;
 
-import static model.Item.FLOOR;
+import static model.Item.AIR;
 import static model.Item.WALL;
 import static model.Position.*;
 
 /**
  * A world generator
  */
-public class WorldGenerator implements Observer {
+public class WorldGenerator {
     private static final Random RANDOM = new Random();
     private World world;
     private List<Position> randomWalkers;
@@ -19,7 +17,7 @@ public class WorldGenerator implements Observer {
     /**
      * Generates tunnels
      */
-    private Set<Position> tunnelWalkers;
+    private List<Position> tunnelWalkers;
     /**
      * Entities that are randomly generated with the specified probability
      */
@@ -28,7 +26,6 @@ public class WorldGenerator implements Observer {
     private float randomWalkersBirthChance;
     private int randomWalkersToTick;
     private float randomWalkersDeathChance;
-    private boolean ignoreNotification;
     private static final Set<Position> NEIGHBOURS = new HashSet<>(Arrays.asList(
             new Position(1,0),
             new Position(-1,0),
@@ -36,22 +33,19 @@ public class WorldGenerator implements Observer {
             new Position(0,-1)
     ));
 
-    public WorldGenerator(World world) {
+    WorldGenerator(World world) {
         this.world = world;
-        world.addObserver(this);
         randomFillGenerators = new HashMap<>();
 
-        ignoreNotification = false;
         breedRandomWalkers = true;
         randomWalkersBirthChance = 0.0001f;
         randomWalkersDeathChance = randomWalkersBirthChance;
         randomWalkersToTick = 5;
 
         randomWalkers = new ArrayList<>();
-        //randomWalkers.add(new Position(0,0));
+        randomWalkers.add(new Position(0,0));
 
-        tunnelWalkers = new HashSet<>();
-        tunnelWalkers.add(new Position(0,0));
+        tunnelWalkers = new ArrayList<>();
     }
 
     public void tick() {
@@ -69,7 +63,9 @@ public class WorldGenerator implements Observer {
         Set<Position> toAdd = new HashSet<>();
         Set<Position> toRemove = new HashSet<>();
 
-        for (Position tunnelWalker : tunnelWalkers) {
+        if (tunnelWalkers.size() > 0) {
+            Position tunnelWalker = tunnelWalkers.get(RANDOM.nextInt(tunnelWalkers.size()));
+
             Set<Position> walls = new HashSet<>();
             walls.add(tunnelWalker.add(UP).add(LEFT));
             walls.add(tunnelWalker.add(UP).add(RIGHT));
@@ -81,20 +77,18 @@ public class WorldGenerator implements Observer {
 
             toRemove.add(tunnelWalker);
         }
+
         tunnelWalkers.removeAll(toRemove);
         tunnelWalkers.addAll(toAdd);
     }
 
     private void buildTunnelBlock(Position tunnelWalker, Set<Position> walls) {
         for (Position neighbour : NEIGHBOURS) {
-            ignoreNotification();
-            world.add(tunnelWalker.add(neighbour), FLOOR);
+            world.add(tunnelWalker.add(neighbour), AIR);
         }
-        ignoreNotification();
-        world.add(tunnelWalker, FLOOR);
+        world.add(tunnelWalker, AIR);
 
         for (Position wall : walls) {
-            world.add(wall, FLOOR);
             world.add(wall, WALL);
         }
     }
@@ -104,9 +98,9 @@ public class WorldGenerator implements Observer {
             Position friend = tunnelWalker.add(neighbour);
             if (world.contains(friend, WALL)) {
                 walls.add(friend);
-            } else if (!world.contains(friend, FLOOR)) {
+            } else if (!world.contains(friend, AIR)) {
                 if (RANDOM.nextInt(2) == 1 &&
-                        !world.contains(friend, FLOOR)
+                        !world.contains(friend, AIR)
                         && walls.size() <= 6) {
                     world.add(tunnelWalker.add(neighbour), WALL);
                     walls.add(tunnelWalker.add(neighbour));
@@ -123,8 +117,7 @@ public class WorldGenerator implements Observer {
                 int walkerIndex = getWalkerIndex();
                 Position position = randomWalkers.get(walkerIndex);
 
-                world.add(position, Item.FLOOR);
-                world.remove(position, Item.WALL);
+                world.add(position, Item.AIR);
 
                 addWalls(position);
 
@@ -155,21 +148,14 @@ public class WorldGenerator implements Observer {
         return RANDOM.nextInt(randomWalkers.size());
     }
 
-    private void addWalls(Position position) {
+    void addWalls(Position position) {
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
-                if (!world.contains(position.add(x, y), FLOOR)) {
-                    ignoreNotification();
-
-                    world.add(position.add(x, y), WALL);
-                    world.add(position.add(x, y), FLOOR);
+                if (!World.getInstance().contains(position.add(x, y), AIR)) {
+                    World.getInstance().add(position.add(x, y), WALL);
                 }
             }
         }
-    }
-
-    private void ignoreNotification() {
-        ignoreNotification = true;
     }
 
     private Position nextPosition(Position position) {
@@ -219,22 +205,5 @@ public class WorldGenerator implements Observer {
 
     public void setRandomWalkersDeathChance(float randomWalkersDeathChance) {
         this.randomWalkersDeathChance = randomWalkersDeathChance;
-    }
-
-    /**
-     * This method is called whenever the observed object is changed. An
-     * application calls an <tt>Observable</tt> object's
-     * <code>notifyObservers</code> method to have all the object's
-     * observers notified of the change.
-     *
-     * @param o   the observable object.
-     * @param arg an argument passed to the <code>notifyObservers</code>
-     */
-    @Override
-    public void update(Observable o, Object arg) {
-        if (arg != null && !ignoreNotification) {
-            addWalls((Position) arg);
-            ignoreNotification = false;
-        }
     }
 }

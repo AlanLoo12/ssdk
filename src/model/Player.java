@@ -1,11 +1,7 @@
 package model;
 
 import java.util.Observable;
-import java.util.Optional;
 import java.util.Set;
-
-import static model.Item.FLOOR;
-import static model.Item.WALL;
 
 /**
  * A player (yep, that's it).
@@ -41,6 +37,10 @@ public class Player extends Observable {
             world.remove(position, Item.PLAYER);
 
             Set<Item> items = world.get(nextPosition);
+            if (items.contains(Item.PLANT)) {
+                world.remove(nextPosition, Item.PLANT);
+                inventory.add(Item.PLANT);
+            }
 
             position = nextPosition;
             numberOfMoves++;

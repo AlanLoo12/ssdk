@@ -9,9 +9,11 @@ import java.util.function.Function;
  * An entity that can occupy world position
  */
 public enum Item {
-    FLOOR(Color.DARKGREY),
+    AIR(Color.DARKGREY),
 
     PLAYER(Color.DARKGOLDENROD),
+
+    PLANT(Color.LIMEGREEN),
 
     EXIT(Color.BLACK),
 
@@ -58,11 +60,6 @@ public enum Item {
 
     public void use(Player player) {
         applyFunc.apply(player);
-    }
-
-    @Contract(pure = true)
-    public boolean isWalkable() {
-        return !this.equals(WALL);
     }
 
     public int getIndex() {

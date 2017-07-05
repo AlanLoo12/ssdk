@@ -3,9 +3,8 @@ package model;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static model.Item.FLOOR;
+import static model.Item.AIR;
 import static model.Item.WALL;
 
 /**
@@ -42,12 +41,14 @@ public class World extends Observable {
     private boolean win;
 
     private static World instance;
+    private WorldGenerator generator;
 
     /**
      * Create an empty world
      */
     private World() {
         worldLayers = new HashMap<>();
+        generator = new WorldGenerator(this);
 
         wipeClean();
     }
@@ -71,6 +72,14 @@ public class World extends Observable {
      * @param item item to be stored
      */
     void add(Position position, Item item) {
+
+        if (item.equals(WALL)) {
+            worldLayers.get(AIR).remove(position);
+        }
+        if (item.equals(AIR)) {
+            worldLayers.get(WALL).remove(position);
+        }
+
         worldLayers.get(item).add(position);
 
         setChanged();
@@ -82,6 +91,11 @@ public class World extends Observable {
      * @param position position at which to remove the entity
      */
     void remove(Position position, Item item) {
+        if (item.equals(WALL)) {
+            generator.addWalls(position);
+            add(position, AIR);
+        }
+
         if (worldLayers.get(item).remove(position)) {
             setChanged();
             notifyObservers(position);
@@ -101,7 +115,7 @@ public class World extends Observable {
     }
 
     boolean isWalkable(Position position) {
-        return (worldLayers.get(FLOOR).contains(position) &&
+        return (worldLayers.get(AIR).contains(position) &&
                 !worldLayers.get(WALL).contains(position));
     }
 
@@ -159,5 +173,9 @@ public class World extends Observable {
         }
 
         return true;
+    }
+
+    public WorldGenerator getGenerator() {
+        return generator;
     }
 }
