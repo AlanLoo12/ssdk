@@ -31,7 +31,7 @@ public class WorldRenderer implements Observer {
     private final Player player;
 
     private Canvas worldCanvas;
-    private World world;
+    private WorldManager world;
     private Position localWorldCenter;
     private Point2D center;
     private Group group;
@@ -41,7 +41,7 @@ public class WorldRenderer implements Observer {
      * @param world world to render
      *
      */
-    WorldRenderer(World world, double width, double height, Player player) {
+    WorldRenderer(WorldManager world, double width, double height, Player player) {
         group = new Group();
         worldCanvas = new Canvas(width, height);
         group.getChildren().add(worldCanvas);
@@ -82,7 +82,7 @@ public class WorldRenderer implements Observer {
         int highestItemSoFar = -1;
         Color highestColorSoFar = BLACK;
 
-        for (Item item : World.getInstance().get(position)) {
+        for (Item item : WorldManager.getInstance().get(position)) {
             if (item.getIndex() > highestItemSoFar) {
                 highestColorSoFar = item.getColor();
                 highestItemSoFar = item.getIndex();
@@ -157,23 +157,8 @@ public class WorldRenderer implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        if (!world.isEnded()) {
-            if (arg == null || isOnScreen((Position) arg)) {
-                updateGroup();
-            }
-        } else {
-            GraphicsContext graphicsContext = worldCanvas.getGraphicsContext2D();
-            clearCanvas(graphicsContext);
-
-            Text endText = new Text(center.getX(), center.getY(),
-                    "Well done!" +
-                            "\nYou " + (world.isWin()? "won" : "lost") +
-                            "\nTime spent playing: " + player.getTime() + " s" +
-                            "\nTotal number of moves made: " + player.getMoves());
-            endText.setFill(BLACK);
-
-            group.getChildren().clear();
-            group.getChildren().add(endText);
+        if (arg == null || isOnScreen((Position) arg)) {
+            updateGroup();
         }
     }
 

@@ -1,6 +1,7 @@
 package network;
 
 import model.Item;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
@@ -10,9 +11,9 @@ import java.util.Set;
 /**
  *
  */
-class Protocol {
+public class Protocol {
     @NotNull
-    static Set<Item> decodeItems(String string) throws ParseException {
+    public static Set<Item> decodeItems(String string) throws ParseException {
         Set<Item> items = new HashSet<>();
 
         for (String itemName : string.split(" ")) {
@@ -38,5 +39,15 @@ class Protocol {
         }
 
         return result.toString();
+    }
+
+    @Contract(value = "true -> !null; false -> !null", pure = true)
+    static String encodeBoolean(boolean bool) {
+        return bool? "TRUE" : "FALSE";
+    }
+
+    @Contract(pure = true)
+    public static boolean decodeBoolean(String bool) {
+        return bool.equals("TRUE");
     }
 }

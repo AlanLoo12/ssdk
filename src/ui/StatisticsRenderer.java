@@ -3,7 +3,7 @@ package ui;
 import javafx.scene.Group;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import model.World;
+import model.WorldManager;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -14,11 +14,11 @@ import static javafx.scene.paint.Color.WHITE;
  *
  */
 public class StatisticsRenderer implements Observer {
-    private World world;
+    private WorldManager world;
     private Group group;
     private VBox data;
 
-    StatisticsRenderer(World world) {
+    StatisticsRenderer(WorldManager world) {
         this.world = world;
 
         group = new Group();
@@ -36,10 +36,10 @@ public class StatisticsRenderer implements Observer {
         group.getChildren().add(statistics);
     }
 
-    private void updateStatistics(World world) {
+    private void updateStatistics(WorldManager world) {
         data.getChildren().clear();
 
-        Text worldSize = new Text("World size: " + world.size());
+        Text worldSize = new Text("WorldManager size: " + world.size());
         worldSize.setFill(WHITE);
         data.getChildren().add(worldSize);
     }

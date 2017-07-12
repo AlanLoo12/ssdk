@@ -14,7 +14,7 @@ import static model.Item.PLANT;
  */
 public class Server {
     private static ServerSocket serverSocket;
-    static final int PORT = 3000;
+    public static final int PORT = 3000;
 
     public static void main(String[] args) throws IOException {
         setUpWorld();
@@ -38,7 +38,7 @@ public class Server {
     }
 
     private static void setUpWorld() {
-        World abstractWorld = World.getInstance();
+        WorldManager abstractWorld = WorldManager.getInstance();
         WorldGenerator worldGenerator = abstractWorld.getGenerator();
 
         // Configure the generator
@@ -64,20 +64,59 @@ public class Server {
             if (msg == null) {
                 clientSocket.close();
             } else {
-                if (msg.contains("GET")) {
+                if (msg.matches("GET -?\\d+ -?\\d+")) {
+                    int x = Integer.parseInt(msg.split(" ")[1]);
+                    int y = Integer.parseInt(msg.split(" ")[2]);
+
+                    Set<Item> items = WorldManager.getInstance().get(new Position(x, y));
+                    out.println(Protocol.encodeItems(items));
+
+                    System.out.println("Client requested x = " + x + ", y = " + y);
+                    System.out.println("Sending " + items);
+                } else if (msg.matches("PUT -?\\d+ -?\\d+ [A-Z]+")) {
+                    // TODO: move the try part to regex
                     try {
                         int x = Integer.parseInt(msg.split(" ")[1]);
                         int y = Integer.parseInt(msg.split(" ")[2]);
 
-                        Set<Item> items = World.getInstance().get(new Position(x, y));
-                        out.println(Protocol.encodeItems(items));
+                        Item item = Item.valueOf(msg.split(" ")[3]);
+                        WorldManager.getInstance().put(new Position(x, y), item);
 
                         System.out.println("Client requested x = " + x + ", y = " + y);
-                        System.out.println("Sending " + items);
-                    } catch (NumberFormatException e) {
-                        System.out.println("Wrong number format requested");
+                        System.out.println("Putting " + item);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: unknown material");
+                    }
+                } else if (msg.matches("CONTAINS -?\\d+ -?\\d+ [A-Z]+")) {
+                    try {
+                        int x = Integer.parseInt(msg.split(" ")[1]);
+                        int y = Integer.parseInt(msg.split(" ")[2]);
+
+                        Item item = Item.valueOf(msg.split(" ")[3]);
+
+                        Position position = new Position(x, y);
+                        out.println(Protocol.encodeBoolean(WorldManager.getInstance().contains(position, item)));
+
+                        System.out.println("Client requested x = " + x + ", y = " + y);
+                        System.out.println("Returning " + WorldManager.getInstance().contains(position, item));
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: unknown material");
+                    }
+                } else if (msg.matches("IS_WALKABLE -?\\d+ -?\\d+")) {
+                    try {
+                        int x = Integer.parseInt(msg.split(" ")[1]);
+                        int y = Integer.parseInt(msg.split(" ")[2]);
+
+                        Position position = new Position(x, y);
+                        out.println(Protocol.encodeBoolean(WorldManager.getInstance().isWalkable(position)));
+
+                        System.out.println("Client requested x = " + x + ", y = " + y);
+                        System.out.println("Returning " + WorldManager.getInstance().isWalkable(position));
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: unknown material");
                     }
                 } else {
+                    System.out.print("Error, Unrecognized message: ");
                     System.out.println(msg);
                 }
             }

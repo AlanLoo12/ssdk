@@ -7,7 +7,7 @@ import java.util.Set;
  * A player (yep, that's it).
  */
 public class Player extends Observable {
-    private World world;
+    private WorldManager world;
     private Position position;
     private Inventory inventory;
     private int numberOfMoves;
@@ -15,7 +15,7 @@ public class Player extends Observable {
     private int selectedItem;
     private Position lookDirection;
 
-    public Player(World world) {
+    public Player(WorldManager world) {
         this.world = world;
         inventory = new Inventory();
         inventory.add(Item.PICK_AXE);
@@ -27,7 +27,7 @@ public class Player extends Observable {
 
         position = new Position(0,0);
 
-        world.add(position, Item.PLAYER);
+        world.put(position, Item.PLAYER);
     }
 
     public void move(Position direction) {
@@ -45,7 +45,10 @@ public class Player extends Observable {
             position = nextPosition;
             numberOfMoves++;
 
-            world.add(nextPosition, Item.PLAYER);
+            world.put(nextPosition, Item.PLAYER);
+
+            setChanged();
+            notifyObservers();
         }
     }
 

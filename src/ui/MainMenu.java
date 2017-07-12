@@ -16,12 +16,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.Player;
-import model.World;
+import model.WorldManager;
 import model.WorldGenerator;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 import static model.Item.*;
 
@@ -38,7 +37,7 @@ public class MainMenu {
     @FXML public FloatField randomWalkersDeathChance;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
-        World world = World.getInstance();
+        WorldManager world = WorldManager.getInstance();
         WorldGenerator worldGenerator = world.getGenerator();
 
         // Configure the generator
@@ -69,7 +68,7 @@ public class MainMenu {
     }
 
     public void handleConnectButtonAction(ActionEvent actionEvent) {
-        World world = World.getInstance();
+        WorldManager world = WorldManager.getInstance();
         try {
             world.connect(InetAddress.getLocalHost());
         } catch (IOException e) {
@@ -82,7 +81,7 @@ public class MainMenu {
         setUpUI(world, player);
     }
 
-    private void setUpUI(World world, Player player) {
+    private void setUpUI(WorldManager world, Player player) {
         Group root = new Group();
 
         Stage stage = new Stage();
