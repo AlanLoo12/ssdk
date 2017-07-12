@@ -19,6 +19,10 @@ import model.Player;
 import model.World;
 import model.WorldGenerator;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import static model.Item.*;
 
 /**
@@ -60,8 +64,26 @@ public class MainMenu {
             timer.start();
         }
 
-        Group root = new Group();
         Player player = new Player(world);
+        setUpUI(world, player);
+    }
+
+    public void handleConnectButtonAction(ActionEvent actionEvent) {
+        World world = World.getInstance();
+        try {
+            world.connect(InetAddress.getLocalHost());
+        } catch (IOException e) {
+            System.out.println("Connection failed");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        Player player = new Player(world);
+        setUpUI(world, player);
+    }
+
+    private void setUpUI(World world, Player player) {
+        Group root = new Group();
 
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);

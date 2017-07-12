@@ -1,7 +1,10 @@
 package model;
 
+import network.Client;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.net.InetAddress;
 import java.util.*;
 
 import static model.Item.AIR;
@@ -42,16 +45,7 @@ public class World extends Observable {
 
     private static World instance;
     private WorldGenerator generator;
-
-    /**
-     * Create an empty world
-     */
-    private World() {
-        worldLayers = new HashMap<>();
-        generator = new WorldGenerator(this);
-
-        wipeClean();
-    }
+    private Client client;
 
     /**
      * Return an instance of the world, if there is one
@@ -64,6 +58,16 @@ public class World extends Observable {
         }
 
         return instance;
+    }
+
+    /**
+     * Create an empty world
+     */
+    private World() {
+        worldLayers = new HashMap<>();
+        generator = new WorldGenerator(this);
+
+        wipeClean();
     }
 
     /**
@@ -103,6 +107,15 @@ public class World extends Observable {
     }
 
     public Set<Item> get(Position position) {
+        if (client == null) {
+            return localGet(position);
+        } else {
+            return client.get(position);
+        }
+    }
+
+    @NotNull
+    private Set<Item> localGet(Position position) {
         Set<Item> items = new HashSet<>();
 
         for (Item item : worldLayers.keySet()) {
@@ -128,6 +141,14 @@ public class World extends Observable {
     }
 
     public boolean contains(Position position) {
+        if (client == null) {
+            return localContains(position);
+        } else {
+            return client.contains(position);
+        }
+    }
+
+    private boolean localContains(Position position) {
         for (Set<Position> layer : worldLayers.values()) {
             if (layer.contains(position)) {
                 return true;
@@ -177,5 +198,13 @@ public class World extends Observable {
 
     public WorldGenerator getGenerator() {
         return generator;
+    }
+
+    /**
+     * Connect to the server at the specified location
+     * @param address address of the server
+     */
+    public void connect(InetAddress address) throws IOException {
+        client = new Client(address);
     }
 }

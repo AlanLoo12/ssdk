@@ -67,11 +67,7 @@ public class WorldRenderer implements Observer {
                 double x = getScreenX(position);
                 double y = getScreenY(position);
 
-                if (world.contains(position)) {
-                    graphicsContext.setFill(getColor(position));
-                } else {
-                    graphicsContext.setFill(FLOOR_COLOR);
-                }
+                graphicsContext.setFill(getColor(position));
 
                 graphicsContext.fillRect(x, y, scale, scale);
             }

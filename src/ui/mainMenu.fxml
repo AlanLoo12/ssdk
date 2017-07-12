@@ -51,5 +51,6 @@
         <CheckBox fx:id="generateOnTheGo" selected="true"/>
     </HBox>
 
-    <Button text="Start" onAction="#handleStartButtonAction"/>
+    <Button text="Play locally" onAction="#handleStartButtonAction"/>
+    <Button text="Connect to server" onAction="#handleConnectButtonAction"/>
 </VBox>
