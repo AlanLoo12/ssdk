@@ -7,7 +7,6 @@ import java.util.Set;
  * A player (yep, that's it).
  */
 public class Player extends Observable {
-    private WorldManager world;
     private Position position;
     private Inventory inventory;
     private int numberOfMoves;
@@ -15,8 +14,7 @@ public class Player extends Observable {
     private int selectedItem;
     private Position lookDirection;
 
-    public Player(WorldManager world) {
-        this.world = world;
+    public Player() {
         inventory = new Inventory();
         inventory.add(Item.PICK_AXE);
 
@@ -27,25 +25,25 @@ public class Player extends Observable {
 
         position = new Position(0,0);
 
-        world.put(position, Item.PLAYER);
+        WorldManager.getInstance().put(position, Item.PLAYER);
     }
 
     public void move(Position direction) {
-        if (world.isWalkable(position.add(direction))) {
+        if (WorldManager.getInstance().isWalkable(position.add(direction))) {
             Position nextPosition = position.add(direction);
 
-            world.remove(position, Item.PLAYER);
+            WorldManager.getInstance().remove(position, Item.PLAYER);
 
-            Set<Item> items = world.get(nextPosition);
+            Set<Item> items = WorldManager.getInstance().get(nextPosition);
             if (items.contains(Item.PLANT)) {
-                world.remove(nextPosition, Item.PLANT);
+                WorldManager.getInstance().remove(nextPosition, Item.PLANT);
                 inventory.add(Item.PLANT);
             }
 
             position = nextPosition;
             numberOfMoves++;
 
-            world.put(nextPosition, Item.PLAYER);
+            WorldManager.getInstance().put(nextPosition, Item.PLAYER);
 
             setChanged();
             notifyObservers();

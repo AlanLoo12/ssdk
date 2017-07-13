@@ -63,25 +63,24 @@ public class MainMenu {
             timer.start();
         }
 
-        Player player = new Player(world);
-        setUpUI(world, player);
+        Player player = new Player();
+        setUpUI(player);
     }
 
     public void handleConnectButtonAction(ActionEvent actionEvent) {
-        WorldManager world = WorldManager.getInstance();
         try {
-            world.connect(InetAddress.getLocalHost());
+            WorldManager.getInstance().connect(InetAddress.getLocalHost());
         } catch (IOException e) {
             System.out.println("Connection failed");
             e.printStackTrace();
             System.exit(1);
         }
 
-        Player player = new Player(world);
-        setUpUI(world, player);
+        Player player = new Player();
+        setUpUI(player);
     }
 
-    private void setUpUI(WorldManager world, Player player) {
+    private void setUpUI(Player player) {
         Group root = new Group();
 
         Stage stage = new Stage();
@@ -97,7 +96,7 @@ public class MainMenu {
 
         StackPane background = new StackPane();
 
-        WorldRenderer worldRenderer = new WorldRenderer(world, scene.getWidth(), scene.getHeight(), player);
+        WorldRenderer worldRenderer = new WorldRenderer(scene.getWidth(), scene.getHeight(), player);
         background.getChildren().add(worldRenderer.getGroup());
 
         InventoryRenderer inventoryRenderer = new InventoryRenderer(player);
@@ -105,7 +104,7 @@ public class MainMenu {
         inventoryGrid.setAlignment(Pos.TOP_RIGHT);
         inventoryGrid.add(inventoryRenderer.getGroup(), 0, 0);
 
-        StatisticsRenderer statisticsRenderer = new StatisticsRenderer(world);
+        StatisticsRenderer statisticsRenderer = new StatisticsRenderer(player);
         GridPane statisticsGrid = new GridPane();
         statisticsGrid.setAlignment(Pos.TOP_LEFT);
         statisticsGrid.add(statisticsRenderer.getGroup(), 0, 0);

@@ -31,26 +31,23 @@ public class WorldRenderer implements Observer {
     private final Player player;
 
     private Canvas worldCanvas;
-    private WorldManager world;
     private Position localWorldCenter;
     private Point2D center;
     private Group group;
 
     /**
      * Connect this renderer to the given world
-     * @param world world to render
      *
      */
-    WorldRenderer(WorldManager world, double width, double height, Player player) {
+    WorldRenderer(double width, double height, Player player) {
         group = new Group();
         worldCanvas = new Canvas(width, height);
         group.getChildren().add(worldCanvas);
-        this.world = world;
         this.center = new Point2D(width / 2, height / 2);
         this.player = player;
         this.localWorldCenter = player.getPosition();
 
-        world.addObserver(this);
+        WorldManager.getInstance().addObserver(this);
         player.addObserver(this);
         updateGroup();
     }
@@ -63,7 +60,7 @@ public class WorldRenderer implements Observer {
         localWorldCenter = player.getPosition();
 
         for (Position position : computeVisiblePositions()) {
-            if (world.contains(position)) {
+            if (WorldManager.getInstance().contains(position)) {
                 double x = getScreenX(position);
                 double y = getScreenY(position);
 
