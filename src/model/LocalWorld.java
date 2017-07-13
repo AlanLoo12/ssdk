@@ -14,7 +14,7 @@ public class LocalWorld extends Observable implements World {
     private Map<Item, Set<Position>> worldLayers;
     private WorldGenerator generator;
 
-    public LocalWorld() {
+    LocalWorld() {
         worldLayers = new HashMap<>();
         generator = new WorldGenerator(this);
 
@@ -137,5 +137,10 @@ public class LocalWorld extends Observable implements World {
     @Override
     public boolean contains(@NotNull Position position, @NotNull Item item) {
         return worldLayers.get(item).contains(position);
+    }
+
+    @Override
+    public WorldGenerator getGenerator() {
+        return generator;
     }
 }

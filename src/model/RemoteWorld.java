@@ -23,8 +23,7 @@ public class RemoteWorld implements World {
     private PrintWriter out;
     private BufferedReader in;
 
-
-    public RemoteWorld(InetAddress address) {
+    RemoteWorld(InetAddress address) {
         this.address = address;
     }
 
@@ -139,5 +138,10 @@ public class RemoteWorld implements World {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public WorldGenerator getGenerator() {
+        return null; // TODO: what do we do here?
     }
 }

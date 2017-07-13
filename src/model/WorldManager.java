@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.file.AccessDeniedException;
 import java.util.*;
 
 /**
@@ -13,6 +14,7 @@ import java.util.*;
  */
 public class WorldManager extends Observable {
     private static WorldManager instance;
+    private World world;
 
     /**
      * Return an instance of the world, if there is one
@@ -31,6 +33,7 @@ public class WorldManager extends Observable {
      * Create an empty world
      */
     private WorldManager() {
+        world = new LocalWorld();
     }
 
     /**
@@ -39,7 +42,7 @@ public class WorldManager extends Observable {
      * @param item item to be stored
      */
     public void put(Position position, Item item) {
-        // stub
+        world.put(position, item);
     }
 
     /**
@@ -47,32 +50,33 @@ public class WorldManager extends Observable {
      * @param position position at which to remove the entity
      */
     void remove(Position position, Item item) {
-        // stub
+        world.remove(position, item);
     }
 
     public Set<Item> get(Position position) {
-        // stub
-        return null;
+        return world.get(position);
     }
 
     public boolean isWalkable(Position position) {
-        return false; // stub
+        return world.isWalkable(position);
     }
 
     public boolean contains(Position position) {
-        return false; // stub
+        return world.contains(position);
     }
 
+    @Deprecated
     public int size() {
-        return 0; // stub
+        return 0;
     }
 
     public boolean contains(@NotNull Position position, Item item) {
-        return false; // stub
+        return world.contains(position, item);
     }
 
+    // TODO: should we be able to access remote generator?
     public WorldGenerator getGenerator() {
-        return null; // stub
+        return world.getGenerator();
     }
 
     /**
@@ -80,6 +84,6 @@ public class WorldManager extends Observable {
      * @param address address of the server
      */
     public void connect(InetAddress address) throws IOException {
-        // stub
+        world = new RemoteWorld(address);
     }
 }

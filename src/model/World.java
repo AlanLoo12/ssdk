@@ -57,4 +57,6 @@ public interface World {
      * false otherwise
      */
     boolean contains(@NotNull Position position, @NotNull Item item);
+
+    WorldGenerator getGenerator();
 }
