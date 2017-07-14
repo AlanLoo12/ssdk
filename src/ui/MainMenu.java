@@ -21,6 +21,8 @@ import model.world.WorldGenerator;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static model.Item.*;
 
@@ -28,6 +30,7 @@ import static model.Item.*;
  * A controller class for the main menu
  */
 public class MainMenu {
+    private static final long MAX_DELAY = 1000;
     @FXML public CheckBox generateOnTheGo;
     @FXML public IntegerField initialMapSize;
     @FXML public CheckBox breedRandomWalkers;
@@ -49,18 +52,12 @@ public class MainMenu {
 
         // Generate
         worldGenerator.tick(initialMapSize.getValue());
-        if (generateExit.isSelected()) {
+        /*if (generateExit.isSelected()) {
             worldGenerator.putAtTheWalkerTip(EXIT);
-        }
+        }*/
 
         if (generateOnTheGo.isSelected()) {
-            AnimationTimer timer = new AnimationTimer() {
-                    @Override
-                    public void handle(long l) {
-                        worldGenerator.tick();
-                    }
-                };
-            timer.start();
+            worldGenerator.start();
         }
 
         Player player = new Player();
@@ -98,6 +95,18 @@ public class MainMenu {
 
         WorldRenderer worldRenderer = new WorldRenderer(scene.getWidth(), scene.getHeight(), player);
         background.getChildren().add(worldRenderer.getGroup());
+        AnimationTimer timer = new AnimationTimer() {
+            private long prev = 0;
+
+            @Override
+            public void handle(long l) {
+                if (l - prev > MAX_DELAY) {
+                    prev = l;
+                    worldRenderer.render();
+                }
+            }
+        };
+        timer.start();
 
         InventoryRenderer inventoryRenderer = new InventoryRenderer(player);
         GridPane inventoryGrid = new GridPane();

@@ -20,7 +20,7 @@ import java.util.Set;
 /**
  * A world located on some other machine
  */
-public class RemoteWorld implements World {
+public class RemoteWorld extends AbstractWorld {
     private final InetAddress address;
     private PrintWriter out;
     private BufferedReader in;

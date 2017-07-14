@@ -29,7 +29,7 @@ public class Server {
 
         System.out.println("Server listening on " + PORT);
 
-        while (true) {
+        while (!Thread.interrupted()) {
             Socket clientSocket = serverSocket.accept();
             System.out.println("Got a client with ip " + clientSocket.getInetAddress());
 

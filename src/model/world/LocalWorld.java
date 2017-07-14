@@ -1,11 +1,11 @@
 package model.world;
 
-import javafx.geometry.Pos;
 import model.Item;
 import model.Position;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static model.Item.AIR;
 import static model.Item.WALL;
@@ -13,7 +13,7 @@ import static model.Item.WALL;
 /**
  * A world located on this machine
  */
-public class LocalWorld extends Observable implements World {
+public class LocalWorld extends AbstractWorld {
     private Map<Item, Set<Position>> worldLayers;
     private WorldGenerator generator;
 
@@ -66,7 +66,7 @@ public class LocalWorld extends Observable implements World {
     @Override
     public void remove(@NotNull Position position, @NotNull Item item) {
         if (item.equals(WALL)) {
-            generator.addWalls(position);
+            WorldGenerator.addWalls(position);
             put(position, AIR);
         }
 

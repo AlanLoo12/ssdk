@@ -31,6 +31,7 @@ public class WorldRenderer implements Observer {
     private Position localWorldCenter;
     private Point2D center;
     private Group group;
+    private boolean changed;
 
     /**
      * Connect this renderer to the given world
@@ -46,37 +47,42 @@ public class WorldRenderer implements Observer {
 
         WorldManager.getInstance().addObserver(this);
         player.addObserver(this);
-        updateGroup();
+        changed = true;
+        render();
     }
 
-    private void updateGroup() {
-        GraphicsContext graphicsContext = worldCanvas.getGraphicsContext2D();
-        clearCanvas(graphicsContext);
+    void render() {
+        if (changed) {
+            changed = false;
 
-        //updateLocalWorldCenter();
-        localWorldCenter = player.getPosition();
+            GraphicsContext graphicsContext = worldCanvas.getGraphicsContext2D();
+            clearCanvas(graphicsContext);
 
-        Position from = localWorldCenter.add(
-                (int) (-center.getX() / scale - 1),
-                (int) (-center.getY() / scale - 1));
-        Position to = localWorldCenter.add(
-                (int) (center.getX() / scale),
-                (int) (center.getY() / scale));
+            //updateLocalWorldCenter();
+            localWorldCenter = player.getPosition();
 
-        Map<Position, Set<Item>> visiblePositions = WorldManager.getInstance().get(from, to);
+            Position from = localWorldCenter.add(
+                    (int) (-center.getX() / scale - 1),
+                    (int) (-center.getY() / scale - 1));
+            Position to = localWorldCenter.add(
+                    (int) (center.getX() / scale),
+                    (int) (center.getY() / scale));
 
-        for (Position position : visiblePositions.keySet()) {
-            double x = getScreenX(position);
-            double y = getScreenY(position);
+            Map<Position, Set<Item>> visiblePositions = WorldManager.getInstance().get(from, to);
 
-            graphicsContext.setFill(getColor(visiblePositions.get(position)));
+            for (Position position : visiblePositions.keySet()) {
+                double x = getScreenX(position);
+                double y = getScreenY(position);
 
-            graphicsContext.fillRect(x, y, scale, scale);
+                graphicsContext.setFill(getColor(visiblePositions.get(position)));
+
+                graphicsContext.fillRect(x, y, scale, scale);
+            }
+
+            graphicsContext.setFill(Color.rgb(100, 100, 100, 0.5));
+            Position lookPosition = player.getPosition().add(player.getLookDirection());
+            graphicsContext.strokeRect(getScreenX(lookPosition), getScreenY(lookPosition), scale, scale);
         }
-
-        graphicsContext.setFill(Color.rgb(100,100,100,0.5));
-        Position lookPosition = player.getPosition().add(player.getLookDirection());
-        graphicsContext.strokeRect(getScreenX(lookPosition), getScreenY(lookPosition), scale, scale);
     }
 
     private Paint getColor(Set<Item> items) {
@@ -159,18 +165,20 @@ public class WorldRenderer implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if (arg == null || isOnScreen((Position) arg)) {
-            updateGroup();
+            changed = true;
         }
     }
 
     void zoomIn() {
         scale++;
-        updateGroup();
+        changed = true;
+        render();
     }
 
     void zoomOut() {
         scale = Math.max(scale - 1, MIN_SCALE);
-        updateGroup();
+        changed = true;
+        render();
     }
 
     Node getGroup() {

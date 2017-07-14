@@ -13,9 +13,9 @@ import java.util.*;
  *
  * The actual world data could be stored locally or on another machine
  */
-public class WorldManager extends Observable {
+public class WorldManager extends Observable implements Observer {
     private static WorldManager instance;
-    private World world;
+    private AbstractWorld world;
 
     /**
      * Return an instance of the world, if there is one
@@ -35,6 +35,7 @@ public class WorldManager extends Observable {
      */
     private WorldManager() {
         world = new LocalWorld();
+        world.addObserver(this);
     }
 
     /**
@@ -92,5 +93,20 @@ public class WorldManager extends Observable {
      */
     public Map<Position, Set<Item>> get(Position from, Position to) {
         return world.get(from, to);
+    }
+
+    /**
+     * This method is called whenever the observed object is changed. An
+     * application calls an <tt>Observable</tt> object's
+     * <code>notifyObservers</code> method to have all the object's
+     * observers notified of the change.
+     *
+     * @param o   the observable object.
+     * @param arg an argument passed to the <code>notifyObservers</code>
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        setChanged();
+        notifyObservers(arg);
     }
 }

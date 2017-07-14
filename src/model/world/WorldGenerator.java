@@ -2,8 +2,6 @@ package model.world;
 
 import model.Item;
 import model.Position;
-import model.world.World;
-import model.world.WorldManager;
 
 import java.util.*;
 
@@ -14,15 +12,11 @@ import static model.Position.*;
 /**
  * A world generator
  */
-public class WorldGenerator {
+public class WorldGenerator implements Observer {
     private static final Random RANDOM = new Random();
-    private World world;
-    private List<Position> randomWalkers;
+    private AbstractWorld world;
+    private List<Actor> actors;
 
-    /**
-     * Generates tunnels
-     */
-    private List<Position> tunnelWalkers;
     /**
      * Entities that are randomly generated with the specified probability
      */
@@ -37,28 +31,47 @@ public class WorldGenerator {
             new Position(0,1),
             new Position(0,-1)
     ));
+    private Thread worldGeneratorThread;
 
-    WorldGenerator(World world) {
+    WorldGenerator(AbstractWorld world) {
         this.world = world;
+        worldGeneratorThread = new WorldGeneratorThread();
+
         randomFillGenerators = new HashMap<>();
+
+        actors = new LinkedList<>();
+        actors.add(new RandomWalker(new Position(0, 0)));
 
         breedRandomWalkers = true;
         randomWalkersBirthChance = 0.0001f;
         randomWalkersDeathChance = randomWalkersBirthChance;
         randomWalkersToTick = 5;
-
-        randomWalkers = new ArrayList<>();
-        randomWalkers.add(new Position(0,0));
-
-        tunnelWalkers = new ArrayList<>();
     }
 
-    public void tick() {
-        tickRandomWalkers();
-        tickTunnelWalkers();
+    private class WorldGeneratorThread extends Thread {
+        @Override
+        public void run() {
+            while (!Thread.interrupted()) {
+                tick();
+            }
+        }
     }
 
-    private void tickTunnelWalkers() {
+    public void start() {
+        worldGeneratorThread.start();
+    }
+
+    public void stop() {
+        worldGeneratorThread.interrupt();
+    }
+
+    private void tick() {
+        for (Actor actor : actors) {
+            actor.tick();
+        }
+    }
+
+    /*private void tickTunnelWalkers() {
         // recognize
         // generate space
         // filter space
@@ -85,7 +98,7 @@ public class WorldGenerator {
 
         tunnelWalkers.removeAll(toRemove);
         tunnelWalkers.addAll(toAdd);
-    }
+    }*/
 
     private void buildTunnelBlock(Position tunnelWalker, Set<Position> walls) {
         for (Position neighbour : NEIGHBOURS) {
@@ -116,7 +129,7 @@ public class WorldGenerator {
         }
     }
 
-    private void tickRandomWalkers() {
+    /*private void tickRandomWalkers() {
         if (randomWalkers.size() > 0) {
             for (int i = 0; i < randomWalkersToTick; i++) {
                 int walkerIndex = getWalkerIndex();
@@ -147,13 +160,9 @@ public class WorldGenerator {
                 }
             }
         }
-    }
+    }*/
 
-    private int getWalkerIndex() {
-        return RANDOM.nextInt(randomWalkers.size());
-    }
-
-    void addWalls(Position position) {
+    static void addWalls(Position position) {
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
                 if (!WorldManager.getInstance().contains(position.add(x, y), AIR)) {
@@ -163,19 +172,9 @@ public class WorldGenerator {
         }
     }
 
+    @Deprecated
     private Position nextPosition(Position position) {
-        switch (RANDOM.nextInt(4)) {
-            case 0:
-                return new Position(position.getX() + 1, position.getY());
-            case 1:
-                return new Position(position.getX() - 1, position.getY());
-            case 2:
-                return new Position(position.getX(), position.getY() + 1);
-            case 3:
-                return new Position(position.getX(), position.getY() - 1);
-            default:
-                return position;
-        }
+        return position;
     }
 
     public void generateRandomly(Item item, float density) throws IllegalArgumentException {
@@ -186,9 +185,9 @@ public class WorldGenerator {
         randomFillGenerators.put(item, density);
     }
 
-    public void putAtTheWalkerTip(Item item) {
+    /*public void putAtTheWalkerTip(Item item) {
         world.put(randomWalkers.get(getWalkerIndex()), item);
-    }
+    }*/
 
     public void tick(int initialMapSize) {
         for (int i = 0; i < initialMapSize; i++) {
@@ -210,5 +209,19 @@ public class WorldGenerator {
 
     public void setRandomWalkersDeathChance(float randomWalkersDeathChance) {
         this.randomWalkersDeathChance = randomWalkersDeathChance;
+    }
+
+    /**
+     * This method is called whenever the observed object is changed. An
+     * application calls an <tt>Observable</tt> object's
+     * <code>notifyObservers</code> method to have all the object's
+     * observers notified of the change.
+     *
+     * @param o   the observable object.
+     * @param arg an argument passed to the <code>notifyObservers</code>
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        // TODO: do something
     }
 }
