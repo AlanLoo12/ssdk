@@ -1,10 +1,11 @@
-package model;
+package model.world;
 
+import model.Item;
+import model.Position;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.nio.file.AccessDeniedException;
 import java.util.*;
 
 /**
@@ -49,7 +50,7 @@ public class WorldManager extends Observable {
      * Remove the given entity at the specified position
      * @param position position at which to remove the entity
      */
-    void remove(Position position, Item item) {
+    public void remove(Position position, Item item) {
         world.remove(position, item);
     }
 
@@ -85,5 +86,15 @@ public class WorldManager extends Observable {
      */
     public void connect(InetAddress address) throws IOException {
         world = new RemoteWorld(address);
+    }
+
+    /**
+     * Create a map of all items inside the rectangle specified by the given positions
+     * @param from one of the corners
+     * @param to another corner
+     * @return a map of all items inside the rectangle specified by the given positions
+     */
+    public Map<Position, Set<Item>> get(Position from, Position to) {
+        return world.get(from, to);
     }
 }

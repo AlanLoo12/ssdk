@@ -1,4 +1,9 @@
-package model;
+package model.world;
+
+import model.Item;
+import model.Position;
+import model.world.World;
+import model.world.WorldManager;
 
 import java.util.*;
 

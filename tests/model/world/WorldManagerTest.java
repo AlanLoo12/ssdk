@@ -1,4 +1,4 @@
-package model;
+package model.world;
 
 import org.junit.Before;
 import org.junit.Test;

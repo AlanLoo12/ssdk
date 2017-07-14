@@ -1,5 +1,8 @@
-package model;
+package model.world;
 
+import javafx.geometry.Pos;
+import model.Item;
+import model.Position;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -142,5 +145,23 @@ public class LocalWorld extends Observable implements World {
     @Override
     public WorldGenerator getGenerator() {
         return generator;
+    }
+
+    /**
+     * Create a map of all items inside the rectangle specified by the given positions
+     *
+     * @param from one of the corners
+     * @param to   another corner
+     * @return a map of all items inside the rectangle specified by the given positions
+     */
+    @Override
+    public Map<Position, Set<Item>> get(Position from, Position to) {
+        Map<Position, Set<Item>> map = new HashMap<>();
+
+        for (Position position : from.getIterator(to)) {
+            map.put(position, get(position));
+        }
+
+        return map;
     }
 }

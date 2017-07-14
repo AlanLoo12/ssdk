@@ -1,6 +1,7 @@
 package model;
 
 import javafx.scene.paint.Color;
+import model.world.WorldManager;
 import org.jetbrains.annotations.Contract;
 
 import java.util.function.Function;

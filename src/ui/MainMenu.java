@@ -1,7 +1,7 @@
 package ui;
 
-import gui_elements.FloatField;
-import gui_elements.IntegerField;
+import ui.gui_elements.FloatField;
+import ui.gui_elements.IntegerField;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,8 +16,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.Player;
-import model.WorldManager;
-import model.WorldGenerator;
+import model.world.WorldManager;
+import model.world.WorldGenerator;
 
 import java.io.IOException;
 import java.net.InetAddress;

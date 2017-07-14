@@ -1,5 +1,7 @@
 package model;
 
+import model.world.WorldManager;
+
 import java.util.Observable;
 import java.util.Set;
 

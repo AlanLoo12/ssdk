@@ -7,15 +7,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.text.Text;
 import model.*;
 import model.Item;
+import model.world.WorldManager;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
+import java.util.*;
 
 import static javafx.scene.paint.Color.BLACK;
 
@@ -59,15 +56,22 @@ public class WorldRenderer implements Observer {
         //updateLocalWorldCenter();
         localWorldCenter = player.getPosition();
 
-        for (Position position : computeVisiblePositions()) {
-            if (WorldManager.getInstance().contains(position)) {
-                double x = getScreenX(position);
-                double y = getScreenY(position);
+        Position from = localWorldCenter.add(
+                (int) (-center.getX() / scale - 1),
+                (int) (-center.getY() / scale - 1));
+        Position to = localWorldCenter.add(
+                (int) (center.getX() / scale),
+                (int) (center.getY() / scale));
 
-                graphicsContext.setFill(getColor(position));
+        Map<Position, Set<Item>> visiblePositions = WorldManager.getInstance().get(from, to);
 
-                graphicsContext.fillRect(x, y, scale, scale);
-            }
+        for (Position position : visiblePositions.keySet()) {
+            double x = getScreenX(position);
+            double y = getScreenY(position);
+
+            graphicsContext.setFill(getColor(visiblePositions.get(position)));
+
+            graphicsContext.fillRect(x, y, scale, scale);
         }
 
         graphicsContext.setFill(Color.rgb(100,100,100,0.5));
@@ -75,11 +79,11 @@ public class WorldRenderer implements Observer {
         graphicsContext.strokeRect(getScreenX(lookPosition), getScreenY(lookPosition), scale, scale);
     }
 
-    private Paint getColor(Position position) {
+    private Paint getColor(Set<Item> items) {
         int highestItemSoFar = -1;
         Color highestColorSoFar = BLACK;
 
-        for (Item item : WorldManager.getInstance().get(position)) {
+        for (Item item : items) {
             if (item.getIndex() > highestItemSoFar) {
                 highestColorSoFar = item.getColor();
                 highestItemSoFar = item.getIndex();

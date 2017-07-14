@@ -1,6 +1,7 @@
-package model;
+package model.world;
 
-import com.sun.org.apache.regexp.internal.RE;
+import model.Item;
+import model.Position;
 import network.Protocol;
 import network.Server;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +14,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.text.ParseException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -47,7 +49,7 @@ public class RemoteWorld implements World {
     public void put(@NotNull Position position, @NotNull Item item) {
         try {
             connect();
-            out.println("PUT " + position.getX() + " " + position.getY() + " " + item);
+            out.println("PUT " + position + " " + item);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,7 +79,7 @@ public class RemoteWorld implements World {
 
         try {
             connect();
-            out.println("GET " + position.getX() + " " + position.getY());
+            out.println("GET " + position);
             items.addAll(Protocol.decodeItems(in.readLine()));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
@@ -98,7 +100,7 @@ public class RemoteWorld implements World {
     public boolean isWalkable(@NotNull Position position) {
         try {
             connect();
-            out.println("IS_WALKABLE " + position.getX() + " " + position.getY());
+            out.println("IS_WALKABLE " + position);
             return Protocol.decodeBoolean(in.readLine());
         } catch (IOException e) {
             e.printStackTrace();
@@ -132,7 +134,7 @@ public class RemoteWorld implements World {
     public boolean contains(@NotNull Position position, @NotNull Item item) {
         try {
             connect();
-            out.println("CONTAINS " + position.getX() + " " + position.getY() + " " + item);
+            out.println("CONTAINS " + position + " " + item);
             return Protocol.decodeBoolean(in.readLine());
         } catch (IOException e) {
             e.printStackTrace();
@@ -143,5 +145,24 @@ public class RemoteWorld implements World {
     @Override
     public WorldGenerator getGenerator() {
         return null; // TODO: what do we do here?
+    }
+
+    /**
+     * Create a map of all items inside the rectangle specified by the given positions
+     *
+     * @param from one of the corners
+     * @param to   another corner
+     * @return a map of all items inside the rectangle specified by the given positions
+     */
+    @Override
+    public Map<Position, Set<Item>> get(Position from, Position to) {
+        try {
+            connect();
+            out.println("GET " + from + " " + to);
+            return Protocol.decodeMap(from, to, in.readLine());
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        return null; // stub
     }
 }

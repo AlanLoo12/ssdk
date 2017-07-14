@@ -1,10 +1,13 @@
 package network;
 
 import model.*;
+import model.world.WorldGenerator;
+import model.world.WorldManager;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Map;
 import java.util.Set;
 
 import static model.Item.PLANT;
@@ -73,6 +76,22 @@ public class Server {
 
                     System.out.println("Client requested x = " + x + ", y = " + y);
                     System.out.println("Sending " + items);
+                } else if (msg.matches("GET -?\\d+ -?\\d+ -?\\d+ -?\\d+")) {
+                    int x0 = Integer.parseInt(msg.split(" ")[1]);
+                    int y0 = Integer.parseInt(msg.split(" ")[2]);
+
+                    int x1 = Integer.parseInt(msg.split(" ")[3]);
+                    int y1 = Integer.parseInt(msg.split(" ")[4]);
+
+                    Position from = new Position(x0, y0);
+                    Position to = new Position(x1, y1);
+                    Map<Position, Set<Item>> map =
+                            WorldManager.getInstance().get(from, to);
+
+                    out.println(Protocol.encodeMap(from, to, map));
+
+                    System.out.println(msg);
+                    System.out.println("Sending " + map);
                 } else if (msg.matches("PUT -?\\d+ -?\\d+ [A-Z]+")) {
                     // TODO: move the try part to regex
                     try {

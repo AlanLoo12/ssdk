@@ -1,7 +1,10 @@
-package model;
+package model.world;
 
+import model.Item;
+import model.Position;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -58,5 +61,17 @@ public interface World {
      */
     boolean contains(@NotNull Position position, @NotNull Item item);
 
+    /**
+     * Produce the world generator
+     * @return world generator
+     */
     WorldGenerator getGenerator();
+
+    /**
+     * Create a map of all items inside the rectangle specified by the given positions
+     * @param from one of the corners
+     * @param to another corner
+     * @return a map of all items inside the rectangle specified by the given positions
+     */
+    Map<Position,Set<Item>> get(Position from, Position to);
 }
