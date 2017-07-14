@@ -35,6 +35,10 @@ public class Protocol {
 
     @NotNull
     static String encodeItems(Set<Item> items) {
+        if (items == null) {
+            return "";
+        }
+
         StringBuilder result = new StringBuilder();
 
         for (Item item : items) {
@@ -60,10 +64,8 @@ public class Protocol {
         StringBuilder result = new StringBuilder();
 
         for (Position position : from.getIterator(to)) {
-            assert (map.containsKey(position));
-
-            result.append(";");
             result.append(encodeItems(map.get(position)));
+            result.append(";");
         }
 
         return result.toString();
