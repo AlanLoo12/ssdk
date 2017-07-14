@@ -110,25 +110,6 @@ public class LocalWorld extends Observable implements World {
     }
 
     /**
-     * Produce true if the given position contains any items at all,
-     * false otherwise
-     *
-     * @param position position to check
-     * @return true if the given position contains any items at all,
-     * false otherwise
-     */
-    @Override
-    public boolean contains(@NotNull Position position) {
-        for (Set<Position> layer : worldLayers.values()) {
-            if (layer.contains(position)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Produce true if given item is present at the specified position,
      * false otherwise
      *

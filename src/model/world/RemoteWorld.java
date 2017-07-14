@@ -64,7 +64,12 @@ public class RemoteWorld implements World {
      */
     @Override
     public void remove(@NotNull Position position, @NotNull Item item) {
-
+        try {
+            connect();
+            out.println("REMOVE " + position + " " + item);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -109,19 +114,6 @@ public class RemoteWorld implements World {
     }
 
     /**
-     * Produce true if the given position contains any items at all,
-     * false otherwise
-     *
-     * @param position position to check
-     * @return true if the given position contains any items at all,
-     * false otherwise
-     */
-    @Override
-    public boolean contains(@NotNull Position position) {
-        return !get(position).isEmpty();
-    }
-
-    /**
      * Produce true if given item is present at the specified position,
      * false otherwise
      *
@@ -144,6 +136,7 @@ public class RemoteWorld implements World {
 
     @Override
     public WorldGenerator getGenerator() {
+        // TODO: finish
         return null; // TODO: what do we do here?
     }
 

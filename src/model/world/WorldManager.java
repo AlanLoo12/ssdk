@@ -62,10 +62,6 @@ public class WorldManager extends Observable {
         return world.isWalkable(position);
     }
 
-    public boolean contains(Position position) {
-        return world.contains(position);
-    }
-
     @Deprecated
     public int size() {
         return 0;

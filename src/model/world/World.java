@@ -43,15 +43,6 @@ public interface World {
     boolean isWalkable(@NotNull Position position);
 
     /**
-     * Produce true if the given position contains any items at all,
-     * false otherwise
-     * @param position position to check
-     * @return true if the given position contains any items at all,
-     * false otherwise
-     */
-    boolean contains(@NotNull Position position);
-
-    /**
      * Produce true if given item is present at the specified position,
      * false otherwise
      * @param position position to check

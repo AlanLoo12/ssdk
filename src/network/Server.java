@@ -106,6 +106,20 @@ public class Server {
                     } catch (IllegalArgumentException e) {
                         System.out.println("Error: unknown material");
                     }
+                } else if (msg.matches("REMOVE -?\\d+ -?\\d+ [A-Z]+")) {
+                    // TODO: move the try part to regex
+                    try {
+                        int x = Integer.parseInt(msg.split(" ")[1]);
+                        int y = Integer.parseInt(msg.split(" ")[2]);
+
+                        Item item = Item.valueOf(msg.split(" ")[3]);
+                        WorldManager.getInstance().remove(new Position(x, y), item);
+
+                        System.out.println("Client requested x = " + x + ", y = " + y);
+                        System.out.println("Removing " + item);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: unknown material");
+                    }
                 } else if (msg.matches("CONTAINS -?\\d+ -?\\d+ [A-Z]+")) {
                     try {
                         int x = Integer.parseInt(msg.split(" ")[1]);
