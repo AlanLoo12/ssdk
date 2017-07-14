@@ -1,4 +1,4 @@
-package gui_elements;
+package ui.gui_elements;
 
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;

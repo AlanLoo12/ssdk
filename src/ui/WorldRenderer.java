@@ -7,15 +7,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.text.Text;
 import model.*;
 import model.Item;
+import model.world.WorldManager;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
+import java.util.*;
 
 import static javafx.scene.paint.Color.BLACK;
 
@@ -31,26 +28,23 @@ public class WorldRenderer implements Observer {
     private final Player player;
 
     private Canvas worldCanvas;
-    private World world;
     private Position localWorldCenter;
     private Point2D center;
     private Group group;
 
     /**
      * Connect this renderer to the given world
-     * @param world world to render
      *
      */
-    WorldRenderer(World world, double width, double height, Player player) {
+    WorldRenderer(double width, double height, Player player) {
         group = new Group();
         worldCanvas = new Canvas(width, height);
         group.getChildren().add(worldCanvas);
-        this.world = world;
         this.center = new Point2D(width / 2, height / 2);
         this.player = player;
         this.localWorldCenter = player.getPosition();
 
-        world.addObserver(this);
+        WorldManager.getInstance().addObserver(this);
         player.addObserver(this);
         updateGroup();
     }
@@ -62,19 +56,22 @@ public class WorldRenderer implements Observer {
         //updateLocalWorldCenter();
         localWorldCenter = player.getPosition();
 
-        for (Position position : computeVisiblePositions()) {
-            if (world.contains(position)) {
-                double x = getScreenX(position);
-                double y = getScreenY(position);
+        Position from = localWorldCenter.add(
+                (int) (-center.getX() / scale - 1),
+                (int) (-center.getY() / scale - 1));
+        Position to = localWorldCenter.add(
+                (int) (center.getX() / scale),
+                (int) (center.getY() / scale));
 
-                if (world.contains(position)) {
-                    graphicsContext.setFill(getColor(position));
-                } else {
-                    graphicsContext.setFill(FLOOR_COLOR);
-                }
+        Map<Position, Set<Item>> visiblePositions = WorldManager.getInstance().get(from, to);
 
-                graphicsContext.fillRect(x, y, scale, scale);
-            }
+        for (Position position : visiblePositions.keySet()) {
+            double x = getScreenX(position);
+            double y = getScreenY(position);
+
+            graphicsContext.setFill(getColor(visiblePositions.get(position)));
+
+            graphicsContext.fillRect(x, y, scale, scale);
         }
 
         graphicsContext.setFill(Color.rgb(100,100,100,0.5));
@@ -82,11 +79,11 @@ public class WorldRenderer implements Observer {
         graphicsContext.strokeRect(getScreenX(lookPosition), getScreenY(lookPosition), scale, scale);
     }
 
-    private Paint getColor(Position position) {
+    private Paint getColor(Set<Item> items) {
         int highestItemSoFar = -1;
         Color highestColorSoFar = BLACK;
 
-        for (Item item : World.getInstance().get(position)) {
+        for (Item item : items) {
             if (item.getIndex() > highestItemSoFar) {
                 highestColorSoFar = item.getColor();
                 highestItemSoFar = item.getIndex();
@@ -161,23 +158,8 @@ public class WorldRenderer implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        if (!world.isEnded()) {
-            if (arg == null || isOnScreen((Position) arg)) {
-                updateGroup();
-            }
-        } else {
-            GraphicsContext graphicsContext = worldCanvas.getGraphicsContext2D();
-            clearCanvas(graphicsContext);
-
-            Text endText = new Text(center.getX(), center.getY(),
-                    "Well done!" +
-                            "\nYou " + (world.isWin()? "won" : "lost") +
-                            "\nTime spent playing: " + player.getTime() + " s" +
-                            "\nTotal number of moves made: " + player.getMoves());
-            endText.setFill(BLACK);
-
-            group.getChildren().clear();
-            group.getChildren().add(endText);
+        if (arg == null || isOnScreen((Position) arg)) {
+            updateGroup();
         }
     }
 

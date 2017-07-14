@@ -1,7 +1,7 @@
 package ui;
 
-import gui_elements.FloatField;
-import gui_elements.IntegerField;
+import ui.gui_elements.FloatField;
+import ui.gui_elements.IntegerField;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,8 +16,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.Player;
-import model.World;
-import model.WorldGenerator;
+import model.world.WorldManager;
+import model.world.WorldGenerator;
+
+import java.io.IOException;
+import java.net.InetAddress;
 
 import static model.Item.*;
 
@@ -34,10 +37,11 @@ public class MainMenu {
     @FXML public FloatField randomWalkersDeathChance;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
-        World world = World.getInstance();
-        WorldGenerator worldGenerator = new WorldGenerator(world);
+        WorldManager world = WorldManager.getInstance();
+        WorldGenerator worldGenerator = world.getGenerator();
 
         // Configure the generator
+        worldGenerator.generateRandomly(PLANT, 0.001f);
         worldGenerator.setBreedRandomWalkers(breedRandomWalkers.isSelected());
         worldGenerator.setRandomWalkersBirthChance(randomWalkersBirthChance.getValue());
         worldGenerator.setRandomWalkersDeathChance(randomWalkersDeathChance.getValue());
@@ -59,8 +63,25 @@ public class MainMenu {
             timer.start();
         }
 
+        Player player = new Player();
+        setUpUI(player);
+    }
+
+    public void handleConnectButtonAction(ActionEvent actionEvent) {
+        try {
+            WorldManager.getInstance().connect(InetAddress.getLocalHost());
+        } catch (IOException e) {
+            System.out.println("Connection failed");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        Player player = new Player();
+        setUpUI(player);
+    }
+
+    private void setUpUI(Player player) {
         Group root = new Group();
-        Player player = new Player(world);
 
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -75,7 +96,7 @@ public class MainMenu {
 
         StackPane background = new StackPane();
 
-        WorldRenderer worldRenderer = new WorldRenderer(world, scene.getWidth(), scene.getHeight(), player);
+        WorldRenderer worldRenderer = new WorldRenderer(scene.getWidth(), scene.getHeight(), player);
         background.getChildren().add(worldRenderer.getGroup());
 
         InventoryRenderer inventoryRenderer = new InventoryRenderer(player);
@@ -83,7 +104,7 @@ public class MainMenu {
         inventoryGrid.setAlignment(Pos.TOP_RIGHT);
         inventoryGrid.add(inventoryRenderer.getGroup(), 0, 0);
 
-        StatisticsRenderer statisticsRenderer = new StatisticsRenderer(world);
+        StatisticsRenderer statisticsRenderer = new StatisticsRenderer(player);
         GridPane statisticsGrid = new GridPane();
         statisticsGrid.setAlignment(Pos.TOP_LEFT);
         statisticsGrid.add(statisticsRenderer.getGroup(), 0, 0);

@@ -1,17 +1,14 @@
 package model;
 
-import java.util.Observable;
-import java.util.Optional;
-import java.util.Set;
+import model.world.WorldManager;
 
-import static model.Item.FLOOR;
-import static model.Item.WALL;
+import java.util.Observable;
+import java.util.Set;
 
 /**
  * A player (yep, that's it).
  */
 public class Player extends Observable {
-    private World world;
     private Position position;
     private Inventory inventory;
     private int numberOfMoves;
@@ -19,8 +16,7 @@ public class Player extends Observable {
     private int selectedItem;
     private Position lookDirection;
 
-    public Player(World world) {
-        this.world = world;
+    public Player() {
         inventory = new Inventory();
         inventory.add(Item.PICK_AXE);
 
@@ -31,21 +27,28 @@ public class Player extends Observable {
 
         position = new Position(0,0);
 
-        world.add(position, Item.PLAYER);
+        WorldManager.getInstance().put(position, Item.PLAYER);
     }
 
     public void move(Position direction) {
-        if (world.isWalkable(position.add(direction))) {
+        if (WorldManager.getInstance().isWalkable(position.add(direction))) {
             Position nextPosition = position.add(direction);
 
-            world.remove(position, Item.PLAYER);
+            WorldManager.getInstance().remove(position, Item.PLAYER);
 
-            Set<Item> items = world.get(nextPosition);
+            Set<Item> items = WorldManager.getInstance().get(nextPosition);
+            if (items.contains(Item.PLANT)) {
+                WorldManager.getInstance().remove(nextPosition, Item.PLANT);
+                inventory.add(Item.PLANT);
+            }
 
             position = nextPosition;
             numberOfMoves++;
 
-            world.add(nextPosition, Item.PLAYER);
+            WorldManager.getInstance().put(nextPosition, Item.PLAYER);
+
+            setChanged();
+            notifyObservers();
         }
     }
 

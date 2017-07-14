@@ -1,6 +1,7 @@
 package model;
 
 import javafx.scene.paint.Color;
+import model.world.WorldManager;
 import org.jetbrains.annotations.Contract;
 
 import java.util.function.Function;
@@ -9,9 +10,11 @@ import java.util.function.Function;
  * An entity that can occupy world position
  */
 public enum Item {
-    FLOOR(Color.DARKGREY),
+    AIR(Color.DARKGREY),
 
     PLAYER(Color.DARKGOLDENROD),
+
+    PLANT(Color.LIMEGREEN),
 
     EXIT(Color.BLACK),
 
@@ -20,8 +23,8 @@ public enum Item {
     player -> {
         Position selectedPosition = player.getPosition().add(player.getLookDirection());
 
-        if (World.getInstance().contains(selectedPosition, WALL)) {
-            World.getInstance().remove(selectedPosition, WALL);
+        if (WorldManager.getInstance().contains(selectedPosition, WALL)) {
+            WorldManager.getInstance().remove(selectedPosition, WALL);
             player.getInventory().add(WALL);
         }
 
@@ -36,11 +39,11 @@ public enum Item {
 
         applyFunc = (player -> {
             Position selectedPosition = player.getPosition().add(player.getLookDirection());
-            if (World.getInstance().contains(selectedPosition, this)) {
+            if (WorldManager.getInstance().contains(selectedPosition, this)) {
                 return false;
             } else {
                 player.getInventory().take(this, 1);
-                World.getInstance().add(selectedPosition, this);
+                WorldManager.getInstance().put(selectedPosition, this);
                 return true;
             }
         });
@@ -58,11 +61,6 @@ public enum Item {
 
     public void use(Player player) {
         applyFunc.apply(player);
-    }
-
-    @Contract(pure = true)
-    public boolean isWalkable() {
-        return !this.equals(WALL);
     }
 
     public int getIndex() {
