@@ -3,13 +3,12 @@ package model.world;
 import model.Item;
 import model.Position;
 
-import java.util.Observable;
 import java.util.Random;
 
 /**
  * A random walker actor
  */
-class RandomWalker extends Observable implements Actor {
+class RandomWalker extends Actor {
     private static final Random RANDOM = new Random();
     private Position position;
 
@@ -26,27 +25,21 @@ class RandomWalker extends Observable implements Actor {
         WorldManager.getInstance().put(position, Item.AIR);
         WorldGenerator.addWalls(position);
 
-        /*
-        for (Item item : WorldGenerator.getRandomFillGenerators().keySet()) {
-            if (RANDOM.nextFloat() < randomFillGenerators.get(item)) {
-                world.put(position, item);
+        for (Item item : WorldGenerator.getInstance().getRandomFillGenerators().keySet()) {
+            if (RANDOM.nextFloat() < WorldGenerator.getInstance().getRandomFillGenerators().get(item)) {
+                WorldManager.getInstance().put(position, item);
                 break;
             }
-        }*/
+        }
 
         position = nextPosition(position);
 
-        /*
-        if (breedRandomWalkers) {
-            if (RANDOM.nextFloat() < randomWalkersBirthChance) {
-                randomWalkers.add(position);
+        if (WorldGenerator.getInstance().getBreedRandomWalkers()) {
+            if (RANDOM.nextFloat() < WorldGenerator.getInstance().getRandomWalkersBirthChance()) {
+                setChanged();
+                notifyObservers(new RandomWalker(position));
             }
-            if (randomWalkers.size() > 1) {
-                if (RANDOM.nextFloat() < randomWalkersDeathChance) {
-                    randomWalkers.remove(RANDOM.nextInt(randomWalkers.size()));
-                }
-            }
-        }*/
+        }
     }
 
     private Position nextPosition(Position position) {

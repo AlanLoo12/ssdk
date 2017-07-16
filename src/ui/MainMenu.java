@@ -30,7 +30,7 @@ import static model.Item.*;
  * A controller class for the main menu
  */
 public class MainMenu {
-    private static final long MAX_DELAY = 1000;
+    private static final long MAX_DELAY = 10;
     @FXML public CheckBox generateOnTheGo;
     @FXML public IntegerField initialMapSize;
     @FXML public CheckBox breedRandomWalkers;

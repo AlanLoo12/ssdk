@@ -1,11 +1,13 @@
 package model.world;
 
+import java.util.Observable;
+
 /**
  * A world generator actor that somehow can modify world
  */
-interface Actor {
+abstract class Actor extends Observable {
     /**
      * Tick the actor once
      */
-    void tick();
+    abstract void tick();
 }

@@ -47,12 +47,13 @@ public class Server {
         // Configure the generator
         worldGenerator.generateRandomly(PLANT, 0.001f);
         worldGenerator.setBreedRandomWalkers(true);
-        worldGenerator.setRandomWalkersBirthChance(0.0001f);
-        worldGenerator.setRandomWalkersDeathChance(0.00005f);
+        worldGenerator.setRandomWalkersBirthChance(0.1f);
+        worldGenerator.setRandomWalkersDeathChance(0.05f);
         worldGenerator.setRandomWalkersToTick(4);
 
         // Generate
-        worldGenerator.tick(3000);
+        worldGenerator.tick(30000);
+        worldGenerator.start();
 
         //Thread worldGeneratorThread
     }

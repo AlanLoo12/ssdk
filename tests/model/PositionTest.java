@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import static model.Position.*;
@@ -16,6 +17,8 @@ import static org.junit.Assert.*;
 public class PositionTest {
     private static final int X_MAX = 4;
     private static final int Y_MAX = 3;
+    private static final int MAX_COMPARISONS = 1000;
+    private static final int LIMIT = 40;
 
     @Test
     public void testConstructor() {
@@ -236,5 +239,90 @@ public class PositionTest {
     public void testToString() {
         assertEquals("0 0", ORIGIN.toString());
         assertEquals("-100 200", new Position(-100, 200).toString());
+    }
+
+    // compareTo
+
+    @Test
+    public void testCompareToSame() {
+        Position position = new Position(123, -123);
+        //noinspection EqualsWithItself
+        assertEquals(0, position.compareTo(position));
+    }
+
+    @Test
+    public void testCompareToExhaustiveLimited() {
+        Random random = new Random();
+
+        for (int i = 0; i < MAX_COMPARISONS; i++) {
+            Position positionA = new Position(random.nextInt(LIMIT), random.nextInt(LIMIT));
+            Position positionB = new Position(random.nextInt(LIMIT), random.nextInt(LIMIT));
+            Position positionC = new Position(random.nextInt(LIMIT), random.nextInt(LIMIT));
+
+            // equality
+            assertEquals(sign(positionA.compareTo(positionB)), -sign(positionB.compareTo(positionA)));
+            assertEquals(sign(positionA.compareTo(positionC)), -sign(positionC.compareTo(positionA)));
+
+            // transitivity
+            if (positionA.compareTo(positionB) < 0 && positionB.compareTo(positionC) < 0) {
+                assertTrue(positionA.compareTo(positionC) < 0);
+            }
+        }
+    }
+
+    @Test
+    public void testCompareToExhaustiveLimitedAllSigns() {
+        Random random = new Random();
+
+        for (int i = 0; i < MAX_COMPARISONS; i++) {
+            Position positionA = new Position(random.nextInt(LIMIT) - LIMIT/2,
+                    random.nextInt(LIMIT) - LIMIT/2);
+            Position positionB = new Position(random.nextInt(LIMIT) - LIMIT/2,
+                    random.nextInt(LIMIT) - LIMIT/2);
+            Position positionC = new Position(random.nextInt(LIMIT) - LIMIT/2,
+                    random.nextInt(LIMIT) - LIMIT/2);
+
+            // equality
+            assertEquals(sign(positionA.compareTo(positionB)), -sign(positionB.compareTo(positionA)));
+            assertEquals(sign(positionA.compareTo(positionC)), -sign(positionC.compareTo(positionA)));
+
+            // transitivity
+            if (positionA.compareTo(positionB) < 0 && positionB.compareTo(positionC) < 0) {
+                assertTrue(positionA.compareTo(positionC) < 0);
+            }
+        }
+    }
+
+    @Test
+    public void testCompareToExhaustive() {
+        Random random = new Random();
+
+        for (int i = 0; i < MAX_COMPARISONS; i++) {
+            Position positionA = new Position(random.nextInt(), random.nextInt());
+            Position positionB = new Position(random.nextInt(), random.nextInt());
+            Position positionC = new Position(random.nextInt(), random.nextInt());
+
+            // equality
+            assertEquals(sign(positionA.compareTo(positionB)), -sign(positionB.compareTo(positionA)));
+            assertEquals(sign(positionA.compareTo(positionC)), -sign(positionC.compareTo(positionA)));
+
+            // transitivity
+            if (positionA.compareTo(positionB) < 0 && positionB.compareTo(positionC) < 0) {
+                int a = positionA.compareTo(positionB);
+                int b = positionB.compareTo(positionC);
+                int c = positionA.compareTo(positionC);
+                assertTrue(positionA.compareTo(positionC) < 0);
+            }
+        }
+    }
+
+    private int sign(int i) {
+        if (i < 0) {
+            return -1;
+        } else if (i > 0) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

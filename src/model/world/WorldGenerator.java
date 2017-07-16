@@ -14,8 +14,8 @@ import static model.Position.*;
  */
 public class WorldGenerator implements Observer {
     private static final Random RANDOM = new Random();
-    private AbstractWorld world;
     private List<Actor> actors;
+    private List<Actor> actorsToAdd;
 
     /**
      * Entities that are randomly generated with the specified probability
@@ -32,20 +32,48 @@ public class WorldGenerator implements Observer {
             new Position(0,-1)
     ));
     private Thread worldGeneratorThread;
+    private static WorldGenerator instance;
+    private List<Actor> actorsToRemove;
 
-    WorldGenerator(AbstractWorld world) {
-        this.world = world;
+    private WorldGenerator() {
         worldGeneratorThread = new WorldGeneratorThread();
 
         randomFillGenerators = new HashMap<>();
 
         actors = new LinkedList<>();
-        actors.add(new RandomWalker(new Position(0, 0)));
+        actorsToAdd = new LinkedList<>();
+        actorsToRemove = new LinkedList<>();
+
+        add(new RandomWalker(new Position(0, 0)));
 
         breedRandomWalkers = true;
         randomWalkersBirthChance = 0.0001f;
         randomWalkersDeathChance = randomWalkersBirthChance;
         randomWalkersToTick = 5;
+    }
+
+    public static WorldGenerator getInstance() {
+        if (instance == null) {
+            instance = new WorldGenerator();
+        }
+        return instance;
+    }
+
+    private void add(Actor actor) {
+        actors.add(actor);
+        actor.addObserver(this);
+    }
+
+    Map<Item, Float> getRandomFillGenerators() {
+        return randomFillGenerators;
+    }
+
+    boolean getBreedRandomWalkers() {
+        return breedRandomWalkers;
+    }
+
+    float getRandomWalkersBirthChance() {
+        return randomWalkersBirthChance;
     }
 
     private class WorldGeneratorThread extends Thread {
@@ -69,6 +97,14 @@ public class WorldGenerator implements Observer {
         for (Actor actor : actors) {
             actor.tick();
         }
+
+        for (Actor actor : actorsToAdd) {
+            add(actor);
+        }
+        actorsToAdd.clear();
+
+        actors.removeAll(actorsToRemove);
+        actorsToRemove.clear();
     }
 
     /*private void tickTunnelWalkers() {
@@ -102,25 +138,25 @@ public class WorldGenerator implements Observer {
 
     private void buildTunnelBlock(Position tunnelWalker, Set<Position> walls) {
         for (Position neighbour : NEIGHBOURS) {
-            world.put(tunnelWalker.add(neighbour), AIR);
+            WorldManager.getInstance().put(tunnelWalker.add(neighbour), AIR);
         }
-        world.put(tunnelWalker, AIR);
+        WorldManager.getInstance().put(tunnelWalker, AIR);
 
         for (Position wall : walls) {
-            world.put(wall, WALL);
+            WorldManager.getInstance().put(wall, WALL);
         }
     }
 
     private void generateTunnelBlock(Set<Position> toAdd, Position tunnelWalker, Set<Position> walls) {
         for (Position neighbour : NEIGHBOURS) {
             Position friend = tunnelWalker.add(neighbour);
-            if (world.contains(friend, WALL)) {
+            if (WorldManager.getInstance().contains(friend, WALL)) {
                 walls.add(friend);
-            } else if (!world.contains(friend, AIR)) {
+            } else if (!WorldManager.getInstance().contains(friend, AIR)) {
                 if (RANDOM.nextInt(2) == 1 &&
-                        !world.contains(friend, AIR)
+                        !WorldManager.getInstance().contains(friend, AIR)
                         && walls.size() <= 6) {
-                    world.put(tunnelWalker.add(neighbour), WALL);
+                    WorldManager.getInstance().put(tunnelWalker.add(neighbour), WALL);
                     walls.add(tunnelWalker.add(neighbour));
                 } else {
                     toAdd.add(tunnelWalker.add(neighbour.multiply(2)));
@@ -222,6 +258,7 @@ public class WorldGenerator implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        // TODO: do something
+        actorsToAdd.add((Actor) arg);
+        actorsToRemove.add(actors.get(RANDOM.nextInt(actors.size())));
     }
 }

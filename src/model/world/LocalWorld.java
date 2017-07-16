@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import static model.Item.AIR;
 import static model.Item.WALL;
@@ -15,11 +16,9 @@ import static model.Item.WALL;
  */
 public class LocalWorld extends AbstractWorld {
     private Map<Item, Set<Position>> worldLayers;
-    private WorldGenerator generator;
 
     LocalWorld() {
-        worldLayers = new HashMap<>();
-        generator = new WorldGenerator(this);
+        worldLayers = new ConcurrentHashMap<>();
 
         wipeClean();
     }
@@ -31,7 +30,7 @@ public class LocalWorld extends AbstractWorld {
         worldLayers.clear();
 
         for (Item item : Item.values()) {
-            worldLayers.put(item, new HashSet<>());
+            worldLayers.put(item, new ConcurrentSkipListSet<>());
         }
     }
 
@@ -125,7 +124,7 @@ public class LocalWorld extends AbstractWorld {
 
     @Override
     public WorldGenerator getGenerator() {
-        return generator;
+        return WorldGenerator.getInstance();
     }
 
     /**
