@@ -20,11 +20,11 @@ public class Server {
     public static final int PORT = 3000;
 
     public static void main(String[] args) throws IOException {
-        setUpWorld();
-        startServer();
+        Server server = new Server();
+        server.start();
     }
 
-    private static void startServer() throws IOException {
+    private void startServer() throws IOException {
         serverSocket = new ServerSocket(PORT);
 
         System.out.println("Server listening on " + PORT);
@@ -157,5 +157,10 @@ public class Server {
         } catch (IOException e) {
             System.out.println("Connection reset.");
         }
+    }
+
+    public void start() throws IOException {
+        setUpWorld();
+        startServer();
     }
 }

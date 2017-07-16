@@ -51,6 +51,14 @@
         <CheckBox fx:id="generateOnTheGo" selected="true"/>
     </HBox>
 
-    <Button text="Play locally" onAction="#handleStartButtonAction"/>
-    <Button text="Connect to server" onAction="#handleConnectButtonAction"/>
+    <Button text="Single player" onAction="#handleStartButtonAction"/>
+
+    <HBox>
+        <Label text="Server Address: "/>
+        <TextField fx:id="serverAddress" text="127.0.0.1"/>
+    </HBox>
+    <HBox spacing="10">
+        <Button text="Play online" onAction="#handleConnectButtonAction"/>
+        <Button text="Start server" onAction="#handleStartServerButtonAction"/>
+    </HBox>
 </VBox>

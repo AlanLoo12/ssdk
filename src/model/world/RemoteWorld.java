@@ -24,9 +24,16 @@ public class RemoteWorld extends AbstractWorld {
     private final InetAddress address;
     private PrintWriter out;
     private BufferedReader in;
+    private Socket serverSocket;
 
-    RemoteWorld(InetAddress address) {
+    RemoteWorld(InetAddress address) throws IOException {
         this.address = address;
+        connect();
+        disconnect();
+    }
+
+    private void disconnect() throws IOException {
+        serverSocket.close();
     }
 
     /**
@@ -34,7 +41,7 @@ public class RemoteWorld extends AbstractWorld {
      * @throws IOException if connection failed
      */
     private void connect() throws IOException {
-        Socket serverSocket = new Socket(address, Server.PORT);
+        serverSocket = new Socket(address, Server.PORT);
         out = new PrintWriter(serverSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
     }

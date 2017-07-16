@@ -200,6 +200,7 @@ public final class Position implements Comparable {
      * @return sum of a and b, or the maximum or minimum possible value of int,
      * if overflows happens
      */
+    @Contract(pure = true)
     private int safeAdd(int a, int b) {
         if (a > 0 && b > 0 && a + b <= 0) {
             return Integer.MAX_VALUE;
@@ -207,16 +208,6 @@ public final class Position implements Comparable {
             return Integer.MIN_VALUE;
         } else {
             return a + b;
-        }
-    }
-
-    private int sgn(int i) {
-        if (i < 0) {
-            return -1;
-        } else if (i > 0) {
-            return 1;
-        } else {
-            return 0;
         }
     }
 

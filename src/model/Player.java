@@ -31,8 +31,10 @@ public class Player extends Observable {
     }
 
     public void move(Position direction) {
-        if (WorldManager.getInstance().isWalkable(position.add(direction))) {
-            Position nextPosition = position.add(direction);
+        Position nextPosition = position.add(direction);
+
+        if (WorldManager.getInstance().isWalkable(nextPosition)
+                && !WorldManager.getInstance().contains(nextPosition, Item.PLAYER)) {
 
             WorldManager.getInstance().remove(position, Item.PLAYER);
 

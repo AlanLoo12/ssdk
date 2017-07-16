@@ -1,5 +1,6 @@
 package ui;
 
+import network.Server;
 import ui.gui_elements.FloatField;
 import ui.gui_elements.IntegerField;
 import javafx.animation.AnimationTimer;
@@ -38,6 +39,7 @@ public class MainMenu {
     @FXML public CheckBox generateExit;
     @FXML public FloatField randomWalkersBirthChance;
     @FXML public FloatField randomWalkersDeathChance;
+    @FXML public TextField serverAddress;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
         WorldManager world = WorldManager.getInstance();
@@ -66,10 +68,9 @@ public class MainMenu {
 
     public void handleConnectButtonAction(ActionEvent actionEvent) {
         try {
-            WorldManager.getInstance().connect(InetAddress.getLocalHost());
+            WorldManager.getInstance().connect(InetAddress.getByName(serverAddress.getText()));
         } catch (IOException e) {
             System.out.println("Connection failed");
-            e.printStackTrace();
             System.exit(1);
         }
 
@@ -125,5 +126,16 @@ public class MainMenu {
 
         KeyHandler keyHandler = new KeyHandler(player, worldRenderer);
         keyHandler.registerScene(scene);
+    }
+
+    public void handleStartServerButtonAction(ActionEvent actionEvent) {
+        Server server = new Server();
+        try {
+            server.start();
+        } catch (IOException e) {
+            System.out.println("Failed to start server");
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 }
