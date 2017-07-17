@@ -12,8 +12,6 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
-*.war
 *.ear
 *.zip
 *.tar.gz
@@ -21,7 +19,5 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-
-.idea/artifacts/
-.idea/workspace.xml
 out/
+build/
