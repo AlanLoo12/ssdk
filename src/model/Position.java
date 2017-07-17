@@ -3,7 +3,10 @@ package model;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * A position in 2d integer space
@@ -209,6 +212,48 @@ public final class Position implements Comparable {
         } else {
             return a + b;
         }
+    }
+
+    /**
+     * Convert this vector to the unit vector
+     * @return unit vector of this vector
+     */
+    @NotNull
+    public Position unitize() {
+        if (Math.abs(x) >= Math.abs(y)) {
+            return new Position(sign(x), 0);
+        } else {
+            return new Position(0, sign(y));
+        }
+    }
+
+    @Contract(pure = true)
+    private int sign(int i) {
+        if (i < 0) {
+            return -1;
+        } else if (i > 0) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Produce the Moore neighborhood of this position
+     * @return Moore neighborhood of this position
+     */
+    public Collection<? extends Position> getNeighbours() {
+        Set<Position> neighbours = new HashSet<>();
+        neighbours.add(this.add(UP));
+        neighbours.add(this.add(DOWN));
+        neighbours.add(this.add(LEFT));
+        neighbours.add(this.add(RIGHT));
+        neighbours.add(this.add(UP).add(RIGHT));
+        neighbours.add(this.add(DOWN).add(LEFT));
+        neighbours.add(this.add(LEFT).add(UP));
+        neighbours.add(this.add(RIGHT).add(DOWN));
+
+        return neighbours;
     }
 
     private static class PositionIterator implements Iterator<Position> {

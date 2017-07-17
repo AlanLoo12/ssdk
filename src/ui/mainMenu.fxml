@@ -22,11 +22,6 @@
     </HBox>
 
     <HBox>
-        <Label text="Generate an exit: "/>
-        <CheckBox fx:id="generateExit"/>
-    </HBox>
-
-    <HBox>
         <Label text="Breed random walkers: "/>
         <CheckBox fx:id="breedRandomWalkers" selected="true"/>
     </HBox>

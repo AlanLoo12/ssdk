@@ -1,6 +1,7 @@
 package model;
 
 import model.Position;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -316,6 +317,7 @@ public class PositionTest {
         }
     }
 
+    @Contract(pure = true)
     private int sign(int i) {
         if (i < 0) {
             return -1;
@@ -323,6 +325,48 @@ public class PositionTest {
             return 1;
         } else {
             return 0;
+        }
+    }
+
+    // unitize
+
+    @Test
+    public void testUnitizeUnambiguous() {
+        assertEquals(new Position(0, 0), new Position(0, 0).unitize());
+        assertEquals(new Position(0, 1), new Position(0, 1).unitize());
+        assertEquals(new Position(1, 0), new Position(1, 0).unitize());
+        assertEquals(new Position(0, -1), new Position(0, -1).unitize());
+        assertEquals(new Position(-1, 0), new Position(-1, 0).unitize());
+    }
+
+    @Test
+    public void testUnitizeAmbiguous() {
+        assertEquals(new Position(1, 0), new Position(1, 1).unitize());
+        assertEquals(new Position(-1, 0), new Position(-1, -1).unitize());
+        assertEquals(new Position(1, 0), new Position(1, -1).unitize());
+        assertEquals(new Position(-1, 0), new Position(-1, 1).unitize());
+    }
+
+    @Test
+    public void testUnitizeNotSoEasy() {
+        assertEquals(new Position(1, 0), new Position(2, 1).unitize());
+        assertEquals(new Position(-1, 0), new Position(-2, 1).unitize());
+        assertEquals(new Position(0, 1), new Position(1, 2).unitize());
+        assertEquals(new Position(0, -1), new Position(1, -2).unitize());
+    }
+
+    @Test
+    public void testUnitizeExhaustive() {
+        Random random = new Random();
+
+        for (int i = 0; i < MAX_COMPARISONS; i++) {
+            Position position = new Position(random.nextInt(), random.nextInt());
+
+            if (Math.abs(position.getX()) > Math.abs(position.getY())) {
+                assertEquals(new Position(sign(position.getX()), 0), position.unitize());
+            } else {
+                assertEquals(new Position(0, sign(position.getY())), position.unitize());
+            }
         }
     }
 }

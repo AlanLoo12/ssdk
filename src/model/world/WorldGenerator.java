@@ -20,7 +20,7 @@ public class WorldGenerator implements Observer {
     /**
      * Entities that are randomly generated with the specified probability
      */
-    private Map<Item, Float> randomFillGenerators;
+    private Set<RandomFillGenerator> randomFillGenerators;
     private boolean breedRandomWalkers;
     private float randomWalkersBirthChance;
     private int randomWalkersToTick;
@@ -38,7 +38,7 @@ public class WorldGenerator implements Observer {
     private WorldGenerator() {
         worldGeneratorThread = new WorldGeneratorThread();
 
-        randomFillGenerators = new HashMap<>();
+        randomFillGenerators = new HashSet<>();
 
         actors = new LinkedList<>();
         actorsToAdd = new LinkedList<>();
@@ -64,7 +64,7 @@ public class WorldGenerator implements Observer {
         actor.addObserver(this);
     }
 
-    Map<Item, Float> getRandomFillGenerators() {
+    Set<RandomFillGenerator> getRandomFillGenerators() {
         return randomFillGenerators;
     }
 
@@ -208,17 +208,25 @@ public class WorldGenerator implements Observer {
         }
     }
 
-    @Deprecated
-    private Position nextPosition(Position position) {
-        return position;
+    /**
+     * Generate given item randomly with the given uniform density
+     * @param item item to be generated
+     * @param density density
+     * @param radius l1 radius in which to generate the item
+     * @throws IllegalArgumentException if density is less than 0 or greater than 1
+     */
+    public void generateRandomly(Item item, float density, int radius) {
+        randomFillGenerators.add(new RandomFillGenerator(item, density, radius));
     }
 
+    /**
+     * Generate given item randomly with the given uniform density
+     * @param item item to be generated
+     * @param density density
+     * @throws IllegalArgumentException if density is less than 0 or greater than 1
+     */
     public void generateRandomly(Item item, float density) throws IllegalArgumentException {
-        if (density < 0 || density > 1) {
-            throw new IllegalArgumentException("Density must be between 0 and 1");
-        }
-
-        randomFillGenerators.put(item, density);
+        randomFillGenerators.add(new RandomFillGenerator(item, density));
     }
 
     /*public void putAtTheWalkerTip(Item item) {

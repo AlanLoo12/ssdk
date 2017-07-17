@@ -53,13 +53,15 @@ public class RemoteWorld extends AbstractWorld {
      * @param item     item to store
      */
     @Override
-    public void put(@NotNull Position position, @NotNull Item item) {
+    public boolean put(@NotNull Position position, @NotNull Item item) {
         try {
             connect();
             out.println("PUT " + position + " " + item);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return true; // TODO: finish. It can't always be true
     }
 
     /**
@@ -164,5 +166,11 @@ public class RemoteWorld extends AbstractWorld {
             e.printStackTrace();
         }
         return null; // stub
+    }
+
+    @Override
+    public Set<Position> get(Item item) {
+        return new HashSet<>();
+        // TODO: what do we return here??? not enough access rights? enough? why? who?
     }
 }

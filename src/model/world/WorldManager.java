@@ -43,8 +43,8 @@ public class WorldManager extends Observable implements Observer {
      * @param position position at which to store the item
      * @param item item to be stored
      */
-    public void put(Position position, Item item) {
-        world.put(position, item);
+    public boolean put(Position position, Item item) {
+        return world.put(position, item);
     }
 
     /**
@@ -108,5 +108,62 @@ public class WorldManager extends Observable implements Observer {
     public void update(Observable o, Object arg) {
         setChanged();
         notifyObservers(arg);
+    }
+
+    /**
+     * Produce the positions of all items with the given type
+     * @param item items to search for
+     * @return positions of all items with the given type
+     */
+    public Set<Position> get(Item item) {
+        return world.get(item);
+    }
+
+    /**
+     * Find the specified item near the given position and
+     * maybe produce the position of the found item
+     * @param position position around which to search for
+     * @param item item to search for
+     * @param maxActiveDistance maximum L1 distance to be searched for
+     * @return requested item
+     */
+    @NotNull Optional<Position> findNear(Position position,
+                                         Item item,
+                                         int maxActiveDistance,
+                                         boolean ignoreCenter) {
+        Set<Position> visited = new HashSet<>();
+        Queue<Position> todo = new LinkedList<>();
+
+        if (ignoreCenter) {
+            todo.addAll(position.getNeighbours());
+            visited.add(position);
+        } else {
+            todo.add(position);
+        }
+
+        while (!todo.isEmpty()) {
+            Position currentPosition = todo.poll();
+
+            if (!visited.contains(currentPosition)) {
+                if (world.contains(currentPosition, item)) {
+                    return Optional.of(currentPosition);
+                }
+
+                todo.addAll(currentPosition.getNeighbours());
+                visited.add(currentPosition);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    /**
+     * Same as put, but only places the item if the givne position is walkable
+     * @param position position at which to store the item
+     * @param item item to be stored
+     * @return true if the item was stored, false otherwise
+     */
+    boolean safePut(@NotNull Position position, Item item) {
+        return isWalkable(position) && put(position, item);
     }
 }

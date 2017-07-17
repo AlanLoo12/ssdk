@@ -25,9 +25,8 @@ class RandomWalker extends Actor {
         WorldManager.getInstance().put(position, Item.AIR);
         WorldGenerator.addWalls(position);
 
-        for (Item item : WorldGenerator.getInstance().getRandomFillGenerators().keySet()) {
-            if (RANDOM.nextFloat() < WorldGenerator.getInstance().getRandomFillGenerators().get(item)) {
-                WorldManager.getInstance().put(position, item);
+        for (RandomFillGenerator randomFillGenerator : WorldGenerator.getInstance().getRandomFillGenerators()) {
+            if (randomFillGenerator.generate(position)) {
                 break;
             }
         }
@@ -42,7 +41,7 @@ class RandomWalker extends Actor {
         }
     }
 
-    private Position nextPosition(Position position) {
+    static Position nextPosition(Position position) {
         switch (RANDOM.nextInt(4)) {
             case 0:
                 return new Position(position.getX() + 1, position.getY());

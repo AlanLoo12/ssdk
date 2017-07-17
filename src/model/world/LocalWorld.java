@@ -41,7 +41,7 @@ public class LocalWorld extends AbstractWorld {
      * @param item     item to store
      */
     @Override
-    public void put(@NotNull Position position, @NotNull Item item) {
+    public boolean put(@NotNull Position position, @NotNull Item item) {
         if (item.equals(WALL)) {
             worldLayers.get(AIR).remove(position);
         }
@@ -49,10 +49,12 @@ public class LocalWorld extends AbstractWorld {
             worldLayers.get(WALL).remove(position);
         }
 
-        worldLayers.get(item).add(position);
+        boolean returnVal = worldLayers.get(item).add(position);
 
         setChanged();
         notifyObservers(position);
+
+        return returnVal;
     }
 
     /**
@@ -143,5 +145,10 @@ public class LocalWorld extends AbstractWorld {
         }
 
         return map;
+    }
+
+    @Override
+    public Set<Position> get(Item item) {
+        return worldLayers.get(item);
     }
 }

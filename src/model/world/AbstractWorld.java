@@ -16,8 +16,9 @@ abstract class AbstractWorld extends Observable {
      * Put the given item at specified position
      * @param position position at which to store the item
      * @param item item to store
+     * @return true if the world was modified, false otherwise
      */
-    abstract void put(@NotNull Position position, @NotNull Item item);
+    abstract boolean put(@NotNull Position position, @NotNull Item item);
 
     /**
      * Remove the item from the specified position, if item exists.
@@ -66,4 +67,6 @@ abstract class AbstractWorld extends Observable {
      * @return a map of all items inside the rectangle specified by the given positions
      */
     abstract Map<Position,Set<Item>> get(Position from, Position to);
+
+    public abstract Set<Position> get(Item item);
 }

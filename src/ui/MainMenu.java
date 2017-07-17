@@ -1,5 +1,6 @@
 package ui;
 
+import model.world.WorldPhysics;
 import network.Server;
 import ui.gui_elements.FloatField;
 import ui.gui_elements.IntegerField;
@@ -22,8 +23,6 @@ import model.world.WorldGenerator;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static model.Item.*;
 
@@ -36,7 +35,6 @@ public class MainMenu {
     @FXML public IntegerField initialMapSize;
     @FXML public CheckBox breedRandomWalkers;
     @FXML public Spinner activeRandomWalkers;
-    @FXML public CheckBox generateExit;
     @FXML public FloatField randomWalkersBirthChance;
     @FXML public FloatField randomWalkersDeathChance;
     @FXML public TextField serverAddress;
@@ -47,6 +45,7 @@ public class MainMenu {
 
         // Configure the generator
         worldGenerator.generateRandomly(PLANT, 0.001f);
+        worldGenerator.generateRandomly(WATER, 0.00001f, 10);
         worldGenerator.setBreedRandomWalkers(breedRandomWalkers.isSelected());
         worldGenerator.setRandomWalkersBirthChance(randomWalkersBirthChance.getValue());
         worldGenerator.setRandomWalkersDeathChance(randomWalkersDeathChance.getValue());
@@ -54,9 +53,9 @@ public class MainMenu {
 
         // Generate
         worldGenerator.tick(initialMapSize.getValue());
-        /*if (generateExit.isSelected()) {
-            worldGenerator.putAtTheWalkerTip(EXIT);
-        }*/
+
+        WorldPhysics worldPhysics = new WorldPhysics();
+        worldPhysics.start();
 
         if (generateOnTheGo.isSelected()) {
             worldGenerator.start();

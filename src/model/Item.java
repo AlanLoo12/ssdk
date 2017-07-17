@@ -12,11 +12,11 @@ import java.util.function.Function;
 public enum Item {
     AIR(Color.DARKGREY),
 
+    WATER(Color.ROYALBLUE),
+
     PLAYER(Color.DARKGOLDENROD),
 
     PLANT(Color.LIMEGREEN),
-
-    EXIT(Color.BLACK),
 
     WALL(Color.DARKRED),
     PICK_AXE(Color.rgb(183, 124, 99),
