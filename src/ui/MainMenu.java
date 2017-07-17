@@ -30,7 +30,7 @@ import static model.Item.*;
  * A controller class for the main menu
  */
 public class MainMenu {
-    private static final long MAX_DELAY = 10;
+    private static final long MAX_DELAY = 1000;
     @FXML public CheckBox generateOnTheGo;
     @FXML public IntegerField initialMapSize;
     @FXML public CheckBox breedRandomWalkers;
@@ -38,6 +38,7 @@ public class MainMenu {
     @FXML public FloatField randomWalkersBirthChance;
     @FXML public FloatField randomWalkersDeathChance;
     @FXML public TextField serverAddress;
+    @FXML public IntegerField serverPort;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
         WorldManager world = WorldManager.getInstance();
@@ -67,7 +68,7 @@ public class MainMenu {
 
     public void handleConnectButtonAction(ActionEvent actionEvent) {
         try {
-            WorldManager.getInstance().connect(InetAddress.getByName(serverAddress.getText()));
+            WorldManager.getInstance().connect(InetAddress.getByName(serverAddress.getText()), serverPort.getValue());
         } catch (IOException e) {
             System.out.println("Connection failed");
             System.exit(1);
@@ -102,7 +103,7 @@ public class MainMenu {
             public void handle(long l) {
                 if (l - prev > MAX_DELAY) {
                     prev = l;
-                    worldRenderer.render();
+                        worldRenderer.render();
                 }
             }
         };
@@ -128,9 +129,10 @@ public class MainMenu {
     }
 
     public void handleStartServerButtonAction(ActionEvent actionEvent) {
-        Server server = new Server();
         try {
-            server.start();
+            Server server = new Server(serverPort.getValue());
+
+            //handleConnectButtonAction(actionEvent);
         } catch (IOException e) {
             System.out.println("Failed to start server");
             e.printStackTrace();

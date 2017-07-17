@@ -51,7 +51,9 @@
     <HBox>
         <Label text="Server Address: "/>
         <TextField fx:id="serverAddress" text="127.0.0.1"/>
+        <IntegerField fx:id="serverPort" text="3000"/>
     </HBox>
+
     <HBox spacing="10">
         <Button text="Play online" onAction="#handleConnectButtonAction"/>
         <Button text="Start server" onAction="#handleStartServerButtonAction"/>

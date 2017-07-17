@@ -31,9 +31,9 @@ public class UsePlay {
 
         //System.out.println(new Position(100, -200));
 
-        WorldManager.getInstance().connect(InetAddress.getByName("127.0.0.1"));
+        WorldManager.getInstance().connect(InetAddress.getByName("127.0.0.1"), 3000);
 
-        for (int i = 1; i < MAX; i++) {
+        /*for (int i = 1; i < MAX; i++) {
             long startTime = System.currentTimeMillis();
 
             WorldManager.getInstance().get(new Position(0, 0), new Position(i, i));
@@ -41,6 +41,8 @@ public class UsePlay {
             long stopTime = System.currentTimeMillis();
             long elapsedTime = stopTime - startTime;
             System.out.println(i + " " + elapsedTime);
-        }
+        }*/
+
+        System.out.println(WorldManager.getInstance().get(new Position(0, 0)));
     }
 }

@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -26,23 +27,13 @@ public class RemoteWorld extends AbstractWorld {
     private PrintWriter out;
     private BufferedReader in;
     private Socket serverSocket;
+    private int port;
 
-    public RemoteWorld(InetAddress address) throws IOException {
+    public RemoteWorld(InetAddress address, int port) throws IOException {
         this.address = address;
-        connect();
-        disconnect();
-    }
+        this.port = port;
 
-    private void disconnect() throws IOException {
-        serverSocket.close();
-    }
-
-    /**
-     * Connect to the server and open the IO streams
-     * @throws IOException if connection failed
-     */
-    private void connect() throws IOException {
-        serverSocket = new Socket(address, Server.PORT);
+        serverSocket = new Socket(address, port);
         out = new PrintWriter(serverSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
     }
@@ -54,13 +45,8 @@ public class RemoteWorld extends AbstractWorld {
      * @param item     item to store
      */
     @Override
-    public boolean put(@NotNull Position position, @NotNull Item item) {
-        try {
-            connect();
-            out.println("PUT " + position + " " + item);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public synchronized boolean put(@NotNull Position position, @NotNull Item item) {
+        out.println("PUT " + position + " " + item);
 
         return true; // TODO: finish. It can't always be true
     }
@@ -73,13 +59,8 @@ public class RemoteWorld extends AbstractWorld {
      * @param item     item to be removed
      */
     @Override
-    public void remove(@NotNull Position position, @NotNull Item item) {
-        try {
-            connect();
-            out.println("REMOVE " + position + " " + item);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public synchronized void remove(@NotNull Position position, @NotNull Item item) {
+        out.println("REMOVE " + position + " " + item);
     }
 
     /**
@@ -89,18 +70,13 @@ public class RemoteWorld extends AbstractWorld {
      * @return all items at the given position
      */
     @Override
-    public @NotNull Set<Item> get(@NotNull Position position) {
-        Set<Item> items = new HashSet<>();
-
+    public synchronized @NotNull Set<Item> get(@NotNull Position position) {
         try {
-            connect();
             out.println("GET " + position);
-            items.addAll(Protocol.decodeItems(in.readLine()));
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
+            return Protocol.decodeItems(in.readLine());
+        } catch (IOException | ParseException ignored) {}
 
-        return items;
+        return new HashSet<>();
     }
 
     /**
@@ -112,14 +88,12 @@ public class RemoteWorld extends AbstractWorld {
      * false otherwise
      */
     @Override
-    public boolean isWalkable(@NotNull Position position) {
+    public synchronized boolean isWalkable(@NotNull Position position) {
         try {
-            connect();
             out.println("IS_WALKABLE " + position);
             return Protocol.decodeBoolean(in.readLine());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException ignored) {}
+
         return false;
     }
 
@@ -133,19 +107,17 @@ public class RemoteWorld extends AbstractWorld {
      * false otherwise
      */
     @Override
-    public boolean contains(@NotNull Position position, @NotNull Item item) {
+    public synchronized boolean contains(@NotNull Position position, @NotNull Item item) {
         try {
-            connect();
             out.println("CONTAINS " + position + " " + item);
             return Protocol.decodeBoolean(in.readLine());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException ignored) {}
+
         return false;
     }
 
     @Override
-    public WorldGenerator getGenerator() {
+    public synchronized WorldGenerator getGenerator() {
         // TODO: finish
         return null; // TODO: what do we do here?
     }
@@ -158,19 +130,17 @@ public class RemoteWorld extends AbstractWorld {
      * @return a map of all items inside the rectangle specified by the given positions
      */
     @Override
-    public Map<Position, Set<Item>> get(Position from, Position to) {
+    public synchronized Map<Position, Set<Item>> get(Position from, Position to) {
         try {
-            connect();
             out.println("GET " + from + " " + to);
             return Protocol.decodeMap(from, to, in.readLine());
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-        return null; // stub
+        } catch (IOException | ParseException ignored) {}
+
+        return new HashMap<>();
     }
 
     @Override
-    public Set<Position> get(Item item) {
+    public synchronized Set<Position> get(Item item) {
         return new HashSet<>();
         // TODO: what do we return here??? not enough access rights? enough? why? who?
     }

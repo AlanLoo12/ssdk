@@ -85,8 +85,8 @@ public class WorldManager extends Observable implements Observer {
      * Connect to the server at the specified location
      * @param address address of the server
      */
-    public void connect(InetAddress address) throws IOException {
-        world = new RemoteWorld(address);
+    public void connect(InetAddress address, int port) throws IOException {
+        world = new RemoteWorld(address, port);
     }
 
     /**
