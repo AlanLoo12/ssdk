@@ -14,6 +14,9 @@ import static model.Item.WALL;
 
 /**
  * A world located on this machine
+ *
+ * INVARIANT: Either a wall or air occupies every active position
+ * // TODO: check invariant
  */
 public class LocalWorld extends AbstractWorld {
     private Map<Item, Set<Position>> worldLayers;
@@ -151,5 +154,30 @@ public class LocalWorld extends AbstractWorld {
     @Override
     public Set<Position> get(Item item) {
         return worldLayers.get(item);
+    }
+
+    /**
+     * Produce true if given position was initialized
+     *
+     * @param position position to check for
+     * @return true if given position was initialized
+     */
+    @Override
+    public boolean contains(@NotNull Position position) {
+        return worldLayers.get(Item.AIR).contains(position) || worldLayers.get(Item.WALL).contains(position);
+    }
+
+    @Override
+    public void addAll(@NotNull Position position, Set<Item> items) {
+        for (Item item : items) {
+            worldLayers.get(item).add(position);
+        }
+    }
+
+    @Override
+    public void addAll(Map<Position, Set<Item>> map) {
+        for (Position position : map.keySet()) {
+            addAll(position, map.get(position));
+        }
     }
 }

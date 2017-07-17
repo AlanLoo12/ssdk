@@ -29,6 +29,8 @@ public class RemoteWorld extends AbstractWorld {
     private Socket serverSocket;
     private int port;
 
+    private LocalWorld cacheWorld;
+
     public RemoteWorld(InetAddress address, int port) throws IOException {
         this.address = address;
         this.port = port;
@@ -36,6 +38,8 @@ public class RemoteWorld extends AbstractWorld {
         serverSocket = new Socket(address, port);
         out = new PrintWriter(serverSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+
+        cacheWorld = new LocalWorld();
     }
 
     /**
@@ -46,9 +50,12 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public synchronized boolean put(@NotNull Position position, @NotNull Item item) {
-        out.println("PUT " + position + " " + item);
+        if (!cacheWorld.contains(position, item)) {
+            out.println("PUT " + position + " " + item);
+            cacheWorld.put(position, item);
+        }
 
-        return true; // TODO: finish. It can't always be true
+        return true; // TODO: get boolean from the server
     }
 
     /**
@@ -60,7 +67,10 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public synchronized void remove(@NotNull Position position, @NotNull Item item) {
-        out.println("REMOVE " + position + " " + item);
+        if (cacheWorld.contains(position, item)) {
+            out.println("REMOVE " + position + " " + item);
+            cacheWorld.remove(position, item);
+        }
     }
 
     /**
@@ -71,12 +81,18 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public synchronized @NotNull Set<Item> get(@NotNull Position position) {
+        if (cacheWorld.contains(position)) {
+            return cacheWorld.get(position);
+        }
+
+        Set<Item> items = new HashSet<>();
         try {
             out.println("GET " + position);
-            return Protocol.decodeItems(in.readLine());
+            items.addAll(Protocol.decodeItems(in.readLine()));
         } catch (IOException | ParseException ignored) {}
 
-        return new HashSet<>();
+        cacheWorld.addAll(position, items);
+        return items;
     }
 
     /**
@@ -89,6 +105,10 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public synchronized boolean isWalkable(@NotNull Position position) {
+        if (cacheWorld.contains(position)) {
+            return cacheWorld.isWalkable(position);
+        }
+
         try {
             out.println("IS_WALKABLE " + position);
             return Protocol.decodeBoolean(in.readLine());
@@ -108,6 +128,10 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public synchronized boolean contains(@NotNull Position position, @NotNull Item item) {
+        if (cacheWorld.contains(position)) {
+            return cacheWorld.contains(position, item);
+        }
+
         try {
             out.println("CONTAINS " + position + " " + item);
             return Protocol.decodeBoolean(in.readLine());
@@ -131,17 +155,47 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public synchronized Map<Position, Set<Item>> get(Position from, Position to) {
+        if (cacheWorld.contains(from) && cacheWorld.contains(to)) { // TODO: check if this hack works
+            return cacheWorld.get(from, to);
+        }
+
+        Map<Position, Set<Item>> map = new HashMap<>();
         try {
             out.println("GET " + from + " " + to);
-            return Protocol.decodeMap(from, to, in.readLine());
+            map.putAll(Protocol.decodeMap(from, to, in.readLine()));
         } catch (IOException | ParseException ignored) {}
 
-        return new HashMap<>();
+        cacheWorld.addAll(map);
+        return map;
     }
 
     @Override
     public synchronized Set<Position> get(Item item) {
         return new HashSet<>();
         // TODO: what do we return here??? not enough access rights? enough? why? who?
+    }
+
+    /**
+     * Produce true if given position was initialized
+     *
+     * @param position position to check for
+     * @return true if given position was initialized
+     */
+    @Override
+    public boolean contains(@NotNull Position position) {
+        return false; //TODO: finish
+    }
+
+    @Override
+    public void addAll(@NotNull Position position, Set<Item> items) {
+        for (Item item : items) {
+            put(position, item);
+            // TODO: write a faster implementation
+        }
+    }
+
+    @Override
+    public void addAll(Map<Position, Set<Item>> map) {
+        // TODO: implement
     }
 }

@@ -71,4 +71,15 @@ public abstract class AbstractWorld extends Observable {
     public abstract Map<Position,Set<Item>> get(Position from, Position to);
 
     public abstract Set<Position> get(Item item);
+
+    /**
+     * Produce true if given position was initialized
+     * @param position position to check for
+     * @return true if given position was initialized
+     */
+    public abstract boolean contains(@NotNull Position position);
+
+    public abstract void addAll(@NotNull Position position, Set<Item> items);
+
+    public abstract void addAll(Map<Position, Set<Item>> map);
 }
