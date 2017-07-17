@@ -29,7 +29,10 @@ public class RemoteWorld extends AbstractWorld {
     private Socket serverSocket;
     private int port;
 
+    // Caching
     private LocalWorld cacheWorld;
+    private static final int CHUNK_SIZE = 30;
+    private Set<Position> cachedChunks;
 
     public RemoteWorld(InetAddress address, int port) throws IOException {
         this.address = address;
@@ -40,6 +43,22 @@ public class RemoteWorld extends AbstractWorld {
         in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
 
         cacheWorld = new LocalWorld();
+        cachedChunks = new HashSet<>();
+        cacheChunk(new Position(0,0));
+    }
+
+    /**
+     * Cache the given chunk
+     * @param position position of the chunk in chunk coordinates
+     */
+    private void cacheChunk(Position position) {
+        if (!cachedChunks.contains(position)) {
+            Position from = position.add(-1, -1).multiply(CHUNK_SIZE);
+            Position to = position.add(1, 1).multiply(CHUNK_SIZE);
+
+            cacheWorld.addAll(getChunk(from, to));
+            cachedChunks.add(position);
+        }
     }
 
     /**
@@ -50,6 +69,8 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public synchronized boolean put(@NotNull Position position, @NotNull Item item) {
+        updateChunks(position);
+
         if (!cacheWorld.contains(position, item)) {
             out.println("PUT " + position + " " + item);
             cacheWorld.put(position, item);
@@ -67,6 +88,8 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public synchronized void remove(@NotNull Position position, @NotNull Item item) {
+        updateChunks(position);
+
         if (cacheWorld.contains(position, item)) {
             out.println("REMOVE " + position + " " + item);
             cacheWorld.remove(position, item);
@@ -81,6 +104,8 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public synchronized @NotNull Set<Item> get(@NotNull Position position) {
+        updateChunks(position);
+
         if (cacheWorld.contains(position)) {
             return cacheWorld.get(position);
         }
@@ -105,6 +130,8 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public synchronized boolean isWalkable(@NotNull Position position) {
+        updateChunks(position);
+
         if (cacheWorld.contains(position)) {
             return cacheWorld.isWalkable(position);
         }
@@ -128,6 +155,8 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public synchronized boolean contains(@NotNull Position position, @NotNull Item item) {
+        updateChunks(position);
+
         if (cacheWorld.contains(position)) {
             return cacheWorld.contains(position, item);
         }
@@ -155,10 +184,16 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public synchronized Map<Position, Set<Item>> get(Position from, Position to) {
-        if (cacheWorld.contains(from) && cacheWorld.contains(to)) { // TODO: check if this hack works
-            return cacheWorld.get(from, to);
+        for (int x = from.getX(); x <= to.getX(); x += CHUNK_SIZE) {
+            for (int y = from.getX(); y <= to.getX(); y += CHUNK_SIZE) {
+                updateChunks(new Position(x, y));
+            }
         }
 
+        return cacheWorld.get(from, to);
+    }
+
+    private Map<Position, Set<Item>> getChunk(Position from, Position to) {
         Map<Position, Set<Item>> map = new HashMap<>();
         try {
             out.println("GET " + from + " " + to);
@@ -167,6 +202,19 @@ public class RemoteWorld extends AbstractWorld {
 
         cacheWorld.addAll(map);
         return map;
+    }
+
+    private void updateChunks(Position position) {
+        Position chunkPosition = worldCoordinatesToChunkCoordinates(position);
+
+        cacheChunk(chunkPosition);
+        for (Position neighbour : chunkPosition.getNeighbours()) {
+            cacheChunk(neighbour);
+        }
+    }
+
+    private Position worldCoordinatesToChunkCoordinates(Position position) {
+        return position.divide(CHUNK_SIZE);
     }
 
     @Override

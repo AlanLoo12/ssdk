@@ -256,6 +256,10 @@ public final class Position implements Comparable {
         return neighbours;
     }
 
+    public Position divide(int factor) {
+        return new Position(x / factor, y / factor);
+    }
+
     private static class PositionIterator implements Iterator<Position> {
         Position min;
         Position max;
