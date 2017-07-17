@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.util.Map;
 import java.util.Set;
 
-import static model.Item.PLANT;
+import static model.Item.MUSHROOM;
 
 /**
  * A simple server class
@@ -45,7 +45,7 @@ public class Server {
         WorldGenerator worldGenerator = abstractWorld.getGenerator();
 
         // Configure the generator
-        worldGenerator.generateRandomly(PLANT, 0.001f);
+        worldGenerator.generateRandomly(MUSHROOM, 0.001f);
         worldGenerator.setBreedRandomWalkers(true);
         worldGenerator.setRandomWalkersBirthChance(0.1f);
         worldGenerator.setRandomWalkersDeathChance(0.05f);

@@ -23,7 +23,7 @@ public class ProtocolTest {
         items.add(Item.AIR);
         assertEquals(items, Protocol.decodeItems(Protocol.encodeItems(items)));
 
-        items.add(Item.PLANT);
+        items.add(Item.MUSHROOM);
         assertEquals(items, Protocol.decodeItems(Protocol.encodeItems(items)));
     }
 

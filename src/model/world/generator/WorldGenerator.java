@@ -219,6 +219,11 @@ public class WorldGenerator implements Observer {
         randomFillGenerators.add(new RandomFillGenerator(item, density, radius));
     }
 
+    public void generateRandomly(Item item, float density, int radius, float fillChance) {
+        randomFillGenerators.add(new RandomFillGenerator(item, density, radius, fillChance));
+    }
+
+
     /**
      * Generate given item randomly with the given uniform density
      * @param item item to be generated

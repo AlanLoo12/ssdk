@@ -3,7 +3,6 @@ package model.world.physics;
 import model.Item;
 import model.Position;
 import model.world.WorldManager;
-import model.world.generator.RandomWalker;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Collection;
@@ -15,7 +14,7 @@ import java.util.Set;
  * Handles plants growth
  */
 public class Plants implements Actor {
-    private static final int MIN_DELAY = 20;
+    private static final int MIN_DELAY = 5000;
     private static final Random RANDOM = new Random();
     private static final int MAX_WATER_DISTANCE = 10;
     private Thread plantsThread;
@@ -52,7 +51,7 @@ public class Plants implements Actor {
         Set<Position> toAdd = new HashSet<>();
         Set<Position> toRemove = new HashSet<>();
 
-        for (Position plant : WorldManager.getInstance().get(Item.PLANT)) {
+        for (Position plant : WorldManager.getInstance().get(Item.MUSHROOM)) {
             if (kill(plant)) {
                 toRemove.add(plant);
             }
@@ -60,10 +59,10 @@ public class Plants implements Actor {
         }
 
         for (Position position : toAdd) {
-            WorldManager.getInstance().safePut(position, Item.PLANT);
+            WorldManager.getInstance().safePut(position, Item.MUSHROOM);
         }
         for (Position position : toRemove) {
-            WorldManager.getInstance().remove(position, Item.PLANT);
+            WorldManager.getInstance().remove(position, Item.MUSHROOM);
         }
     }
 
@@ -102,7 +101,7 @@ public class Plants implements Actor {
      */
     private int getNeighboursSize(Position plant) {
         return (int) plant.getNeighbours().stream()
-                .filter(position -> WorldManager.getInstance().contains(position, Item.PLANT))
+                .filter(position -> WorldManager.getInstance().contains(position, Item.MUSHROOM))
                 .count();
     }
 

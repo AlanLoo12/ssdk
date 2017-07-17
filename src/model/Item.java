@@ -16,7 +16,7 @@ public enum Item {
 
     PLAYER(Color.DARKGOLDENROD),
 
-    PLANT(Color.LIMEGREEN),
+    MUSHROOM(Color.MEDIUMVIOLETRED),
 
     WALL(Color.DARKRED),
     PICK_AXE(Color.rgb(183, 124, 99),

@@ -44,7 +44,7 @@ public class MainMenu {
         WorldGenerator worldGenerator = world.getGenerator();
 
         // Configure the generator
-        worldGenerator.generateRandomly(PLANT, 0.0005f, 2);
+        worldGenerator.generateRandomly(MUSHROOM, 0.00005f, 3, 0.5f);
         worldGenerator.generateRandomly(WATER, 0.00001f, 10);
         worldGenerator.setBreedRandomWalkers(breedRandomWalkers.isSelected());
         worldGenerator.setRandomWalkersBirthChance(randomWalkersBirthChance.getValue());

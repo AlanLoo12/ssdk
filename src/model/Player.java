@@ -39,9 +39,9 @@ public class Player extends Observable {
             WorldManager.getInstance().remove(position, Item.PLAYER);
 
             Set<Item> items = WorldManager.getInstance().get(nextPosition);
-            if (items.contains(Item.PLANT)) {
-                WorldManager.getInstance().remove(nextPosition, Item.PLANT);
-                inventory.add(Item.PLANT);
+            if (items.contains(Item.MUSHROOM)) {
+                WorldManager.getInstance().remove(nextPosition, Item.MUSHROOM);
+                inventory.add(Item.MUSHROOM);
             }
 
             position = nextPosition;

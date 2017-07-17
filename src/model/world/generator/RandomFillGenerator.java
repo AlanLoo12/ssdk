@@ -12,6 +12,7 @@ import java.util.Random;
 class RandomFillGenerator {
     private static final Random RANDOM = new Random();
     private final int radius;
+    private float fillChance = 1;
     private float density;
     private Item item;
 
@@ -33,6 +34,22 @@ class RandomFillGenerator {
         this.item = item;
         this.density = density;
         this.radius = radius;
+    }
+
+    RandomFillGenerator(Item item, float density, int radius, float fillChance) {
+        if (density < 0 || density > 1) {
+            throw new IllegalArgumentException("Density must be between 0 and 1 (inclusive)");
+        }
+
+
+        if (fillChance < 0 || fillChance > 1) {
+            throw new IllegalArgumentException("Fill chance must be between 0 and 1 (inclusive)");
+        }
+
+        this.item = item;
+        this.density = density;
+        this.radius = radius;
+        this.fillChance = fillChance;
     }
 
     /**
@@ -57,8 +74,10 @@ class RandomFillGenerator {
 
         for (int x = -radius; x <= radius; x++) {
             for (int y = -radius; y <= radius; y++) {
-                if (WorldManager.getInstance().safePut(position.add(x, y), item)) {
-                    returnVal = true;
+                if (RANDOM.nextFloat() < fillChance) { // TODO: finish fillChance logic
+                    if (WorldManager.getInstance().safePut(position.add(x, y), item)) {
+                        returnVal = true;
+                    }
                 }
             }
         }
