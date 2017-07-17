@@ -1,13 +1,13 @@
-package model.world;
+package model.world.generator;
 
 import model.Item;
 import model.Position;
+import model.world.WorldManager;
 
 import java.util.*;
 
 import static model.Item.AIR;
 import static model.Item.WALL;
-import static model.Position.*;
 
 /**
  * A world generator
@@ -198,7 +198,7 @@ public class WorldGenerator implements Observer {
         }
     }*/
 
-    static void addWalls(Position position) {
+    public static void addWalls(Position position) {
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
                 if (!WorldManager.getInstance().contains(position.add(x, y), AIR)) {

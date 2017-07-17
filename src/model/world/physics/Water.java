@@ -1,30 +1,36 @@
-package model.world;
+package model.world.physics;
 
 import model.Item;
 import model.Position;
+import model.world.WorldManager;
+import model.world.generator.RandomWalker;
 
 import java.util.Random;
 
 /**
- * Handles world physics:
- *
- *  * Liquid flow
+ * Handles water physics
  */
-public class WorldPhysics {
+public class Water implements Actor {
+    private static final int MIN_DELAY = 5000;
     private static final int MAX_ACTIVE_DISTANCE = 20;
     private static final Random RANDOM = new Random();
-    private WorldPhysicsThread worldPhysicsThread;
+    private Thread waterThread;
 
-    public WorldPhysics() {
-        worldPhysicsThread = new WorldPhysicsThread();
+    Water() {
+        waterThread = new WaterThread();
     }
 
+    @Override
     public void start() {
-        worldPhysicsThread.start();
+        waterThread.start();
     }
 
-    private class WorldPhysicsThread extends Thread {
-        private static final int MIN_DELAY = 5000;
+    @Override
+    public void stop() {
+        waterThread.interrupt();
+    }
+
+    private class WaterThread extends Thread {
         private long prevTime = 0;
 
         @Override
@@ -39,10 +45,6 @@ public class WorldPhysics {
     }
 
     private void tick() {
-        tickWater();
-    }
-
-    private void tickWater() {
         for (Position water : WorldManager.getInstance().get(Item.WATER)) {
             WorldManager.getInstance().findNear(water,
                     Item.WATER,

@@ -1,7 +1,8 @@
-package model.world;
+package model.world.storage;
 
 import model.Item;
 import model.Position;
+import model.world.generator.WorldGenerator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -17,7 +18,7 @@ import static model.Item.WALL;
 public class LocalWorld extends AbstractWorld {
     private Map<Item, Set<Position>> worldLayers;
 
-    LocalWorld() {
+    public LocalWorld() {
         worldLayers = new ConcurrentHashMap<>();
 
         wipeClean();

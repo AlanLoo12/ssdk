@@ -1,7 +1,8 @@
-package model.world;
+package model.world.storage;
 
 import model.Item;
 import model.Position;
+import model.world.generator.WorldGenerator;
 import network.Protocol;
 import network.Server;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +27,7 @@ public class RemoteWorld extends AbstractWorld {
     private BufferedReader in;
     private Socket serverSocket;
 
-    RemoteWorld(InetAddress address) throws IOException {
+    public RemoteWorld(InetAddress address) throws IOException {
         this.address = address;
         connect();
         disconnect();

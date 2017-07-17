@@ -2,6 +2,10 @@ package model.world;
 
 import model.Item;
 import model.Position;
+import model.world.generator.WorldGenerator;
+import model.world.storage.AbstractWorld;
+import model.world.storage.LocalWorld;
+import model.world.storage.RemoteWorld;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -127,10 +131,11 @@ public class WorldManager extends Observable implements Observer {
      * @param maxActiveDistance maximum L1 distance to be searched for
      * @return requested item
      */
-    @NotNull Optional<Position> findNear(Position position,
-                                         Item item,
-                                         int maxActiveDistance,
-                                         boolean ignoreCenter) {
+    @NotNull
+    public Optional<Position> findNear(Position position,
+                                       Item item,
+                                       int maxActiveDistance,
+                                       boolean ignoreCenter) {
         Set<Position> visited = new HashSet<>();
         Queue<Position> todo = new LinkedList<>();
 
@@ -163,7 +168,11 @@ public class WorldManager extends Observable implements Observer {
      * @param item item to be stored
      * @return true if the item was stored, false otherwise
      */
-    boolean safePut(@NotNull Position position, Item item) {
+    public boolean safePut(@NotNull Position position, Item item) {
         return isWalkable(position) && put(position, item);
+    }
+
+    public Optional<Position> findNear(Position position, Item item, int distance) {
+        return findNear(position, item, distance, false);
     }
 }

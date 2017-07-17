@@ -1,7 +1,7 @@
 package network;
 
 import model.*;
-import model.world.WorldGenerator;
+import model.world.generator.WorldGenerator;
 import model.world.WorldManager;
 
 import java.io.*;

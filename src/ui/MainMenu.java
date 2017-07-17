@@ -1,6 +1,6 @@
 package ui;
 
-import model.world.WorldPhysics;
+import model.world.physics.WorldPhysics;
 import network.Server;
 import ui.gui_elements.FloatField;
 import ui.gui_elements.IntegerField;
@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.Player;
 import model.world.WorldManager;
-import model.world.WorldGenerator;
+import model.world.generator.WorldGenerator;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -44,7 +44,7 @@ public class MainMenu {
         WorldGenerator worldGenerator = world.getGenerator();
 
         // Configure the generator
-        worldGenerator.generateRandomly(PLANT, 0.001f);
+        worldGenerator.generateRandomly(PLANT, 0.0005f, 2);
         worldGenerator.generateRandomly(WATER, 0.00001f, 10);
         worldGenerator.setBreedRandomWalkers(breedRandomWalkers.isSelected());
         worldGenerator.setRandomWalkersBirthChance(randomWalkersBirthChance.getValue());

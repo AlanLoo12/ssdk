@@ -1,14 +1,15 @@
-package model.world;
+package model.world.generator;
 
 import model.Item;
 import model.Position;
+import model.world.WorldManager;
 
 import java.util.Random;
 
 /**
  * A random walker actor
  */
-class RandomWalker extends Actor {
+public class RandomWalker extends Actor {
     private static final Random RANDOM = new Random();
     private Position position;
 
@@ -41,7 +42,7 @@ class RandomWalker extends Actor {
         }
     }
 
-    static Position nextPosition(Position position) {
+    public static Position nextPosition(Position position) {
         switch (RANDOM.nextInt(4)) {
             case 0:
                 return new Position(position.getX() + 1, position.getY());

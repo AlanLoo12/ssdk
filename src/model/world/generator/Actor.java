@@ -1,4 +1,4 @@
-package model.world;
+package model.world.generator;
 
 import java.util.Observable;
 

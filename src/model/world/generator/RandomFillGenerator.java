@@ -1,7 +1,8 @@
-package model.world;
+package model.world.generator;
 
 import model.Item;
 import model.Position;
+import model.world.WorldManager;
 
 import java.util.Random;
 
