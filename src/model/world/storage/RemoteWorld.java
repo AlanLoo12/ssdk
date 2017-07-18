@@ -145,8 +145,7 @@ public class RemoteWorld extends AbstractWorld {
 
     @Override
     public synchronized WorldGenerator getGenerator() {
-        // TODO: finish
-        return null; // TODO: what do we do here?
+        return cacheWorld.getGenerator();
     }
 
     /**
@@ -192,9 +191,8 @@ public class RemoteWorld extends AbstractWorld {
     }
 
     @Override
-    public synchronized Set<Position> get(Item item) {
-        return new HashSet<>();
-        // TODO: what do we return here??? not enough access rights? enough? why? who?
+    public Set<Position> get(Item item) {
+        return cacheWorld.get(item);
     }
 
     /**
@@ -205,7 +203,9 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public boolean contains(@NotNull Position position) {
-        return false; //TODO: finish
+        updateChunks(position);
+
+        return cacheWorld.contains(position);
     }
 
     @Override
@@ -218,6 +218,8 @@ public class RemoteWorld extends AbstractWorld {
 
     @Override
     public void addAll(Map<Position, Set<Item>> map) {
-        // TODO: implement
+        for (Position position : map.keySet()) {
+            addAll(position, map.get(position));
+        }
     }
 }
