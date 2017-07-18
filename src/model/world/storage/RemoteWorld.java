@@ -106,18 +106,8 @@ public class RemoteWorld extends AbstractWorld {
     public synchronized @NotNull Set<Item> get(@NotNull Position position) {
         updateChunks(position);
 
-        if (cacheWorld.contains(position)) {
-            return cacheWorld.get(position);
-        }
-
-        Set<Item> items = new HashSet<>();
-        try {
-            out.println("GET " + position);
-            items.addAll(Protocol.decodeItems(in.readLine()));
-        } catch (IOException | ParseException ignored) {}
-
-        cacheWorld.addAll(position, items);
-        return items;
+        assert  (cacheWorld.contains(position));
+        return cacheWorld.get(position);
     }
 
     /**
@@ -132,16 +122,8 @@ public class RemoteWorld extends AbstractWorld {
     public synchronized boolean isWalkable(@NotNull Position position) {
         updateChunks(position);
 
-        if (cacheWorld.contains(position)) {
-            return cacheWorld.isWalkable(position);
-        }
-
-        try {
-            out.println("IS_WALKABLE " + position);
-            return Protocol.decodeBoolean(in.readLine());
-        } catch (IOException ignored) {}
-
-        return false;
+        assert (cacheWorld.contains(position));
+        return cacheWorld.isWalkable(position);
     }
 
     /**
@@ -157,16 +139,8 @@ public class RemoteWorld extends AbstractWorld {
     public synchronized boolean contains(@NotNull Position position, @NotNull Item item) {
         updateChunks(position);
 
-        if (cacheWorld.contains(position)) {
-            return cacheWorld.contains(position, item);
-        }
-
-        try {
-            out.println("CONTAINS " + position + " " + item);
-            return Protocol.decodeBoolean(in.readLine());
-        } catch (IOException ignored) {}
-
-        return false;
+        assert  (cacheWorld.contains(position));
+        return cacheWorld.contains(position, item);
     }
 
     @Override
@@ -184,8 +158,8 @@ public class RemoteWorld extends AbstractWorld {
      */
     @Override
     public synchronized Map<Position, Set<Item>> get(Position from, Position to) {
-        for (int x = from.getX(); x <= to.getX(); x += CHUNK_SIZE) {
-            for (int y = from.getX(); y <= to.getX(); y += CHUNK_SIZE) {
+        for (int x = from.getX(); x <= to.getX(); x += CHUNK_SIZE / 2) {
+            for (int y = from.getX(); y <= to.getX(); y += CHUNK_SIZE / 2) {
                 updateChunks(new Position(x, y));
             }
         }

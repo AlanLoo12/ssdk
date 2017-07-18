@@ -81,11 +81,13 @@ public class MainMenu {
     private void setUpUI(Player player) {
         Group root = new Group();
 
+
         Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.initStyle(StageStyle.UNDECORATED);
+        //stage.initModality(Modality.APPLICATION_MODAL);
+        //stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("Super Simple Dungeon K");
         stage.setMaximized(true);
+        stage.setFullScreen(true);
         stage.show();
 
         Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
@@ -132,7 +134,7 @@ public class MainMenu {
         try {
             Server server = new Server(serverPort.getValue());
 
-            //handleConnectButtonAction(actionEvent);
+            setUpUI(new Player());
         } catch (IOException e) {
             System.out.println("Failed to start server");
             e.printStackTrace();

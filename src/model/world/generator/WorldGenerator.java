@@ -86,7 +86,9 @@ public class WorldGenerator implements Observer {
     }
 
     public void start() {
-        worldGeneratorThread.start();
+        if (!worldGeneratorThread.isAlive()) {
+            worldGeneratorThread.start();
+        }
     }
 
     public void stop() {
@@ -272,6 +274,8 @@ public class WorldGenerator implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         actorsToAdd.add((Actor) arg);
-        actorsToRemove.add(actors.get(RANDOM.nextInt(actors.size())));
+        if (actors.size() > 0) {
+            actorsToRemove.add(actors.get(RANDOM.nextInt(actors.size())));
+        }
     }
 }

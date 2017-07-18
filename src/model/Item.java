@@ -54,6 +54,24 @@ public enum Item {
         this.applyFunc = applyFunc;
     }
 
+    /**
+     * Produce regular expression that would match all the valid item names
+     * @return regular expression that would match all the valid item names
+     */
+    public static String getValidNamesRegex() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("(");
+
+        for (Item item : Item.values()) {
+            stringBuilder.append(item);
+            stringBuilder.append("|");
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        stringBuilder.append(")");
+
+        return stringBuilder.toString();
+    }
+
     @Contract(pure = true)
     public Color getColor() {
         return color;

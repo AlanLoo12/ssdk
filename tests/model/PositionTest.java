@@ -1,6 +1,5 @@
 package model;
 
-import model.Position;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
