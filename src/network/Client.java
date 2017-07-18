@@ -26,11 +26,11 @@ class Client extends Observable {
 
     Client(Socket socket) throws IOException {
         this.socket = socket;
-        clientThread = new ClientThread();
-        clientThread.start();
-
         out = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+        clientThread = new ClientThread();
+        clientThread.start();
     }
 
     private class ClientThread extends Thread {
@@ -66,16 +66,7 @@ class Client extends Observable {
             if (msg == null) {
                 closeConnection();
             } else {
-                if (msg.matches("GET -?\\d+ -?\\d+")) {
-                    int x = Integer.parseInt(msg.split(" ")[1]);
-                    int y = Integer.parseInt(msg.split(" ")[2]);
-
-                    Set<Item> items = WorldManager.getInstance().get(new Position(x, y));
-                    out.println(Protocol.encodeItems(items));
-
-                    System.out.println("Client requested x = " + x + ", y = " + y);
-                    System.out.println("Sending " + items);
-                } else if (msg.matches("GET -?\\d+ -?\\d+ -?\\d+ -?\\d+")) {
+                 if (msg.matches("GET -?\\d+ -?\\d+ -?\\d+ -?\\d+")) {
                     int x0 = Integer.parseInt(msg.split(" ")[1]);
                     int y0 = Integer.parseInt(msg.split(" ")[2]);
 
@@ -91,8 +82,7 @@ class Client extends Observable {
 
                     System.out.println(msg);
                     System.out.println("Sending " + map);
-                } else if (msg.matches("PUT -?\\d+ -?\\d+ [A-Z]+")) {
-                    // TODO: move the try part to regex
+                } else if (msg.matches("PUT -?\\d+ -?\\d+ " + Item.getValidNamesRegex())) {
                     try {
                         int x = Integer.parseInt(msg.split(" ")[1]);
                         int y = Integer.parseInt(msg.split(" ")[2]);
@@ -105,8 +95,7 @@ class Client extends Observable {
                     } catch (IllegalArgumentException e) {
                         System.out.println("Error: unknown material");
                     }
-                } else if (msg.matches("REMOVE -?\\d+ -?\\d+ [A-Z]+")) {
-                    // TODO: move the try part to regex
+                } else if (msg.matches("REMOVE -?\\d+ -?\\d+ " + Item.getValidNamesRegex())) {
                     try {
                         int x = Integer.parseInt(msg.split(" ")[1]);
                         int y = Integer.parseInt(msg.split(" ")[2]);
@@ -116,34 +105,6 @@ class Client extends Observable {
 
                         System.out.println("Client requested x = " + x + ", y = " + y);
                         System.out.println("Removing " + item);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Error: unknown material");
-                    }
-                } else if (msg.matches("CONTAINS -?\\d+ -?\\d+ [A-Z]+")) {
-                    try {
-                        int x = Integer.parseInt(msg.split(" ")[1]);
-                        int y = Integer.parseInt(msg.split(" ")[2]);
-
-                        Item item = Item.valueOf(msg.split(" ")[3]);
-
-                        Position position = new Position(x, y);
-                        out.println(Protocol.encodeBoolean(WorldManager.getInstance().contains(position, item)));
-
-                        System.out.println("Client requested x = " + x + ", y = " + y);
-                        System.out.println("Returning " + WorldManager.getInstance().contains(position, item));
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Error: unknown material");
-                    }
-                } else if (msg.matches("IS_WALKABLE -?\\d+ -?\\d+")) {
-                    try {
-                        int x = Integer.parseInt(msg.split(" ")[1]);
-                        int y = Integer.parseInt(msg.split(" ")[2]);
-
-                        Position position = new Position(x, y);
-                        out.println(Protocol.encodeBoolean(WorldManager.getInstance().isWalkable(position)));
-
-                        System.out.println("Client requested x = " + x + ", y = " + y);
-                        System.out.println("Returning " + WorldManager.getInstance().isWalkable(position));
                     } catch (IllegalArgumentException e) {
                         System.out.println("Error: unknown material");
                     }

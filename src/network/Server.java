@@ -30,6 +30,7 @@ public class Server implements Observer {
         serverSocket = new ServerSocket(port);
 
         serverThread = new ServerThread();
+        serverThread.setDaemon(true);
         serverThread.start();
 
         System.out.println("OK");
