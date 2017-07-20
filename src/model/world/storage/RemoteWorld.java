@@ -3,8 +3,7 @@ package model.world.storage;
 import model.Item;
 import model.Position;
 import model.world.generator.WorldGenerator;
-import network.Protocol;
-import network.Server;
+import network.Link;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -170,7 +169,7 @@ public class RemoteWorld extends AbstractWorld {
         Map<Position, Set<Item>> map = new HashMap<>();
         try {
             out.println("GET " + from + " " + to);
-            map.putAll(Protocol.decodeMap(from, to, in.readLine()));
+            map.putAll(Link.decodeMap(from, to, in.readLine()));
         } catch (IOException | ParseException ignored) {}
 
         cacheWorld.addAll(map);

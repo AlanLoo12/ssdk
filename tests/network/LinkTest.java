@@ -2,6 +2,7 @@ package network;
 
 import model.Item;
 import model.Position;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.text.ParseException;
@@ -12,19 +13,25 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class ProtocolTest {
+public class LinkTest {
     private static final int MAX_ITERATIONS = 10;
+    private Link link;
+
+    @Before
+    public void runBefore() {
+        link = new Link();
+    }
 
     @Test
     public void testDecodeEncodeItemsSimple() throws ParseException {
         Set<Item> items = new HashSet<>();
-        assertEquals(items, Protocol.decodeItems(Protocol.encodeItems(items)));
+        assertEquals(items, Link.decodeItems(link.encodeItems(items)));
 
         items.add(Item.AIR);
-        assertEquals(items, Protocol.decodeItems(Protocol.encodeItems(items)));
+        assertEquals(items, Link.decodeItems(link.encodeItems(items)));
 
         items.add(Item.MUSHROOM);
-        assertEquals(items, Protocol.decodeItems(Protocol.encodeItems(items)));
+        assertEquals(items, Link.decodeItems(link.encodeItems(items)));
     }
 
     @Test
@@ -37,7 +44,7 @@ public class ProtocolTest {
             for (Item item : Item.values()) {
                 if (random.nextBoolean()) {
                     items.add(item);
-                    assertEquals(items, Protocol.decodeItems(Protocol.encodeItems(items)));
+                    assertEquals(items, Link.decodeItems(link.encodeItems(items)));
                 }
             }
         }
@@ -45,41 +52,41 @@ public class ProtocolTest {
 
     @Test
     public void testDecodeEncodeItemsNull() throws ParseException {
-        assertTrue(Protocol.decodeItems(Protocol.encodeItems(null)).isEmpty());
+        assertTrue(Link.decodeItems(link.encodeItems(null)).isEmpty());
     }
 
     @Test(expected = ParseException.class)
     public void testParseException() throws ParseException {
-        Protocol.decodeItems("LOL MOAR STONE");
+        Link.decodeItems("LOL MOAR STONE");
     }
 
     // boolean
 
     @Test
     public void testDecodeEncodeBoolean() {
-        assertTrue(Protocol.decodeBoolean(Protocol.encodeBoolean(true)));
-        assertFalse(Protocol.decodeBoolean(Protocol.encodeBoolean(false)));
+        assertTrue(Link.decodeBoolean(Link.encodeBoolean(true)));
+        assertFalse(Link.decodeBoolean(Link.encodeBoolean(false)));
     }
 
     // map
 
     @Test
     public void testDecodeEncodeMapEmptyOrigin() throws ParseException {
-        assertTrue(Protocol.decodeMap(Position.ORIGIN, Position.ORIGIN,
-                Protocol.encodeMap(Position.ORIGIN, Position.ORIGIN, new HashMap<>())).isEmpty());
+        assertTrue(Link.decodeMap(Position.ORIGIN, Position.ORIGIN,
+                link.encodeMap(Position.ORIGIN, Position.ORIGIN, new HashMap<>())).isEmpty());
     }
 
     @Test
     public void testDecodeEncodeMapEmptyUp() throws ParseException {
-        assertTrue(Protocol.decodeMap(Position.ORIGIN, Position.UP,
-                Protocol.encodeMap(Position.ORIGIN, Position.UP, new HashMap<>())).isEmpty());
+        assertTrue(Link.decodeMap(Position.ORIGIN, Position.UP,
+                link.encodeMap(Position.ORIGIN, Position.UP, new HashMap<>())).isEmpty());
     }
 
     @Test
     public void testDecodeEncodeMapEmptyOtherDirections() throws ParseException {
         for (Position direction : Position.DIRECTIONS) {
-            assertTrue(Protocol.decodeMap(Position.ORIGIN, direction,
-                    Protocol.encodeMap(Position.ORIGIN, direction, new HashMap<>())).isEmpty());
+            assertTrue(Link.decodeMap(Position.ORIGIN, direction,
+                    link.encodeMap(Position.ORIGIN, direction, new HashMap<>())).isEmpty());
         }
     }
 
@@ -87,8 +94,8 @@ public class ProtocolTest {
     public void testDecodeEncodeMapEmptyDirectionsStartingPosition() throws ParseException {
         for (Position directionA : Position.DIRECTIONS) {
             for (Position directionB : Position.DIRECTIONS) {
-                assertTrue(Protocol.decodeMap(directionA, directionB,
-                        Protocol.encodeMap(directionA, directionB, new HashMap<>())).isEmpty());
+                assertTrue(Link.decodeMap(directionA, directionB,
+                        link.encodeMap(directionA, directionB, new HashMap<>())).isEmpty());
             }
         }
     }
@@ -99,18 +106,18 @@ public class ProtocolTest {
 
         expected.put(Position.UP, Collections.singleton(Item.WALL));
 
-        Map<Position, Set<Item>> actual = Protocol.decodeMap(Position.ORIGIN, new Position(10, -10),
-                Protocol.encodeMap(Position.ORIGIN, new Position(10, -10), expected));
+        Map<Position, Set<Item>> actual = Link.decodeMap(Position.ORIGIN, new Position(10, -10),
+                link.encodeMap(Position.ORIGIN, new Position(10, -10), expected));
         assertEquals(expected, actual);
 
-        assertEquals(expected, Protocol.decodeMap(Position.ORIGIN, new Position(10, -1),
-                Protocol.encodeMap(Position.ORIGIN, new Position(10, -1), expected)));
+        assertEquals(expected, Link.decodeMap(Position.ORIGIN, new Position(10, -1),
+                link.encodeMap(Position.ORIGIN, new Position(10, -1), expected)));
 
-        assertEquals(expected, Protocol.decodeMap(Position.ORIGIN, new Position(10, -1),
-                Protocol.encodeMap(Position.ORIGIN, new Position(-10, -1), expected)));
+        assertEquals(expected, Link.decodeMap(Position.ORIGIN, new Position(10, -1),
+                link.encodeMap(Position.ORIGIN, new Position(-10, -1), expected)));
 
-        assertTrue(Protocol.decodeMap(Position.ORIGIN, new Position(10, -10),
-                Protocol.encodeMap(Position.ORIGIN, new Position(-10, 0), expected)).isEmpty());
+        assertTrue(Link.decodeMap(Position.ORIGIN, new Position(10, -10),
+                link.encodeMap(Position.ORIGIN, new Position(-10, 0), expected)).isEmpty());
     }
 
     @Test
@@ -121,20 +128,20 @@ public class ProtocolTest {
             expected.put(position, Collections.singleton(Item.WALL));
         }
 
-        Map<Position, Set<Item>> actual = Protocol.decodeMap(Position.ORIGIN, new Position(10, 10),
-                Protocol.encodeMap(Position.ORIGIN, new Position(10, 10), expected));
+        Map<Position, Set<Item>> actual = Link.decodeMap(Position.ORIGIN, new Position(10, 10),
+                link.encodeMap(Position.ORIGIN, new Position(10, 10), expected));
         assertEquals(expected, actual);
 
-        Map<Position, Set<Item>> truncated = Protocol.decodeMap(Position.ORIGIN, new Position(5, 5),
-                Protocol.encodeMap(Position.ORIGIN, new Position(10, 10), expected));
+        Map<Position, Set<Item>> truncated = Link.decodeMap(Position.ORIGIN, new Position(5, 5),
+                link.encodeMap(Position.ORIGIN, new Position(10, 10), expected));
         assertEquals(36, truncated.size());
         assertTrue(truncated.containsKey(Position.ORIGIN));
         assertTrue(truncated.containsKey(new Position(5, 5)));
         assertTrue(truncated.containsKey(new Position(0, 5)));
         assertTrue(truncated.containsKey(new Position(5, 0)));
 
-        truncated = Protocol.decodeMap(Position.ORIGIN, new Position(10, 10),
-                Protocol.encodeMap(Position.ORIGIN, new Position(5, 5), expected));
+        truncated = Link.decodeMap(Position.ORIGIN, new Position(10, 10),
+                link.encodeMap(Position.ORIGIN, new Position(5, 5), expected));
         assertEquals(36, truncated.size());
         assertTrue(truncated.containsKey(Position.ORIGIN));
         assertFalse(truncated.containsKey(new Position(10, 10)));

@@ -51,7 +51,7 @@
     <HBox>
         <Label text="Server Address: "/>
         <TextField fx:id="serverAddress" text="127.0.0.1"/>
-        <IntegerField fx:id="serverPort" text="3000"/>
+        <IntegerField fx:id="serverPort" text="43140"/>
     </HBox>
 
     <HBox spacing="10">

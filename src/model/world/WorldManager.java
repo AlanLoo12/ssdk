@@ -6,6 +6,7 @@ import model.world.generator.WorldGenerator;
 import model.world.storage.AbstractWorld;
 import model.world.storage.LocalWorld;
 import model.world.storage.RemoteWorld;
+import network.Change;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.*;
 public class WorldManager extends Observable implements Observer {
     private static WorldManager instance;
     private AbstractWorld world;
+    private Change change;
 
     /**
      * Return an instance of the world, if there is one
@@ -47,7 +49,8 @@ public class WorldManager extends Observable implements Observer {
      * @param position position at which to store the item
      * @param item item to be stored
      */
-    public boolean put(Position position, Item item) {
+    public synchronized boolean put(Position position, Item item) {
+        change = Change.getAddChange(position, item);
         return world.put(position, item);
     }
 
@@ -55,7 +58,8 @@ public class WorldManager extends Observable implements Observer {
      * Remove the given entity at the specified position
      * @param position position at which to remove the entity
      */
-    public void remove(Position position, Item item) {
+    public synchronized void remove(Position position, Item item) {
+        change = Change.getRemoveChange(position, item);
         world.remove(position, item);
     }
 
@@ -174,5 +178,24 @@ public class WorldManager extends Observable implements Observer {
 
     public Optional<Position> findNear(Position position, Item item, int distance) {
         return findNear(position, item, distance, false);
+    }
+
+    public Change getChange() {
+        return change;
+    }
+
+    /**
+     * Commits given change to this world
+     * @param change change to be done
+     */
+    public void commitChange(Change change) {
+        switch (change.getType()) {
+            case ADD:
+                put(change.getPosition(), change.getItem());
+                break;
+            case REMOVE:
+                remove(change.getPosition(), change.getItem());
+                break;
+        }
     }
 }

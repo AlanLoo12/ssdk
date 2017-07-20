@@ -9,28 +9,53 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Represents a remote client
  *
  * Handles all the IO with the client
  */
-class Client extends Observable {
+class Client extends Observable implements Observer {
     private final PrintWriter out;
     private final BufferedReader in;
     private Socket socket;
     private Thread clientThread;
+
+    private Link link;
+    /**
+     * Positions that client monitors
+     */
+    private Set<Position> clientPositions;
 
     Client(Socket socket) throws IOException {
         this.socket = socket;
         out = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+        link = new Link();
+        clientPositions = new HashSet<>();
+
+        WorldManager.getInstance().addObserver(this);
         clientThread = new ClientThread();
         clientThread.start();
+    }
+
+    /**
+     * This method is called whenever the observed object is changed. An
+     * application calls an <tt>Observable</tt> object's
+     * <code>notifyObservers</code> method to have all the object's
+     * observers notified of the change.
+     *
+     * @param o   the observable object.
+     * @param arg an argument passed to the <code>notifyObservers</code>
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        //noinspection SuspiciousMethodCalls
+        if (arg != null && clientPositions.contains(arg)) {
+            link.addPayload(WorldManager.getInstance().getChange());
+        }
     }
 
     private class ClientThread extends Thread {
@@ -78,10 +103,14 @@ class Client extends Observable {
                     Map<Position, Set<Item>> map =
                             WorldManager.getInstance().get(from, to);
 
-                    out.println(Protocol.encodeMap(from, to, map));
+                    out.println(link.encodeMap(from, to, map));
 
                     System.out.println(msg);
                     System.out.println("Sending " + map);
+
+                    for (Position position : from.getIterator(to)) {
+                        clientPositions.add(position);
+                    }
                 } else if (msg.matches("PUT -?\\d+ -?\\d+ " + Item.getValidNamesRegex())) {
                     try {
                         int x = Integer.parseInt(msg.split(" ")[1]);
