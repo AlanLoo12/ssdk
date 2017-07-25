@@ -4,8 +4,8 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import model.Player;
-import model.Item;
+import model.item.Item;
+import model.item.Player;
 
 import java.util.Observable;
 import java.util.Observer;

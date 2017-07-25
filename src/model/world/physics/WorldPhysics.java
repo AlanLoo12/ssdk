@@ -1,12 +1,6 @@
 package model.world.physics;
 
-import model.Item;
-import model.Position;
-import model.world.WorldManager;
-import model.world.generator.RandomWalker;
-
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 /**

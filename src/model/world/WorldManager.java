@@ -1,6 +1,7 @@
 package model.world;
 
-import model.Item;
+import model.item.Floor;
+import model.item.Item;
 import model.Position;
 import model.world.generator.WorldGenerator;
 import model.world.storage.AbstractWorld;
@@ -119,15 +120,6 @@ public class WorldManager extends Observable implements Observer {
     }
 
     /**
-     * Produce the positions of all items with the given type
-     * @param item items to search for
-     * @return positions of all items with the given type
-     */
-    public Set<Position> get(Item item) {
-        return world.get(item);
-    }
-
-    /**
      * Find the specified item near the given position and
      * maybe produce the position of the found item
      * @param position position around which to search for
@@ -197,5 +189,9 @@ public class WorldManager extends Observable implements Observer {
                 remove(change.getPosition(), change.getItem());
                 break;
         }
+    }
+
+    public void put(Item item) {
+        put(item.getPosition(), item);
     }
 }

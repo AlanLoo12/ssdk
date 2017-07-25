@@ -9,4 +9,8 @@ public class Mushroom extends Item {
     public Mushroom(Position position) {
         super(position);
     }
+
+    public Mushroom() {
+        super();
+    }
 }

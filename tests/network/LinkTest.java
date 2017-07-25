@@ -1,6 +1,7 @@
 package network;
 
-import model.Item;
+import model.item.Item;
+import model.item.ItemEnum;
 import model.Position;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +28,10 @@ public class LinkTest {
         Set<Item> items = new HashSet<>();
         assertEquals(items, Link.decodeItems(link.encodeItems(items)));
 
-        items.add(Item.AIR);
+        items.add(ItemEnum.AIR);
         assertEquals(items, Link.decodeItems(link.encodeItems(items)));
 
-        items.add(Item.MUSHROOM);
+        items.add(ItemEnum.MUSHROOM);
         assertEquals(items, Link.decodeItems(link.encodeItems(items)));
     }
 
@@ -104,7 +105,7 @@ public class LinkTest {
     public void testDecodeEncodeMapSingleton() throws ParseException {
         Map<Position, Set<Item>> expected = new HashMap<>();
 
-        expected.put(Position.UP, Collections.singleton(Item.WALL));
+        expected.put(Position.UP, Collections.singleton(ItemEnum.WALL));
 
         Map<Position, Set<Item>> actual = Link.decodeMap(Position.ORIGIN, new Position(10, -10),
                 link.encodeMap(Position.ORIGIN, new Position(10, -10), expected));
@@ -125,7 +126,7 @@ public class LinkTest {
         Map<Position, Set<Item>> expected = new HashMap<>();
 
         for (Position position : Position.ORIGIN.getIterator(new Position(10, 10))) {
-            expected.put(position, Collections.singleton(Item.WALL));
+            expected.put(position, Collections.singleton(ItemEnum.WALL));
         }
 
         Map<Position, Set<Item>> actual = Link.decodeMap(Position.ORIGIN, new Position(10, 10),

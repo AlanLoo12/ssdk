@@ -1,13 +1,13 @@
 package model.world.generator;
 
-import model.Item;
+import model.item.Item;
 import model.Position;
 import model.world.WorldManager;
 
 import java.util.*;
 
-import static model.Item.AIR;
-import static model.Item.WALL;
+import static model.item.ItemEnum.AIR;
+import static model.item.ItemEnum.WALL;
 
 /**
  * A world generator
@@ -100,13 +100,13 @@ public class WorldGenerator implements Observer {
             actor.tick();
         }
 
-        for (Actor actor : actorsToAdd) {
+        /*for (Actor actor : actorsToAdd) {
             add(actor);
         }
         actorsToAdd.clear();
 
         actors.removeAll(actorsToRemove);
-        actorsToRemove.clear();
+        actorsToRemove.clear();*/
     }
 
     /*private void tickTunnelWalkers() {

@@ -1,6 +1,5 @@
 package network;
 
-import model.*;
 import model.world.generator.WorldGenerator;
 import model.world.WorldManager;
 
@@ -9,7 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-import static model.Item.MUSHROOM;
+import static model.item.ItemEnum.MUSHROOM;
 
 /**
  * A simple server class

@@ -1,6 +1,6 @@
 package model.world.physics;
 
-import model.Item;
+import model.item.ItemEnum;
 import model.Position;
 import model.world.WorldManager;
 import model.world.generator.RandomWalker;
@@ -45,9 +45,10 @@ public class Water implements Actor {
     }
 
     private void tick() {
-        for (Position water : WorldManager.getInstance().get(Item.WATER)) {
+        /*
+        for (Position water : WorldManager.getInstance().get(ItemEnum.WATER)) {
             WorldManager.getInstance().findNear(water,
-                    Item.WATER,
+                    ItemEnum.WATER,
                     MAX_ACTIVE_DISTANCE,
                     true).ifPresent(
                     position -> {
@@ -60,12 +61,12 @@ public class Water implements Actor {
                             nextPosition = water.add(shift);
                         }
 
-                        if (!WorldManager.getInstance().contains(nextPosition, Item.WATER) &&
+                        if (!WorldManager.getInstance().contains(nextPosition, ItemEnum.WATER) &&
                                 WorldManager.getInstance().isWalkable(nextPosition)) {
-                            WorldManager.getInstance().remove(water, Item.WATER);
-                            WorldManager.getInstance().put(nextPosition, Item.WATER);
+                            WorldManager.getInstance().remove(water, ItemEnum.WATER);
+                            WorldManager.getInstance().put(nextPosition, ItemEnum.WATER);
                         }
                     });
-        }
+        }*/
     }
 }

@@ -3,7 +3,7 @@ package ui;
 import javafx.scene.Group;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import model.Player;
+import model.item.Player;
 
 import java.util.Observable;
 import java.util.Observer;

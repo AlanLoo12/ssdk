@@ -17,4 +17,8 @@ public class Wall extends Item {
         image = new Image(Paths.get("assets", "tiles", "dc-dngn", "wall",
                 "brick_brown0.png").toUri().toString());
     }
+
+    public Wall() {
+        super();
+    }
 }

@@ -1,7 +1,7 @@
 package ui;
 
 import javafx.scene.Scene;
-import model.Player;
+import model.item.Player;
 
 import static model.Position.*;
 

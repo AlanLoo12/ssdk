@@ -1,6 +1,6 @@
 package model.world.storage;
 
-import model.Item;
+import model.item.Item;
 import model.Position;
 import model.world.generator.WorldGenerator;
 import org.jetbrains.annotations.NotNull;
@@ -69,8 +69,6 @@ public abstract class AbstractWorld extends Observable {
      * @return a map of all items inside the rectangle specified by the given positions
      */
     public abstract Map<Position,Set<Item>> get(Position from, Position to);
-
-    public abstract Set<Position> get(Item item);
 
     /**
      * Produce true if given position was initialized

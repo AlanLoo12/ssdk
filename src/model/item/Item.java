@@ -28,6 +28,13 @@ public abstract class Item extends Observable {
         tickBehavior = new NoTick();
     }
 
+    public Item() {
+        this.position = Position.ORIGIN;
+        image = randomImage();
+        pushBehavior = new NoPush();
+        tickBehavior = new NoTick();
+    }
+
     private Image randomImage() {
         WritableImage image = new WritableImage(1, 1);
         image.getPixelWriter().setColor(0,0, randomColor());
@@ -49,6 +56,10 @@ public abstract class Item extends Observable {
         return image;
     }
 
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
     public float getVolume() {
         return volume;
     }
@@ -67,5 +78,9 @@ public abstract class Item extends Observable {
 
     public static Item[] values() {
         return new Item[0]; // TODO: finish
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 }

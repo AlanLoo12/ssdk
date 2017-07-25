@@ -1,6 +1,6 @@
 package network;
 
-import model.Item;
+import model.item.Item;
 import model.Position;
 import model.world.WorldManager;
 import org.jetbrains.annotations.Contract;

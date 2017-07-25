@@ -1,6 +1,7 @@
 package network;
 
-import model.Item;
+import model.item.Item;
+import model.item.ItemEnum;
 import model.Position;
 import model.world.WorldManager;
 
@@ -111,7 +112,7 @@ class Client extends Observable implements Observer {
                     for (Position position : from.getIterator(to)) {
                         clientPositions.add(position);
                     }
-                } else if (msg.matches("PUT -?\\d+ -?\\d+ " + Item.getValidNamesRegex())) {
+                } else if (msg.matches("PUT -?\\d+ -?\\d+ " + ItemEnum.getValidNamesRegex())) {
                     try {
                         int x = Integer.parseInt(msg.split(" ")[1]);
                         int y = Integer.parseInt(msg.split(" ")[2]);
@@ -124,7 +125,7 @@ class Client extends Observable implements Observer {
                     } catch (IllegalArgumentException e) {
                         System.out.println("Error: unknown material");
                     }
-                } else if (msg.matches("REMOVE -?\\d+ -?\\d+ " + Item.getValidNamesRegex())) {
+                } else if (msg.matches("REMOVE -?\\d+ -?\\d+ " + ItemEnum.getValidNamesRegex())) {
                     try {
                         int x = Integer.parseInt(msg.split(" ")[1]);
                         int y = Integer.parseInt(msg.split(" ")[2]);

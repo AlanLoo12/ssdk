@@ -1,12 +1,12 @@
 package use;
 
-import model.Item;
+import model.item.ItemEnum;
 
 /**
  *
  */
 public class Regex {
     public static void main(String[] args) {
-        System.out.println(Item.getValidNamesRegex());
+        System.out.println(ItemEnum.getValidNamesRegex());
     }
 }

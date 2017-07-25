@@ -1,7 +1,8 @@
 package network;
 
-import model.Item;
+import model.item.Item;
 import model.Position;
+import model.item.ItemEnum;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -61,7 +62,7 @@ public final class Change {
      * any valid change
      */
     static Change valueOf(@NotNull String string) throws IllegalArgumentException {
-        if (!string.matches("(ADD|REMOVE) -?\\d+ -?\\d+ " + Item.getValidNamesRegex())) {
+        if (!string.matches("(ADD|REMOVE) -?\\d+ -?\\d+ " + ItemEnum.getValidNamesRegex())) {
             throw new IllegalArgumentException(string);
         }
 

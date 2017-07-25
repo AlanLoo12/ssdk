@@ -1,6 +1,8 @@
 package ui;
 
-import model.world.physics.WorldPhysics;
+import model.Position;
+import model.item.Floor;
+import model.item.Player;
 import network.Server;
 import ui.gui_elements.FloatField;
 import ui.gui_elements.IntegerField;
@@ -14,17 +16,14 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import model.Player;
 import model.world.WorldManager;
 import model.world.generator.WorldGenerator;
 
 import java.io.IOException;
 import java.net.InetAddress;
 
-import static model.Item.*;
+import static model.item.ItemEnum.*;
 
 /**
  * A controller class for the main menu
@@ -52,18 +51,31 @@ public class MainMenu {
         worldGenerator.setRandomWalkersDeathChance(randomWalkersDeathChance.getValue());
         worldGenerator.setRandomWalkersToTick((Integer) activeRandomWalkers.getValue());
 
+        generateStubWorld(world);
+
         // Generate
-        worldGenerator.tick(initialMapSize.getValue());
+        //worldGenerator.tick(initialMapSize.getValue());
 
-        WorldPhysics worldPhysics = new WorldPhysics();
-        worldPhysics.start();
+        //WorldPhysics worldPhysics = new WorldPhysics();
+        //worldPhysics.start();
 
-        if (generateOnTheGo.isSelected()) {
-            worldGenerator.start();
-        }
+        //if (generateOnTheGo.isSelected()) {
+        //    worldGenerator.start();
+        //}
 
         Player player = new Player();
+        world.put(player);
         setUpUI(player);
+    }
+
+    private void generateStubWorld(WorldManager world) {
+        int RADIUS = 20;
+
+        for (int x = -RADIUS; x < RADIUS; x++) {
+            for (int y = -RADIUS; y < RADIUS; y++) {
+                world.put(new Floor(new Position(x, y)));
+            }
+        }
     }
 
     public void handleConnectButtonAction(ActionEvent actionEvent) {

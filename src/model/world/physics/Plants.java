@@ -1,6 +1,6 @@
 package model.world.physics;
 
-import model.Item;
+import model.item.ItemEnum;
 import model.Position;
 import model.world.WorldManager;
 import org.jetbrains.annotations.Contract;
@@ -51,18 +51,18 @@ public class Plants implements Actor {
         Set<Position> toAdd = new HashSet<>();
         Set<Position> toRemove = new HashSet<>();
 
-        for (Position plant : WorldManager.getInstance().get(Item.MUSHROOM)) {
+        /*for (Position plant : WorldManager.getInstance().get(ItemEnum.MUSHROOM)) {
             if (kill(plant)) {
                 toRemove.add(plant);
             }
             toAdd.addAll(newNeighbours(plant));
-        }
+        }*/
 
         for (Position position : toAdd) {
-            WorldManager.getInstance().safePut(position, Item.MUSHROOM);
+            WorldManager.getInstance().safePut(position, ItemEnum.MUSHROOM);
         }
         for (Position position : toRemove) {
-            WorldManager.getInstance().remove(position, Item.MUSHROOM);
+            WorldManager.getInstance().remove(position, ItemEnum.MUSHROOM);
         }
     }
 
@@ -101,7 +101,7 @@ public class Plants implements Actor {
      */
     private int getNeighboursSize(Position plant) {
         return (int) plant.getNeighbours().stream()
-                .filter(position -> WorldManager.getInstance().contains(position, Item.MUSHROOM))
+                .filter(position -> WorldManager.getInstance().contains(position, ItemEnum.MUSHROOM))
                 .count();
     }
 

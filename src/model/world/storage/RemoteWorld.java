@@ -1,6 +1,6 @@
 package model.world.storage;
 
-import model.Item;
+import model.item.Item;
 import model.Position;
 import model.world.generator.WorldGenerator;
 import network.Link;
@@ -187,11 +187,6 @@ public class RemoteWorld extends AbstractWorld {
 
     private Position worldCoordinatesToChunkCoordinates(Position position) {
         return position.divide(CHUNK_SIZE);
-    }
-
-    @Override
-    public Set<Position> get(Item item) {
-        return cacheWorld.get(item);
     }
 
     /**

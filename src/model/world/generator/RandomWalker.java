@@ -1,6 +1,6 @@
 package model.world.generator;
 
-import model.Item;
+import model.item.ItemEnum;
 import model.Position;
 import model.world.WorldManager;
 
@@ -23,7 +23,7 @@ public class RandomWalker extends Actor {
      */
     @Override
     public void tick() {
-        WorldManager.getInstance().put(position, Item.AIR);
+        WorldManager.getInstance().put(position, ItemEnum.AIR);
         WorldGenerator.addWalls(position);
 
         for (RandomFillGenerator randomFillGenerator : WorldGenerator.getInstance().getRandomFillGenerators()) {

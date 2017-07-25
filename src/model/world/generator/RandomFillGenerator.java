@@ -1,6 +1,7 @@
 package model.world.generator;
 
-import model.Item;
+import model.item.Item;
+import model.item.ItemEnum;
 import model.Position;
 import model.world.WorldManager;
 

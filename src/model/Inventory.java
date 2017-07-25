@@ -1,5 +1,7 @@
 package model;
 
+import model.item.Item;
+
 import java.util.*;
 
 /**
@@ -12,7 +14,7 @@ public class Inventory extends Observable {
     /**
      * Create a new empty inventory
      */
-    Inventory() {
+    public Inventory() {
         inventory = new HashMap<>();
         itemsOrder = new ArrayList<>();
     }
@@ -38,11 +40,11 @@ public class Inventory extends Observable {
         return inventory.keySet();
     }
 
-    int size() {
+    public int size() {
         return inventory.size();
     }
 
-    Optional<Item> get(int selectedItem) {
+    public Optional<Item> get(int selectedItem) {
         if (itemsOrder.size() <= selectedItem) {
             return Optional.empty();
         } else {

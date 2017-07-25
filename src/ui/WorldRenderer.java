@@ -5,10 +5,13 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import model.*;
-import model.Item;
+import model.item.Item;
+import model.item.ItemEnum;
+import model.item.Player;
 import model.world.WorldManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -74,9 +77,10 @@ public class WorldRenderer implements Observer {
                 double x = getScreenX(position);
                 double y = getScreenY(position);
 
-                graphicsContext.setFill(getColor(visiblePositions.get(position)));
+                //graphicsContext.setFill(getColor(visiblePositions.get(position)));
 
-                graphicsContext.fillRect(x, y, scale, scale);
+                //graphicsContext.fillRect(x, y, scale, scale);
+                graphicsContext.drawImage(getImage(visiblePositions.get(position)), x, y, scale, scale);
             }
 
             graphicsContext.setFill(Color.rgb(100, 100, 100, 0.5));
@@ -85,16 +89,18 @@ public class WorldRenderer implements Observer {
         }
     }
 
-    private Paint getColor(Set<Item> items) {
-        int highestItemSoFar = -1;
-        Color highestColorSoFar = BLACK;
+    private Image getImage(Set<Item> items) {
+        float highestVolumeSoFar = -1;
+        Image highestColorSoFar = null;
 
         for (Item item : items) {
-            if (item.getIndex() > highestItemSoFar) {
-                highestColorSoFar = item.getColor();
-                highestItemSoFar = item.getIndex();
+            if (item.getVolume() > highestVolumeSoFar) {
+                highestColorSoFar = item.getImage();
+                highestVolumeSoFar = item.getVolume();
             }
         }
+
+        assert highestColorSoFar != null;
 
         return highestColorSoFar;
     }

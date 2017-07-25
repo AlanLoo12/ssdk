@@ -1,7 +1,10 @@
 package model.world.storage;
 
-import model.Item;
+import model.item.Air;
+import model.item.Item;
+import model.item.Item;
 import model.Position;
+import model.item.Wall;
 import model.world.generator.WorldGenerator;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,8 +12,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import static model.Item.AIR;
-import static model.Item.WALL;
+import static model.item.ItemEnum.AIR;
+import static model.item.ItemEnum.WALL;
 
 /**
  * A world located on this machine
@@ -19,10 +22,10 @@ import static model.Item.WALL;
  * // TODO: check invariant
  */
 public class LocalWorld extends AbstractWorld {
-    private Map<Item, Set<Position>> worldLayers;
+    private Set<Item> world;
 
     public LocalWorld() {
-        worldLayers = new ConcurrentHashMap<>();
+        world = new HashSet<>();
 
         wipeClean();
     }
@@ -31,11 +34,7 @@ public class LocalWorld extends AbstractWorld {
      * Destroy the world and bring it to the original state
      */
     private void wipeClean() {
-        worldLayers.clear();
-
-        for (Item item : Item.values()) {
-            worldLayers.put(item, new ConcurrentSkipListSet<>());
-        }
+        world.clear();
     }
 
     /**
@@ -46,14 +45,16 @@ public class LocalWorld extends AbstractWorld {
      */
     @Override
     public boolean put(@NotNull Position position, @NotNull Item item) {
-        if (item.equals(WALL)) {
-            worldLayers.get(AIR).remove(position);
+        item.setPosition(position);
+
+        if (item instanceof Wall) {
+            world.remove(new Air(position));
         }
-        if (item.equals(AIR)) {
-            worldLayers.get(WALL).remove(position);
+        if (item instanceof Air) {
+            world.remove(new Wall(position));
         }
 
-        boolean returnVal = worldLayers.get(item).add(position);
+        boolean returnVal = world.add(item);
 
         setChanged();
         notifyObservers(position);
@@ -75,7 +76,7 @@ public class LocalWorld extends AbstractWorld {
             put(position, AIR);
         }
 
-        if (worldLayers.get(item).remove(position)) {
+        if (world.remove(item)) {
             setChanged();
             notifyObservers(position);
         }
@@ -91,8 +92,8 @@ public class LocalWorld extends AbstractWorld {
     public @NotNull Set<Item> get(@NotNull Position position) {
         Set<Item> items = new HashSet<>();
 
-        for (Item item : worldLayers.keySet()) {
-            if (worldLayers.get(item).contains(position)) {
+        for (Item item : world) {
+            if (item.getPosition().equals(position)) {
                 items.add(item);
             }
         }
@@ -110,8 +111,8 @@ public class LocalWorld extends AbstractWorld {
      */
     @Override
     public boolean isWalkable(@NotNull Position position) {
-        return (worldLayers.get(AIR).contains(position) &&
-                !worldLayers.get(WALL).contains(position));
+        return (world.contains(new Air(position)) &&
+                !world.contains(new Wall(position)));
     }
 
     /**
@@ -125,7 +126,7 @@ public class LocalWorld extends AbstractWorld {
      */
     @Override
     public boolean contains(@NotNull Position position, @NotNull Item item) {
-        return worldLayers.get(item).contains(position);
+        return world.contains(item);
     }
 
     @Override
@@ -151,11 +152,6 @@ public class LocalWorld extends AbstractWorld {
         return map;
     }
 
-    @Override
-    public Set<Position> get(Item item) {
-        return worldLayers.get(item);
-    }
-
     /**
      * Produce true if given position was initialized
      *
@@ -164,14 +160,18 @@ public class LocalWorld extends AbstractWorld {
      */
     @Override
     public boolean contains(@NotNull Position position) {
-        return worldLayers.get(Item.AIR).contains(position) || worldLayers.get(Item.WALL).contains(position);
+        for (Item item : world) {
+            if (item.getPosition().equals(position)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
     public void addAll(@NotNull Position position, Set<Item> items) {
-        for (Item item : items) {
-            worldLayers.get(item).add(position);
-        }
+        world.addAll(items);
     }
 
     @Override

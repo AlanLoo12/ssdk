@@ -1,6 +1,8 @@
 package model;
 
 import javafx.scene.paint.Color;
+import model.item.ItemEnum;
+import model.item.Player;
 import model.world.WorldManager;
 import org.jetbrains.annotations.Contract;
 
@@ -23,10 +25,10 @@ public enum Item {
     player -> {
         Position selectedPosition = player.getPosition().add(player.getLookDirection());
 
-        if (WorldManager.getInstance().contains(selectedPosition, WALL)) {
+        /*if (WorldManager.getInstance().contains(selectedPosition, WALL)) {
             WorldManager.getInstance().remove(selectedPosition, WALL);
             player.getInventory().add(WALL);
-        }
+        }*/
 
         return true; // stub
     });
@@ -39,13 +41,13 @@ public enum Item {
 
         applyFunc = (player -> {
             Position selectedPosition = player.getPosition().add(player.getLookDirection());
-            if (WorldManager.getInstance().contains(selectedPosition, this)) {
-                return false;
-            } else {
-                player.getInventory().take(this, 1);
-                WorldManager.getInstance().put(selectedPosition, this);
+            //if (WorldManager.getInstance().contains(selectedPosition, this)) {
+            //    return false;
+            //} else {
+           //     player.getInventory().take(this, 1);
+             //   WorldManager.getInstance().put(selectedPosition, this);
                 return true;
-            }
+            //}
         });
     }
 
@@ -62,12 +64,12 @@ public enum Item {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("(");
 
-        for (Item item : Item.values()) {
-            stringBuilder.append(item);
-            stringBuilder.append("|");
-        }
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        stringBuilder.append(")");
+        //for (ItemEnum item : ItemEnum.values()) {
+         //   stringBuilder.append(item);
+         //   stringBuilder.append("|");
+        //}
+        //stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        //stringBuilder.append(")");
 
         return stringBuilder.toString();
     }
@@ -83,13 +85,13 @@ public enum Item {
 
     public int getIndex() {
         int indexSoFar = 0;
-        for (Item item : Item.values()) {
-            if (this.equals(item)) {
-                return indexSoFar;
-            } else {
-                indexSoFar++;
-            }
-        }
+//        for (ItemEnum item : ItemEnum.values()) {
+ //           if (this.equals(item)) {
+  //              return indexSoFar;
+   //         } else {
+     //           indexSoFar++;
+      //      }
+        //}
 
         return -1;
     }
