@@ -21,3 +21,20 @@
 hs_err_pid*
 out/
 build/
+!/assets/not_used/
+/assets/not_used/
+.idea/inspectionProfiles/
+.idea/workspace.xml
+assets/not_used/
+assets/tiles/LICENSE.txt
+assets/tiles/README.txt
+assets/tiles/UNUSED/
+assets/tiles/dc-misc/
+assets/tiles/dc-mon/
+assets/tiles/effect/
+assets/tiles/gui/
+assets/tiles/item/
+assets/tiles/player/
+assets/tiles/spells/
+assets/tiles/utility/
+doc/item class diagram.uxf

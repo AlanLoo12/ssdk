@@ -118,7 +118,7 @@ class Client extends Observable implements Observer {
                         int y = Integer.parseInt(msg.split(" ")[2]);
 
                         Item item = Item.valueOf(msg.split(" ")[3]);
-                        WorldManager.getInstance().put(new Position(x, y), item);
+                        WorldManager.getInstance().add(item);
 
                         System.out.println("Client requested x = " + x + ", y = " + y);
                         System.out.println("Putting " + item);
@@ -131,7 +131,7 @@ class Client extends Observable implements Observer {
                         int y = Integer.parseInt(msg.split(" ")[2]);
 
                         Item item = Item.valueOf(msg.split(" ")[3]);
-                        WorldManager.getInstance().remove(new Position(x, y), item);
+                        WorldManager.getInstance().remove(item);
 
                         System.out.println("Client requested x = " + x + ", y = " + y);
                         System.out.println("Removing " + item);

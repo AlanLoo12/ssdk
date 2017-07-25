@@ -64,7 +64,7 @@ public class Water implements Actor {
                         if (!WorldManager.getInstance().contains(nextPosition, ItemEnum.WATER) &&
                                 WorldManager.getInstance().isWalkable(nextPosition)) {
                             WorldManager.getInstance().remove(water, ItemEnum.WATER);
-                            WorldManager.getInstance().put(nextPosition, ItemEnum.WATER);
+                            WorldManager.getInstance().add(nextPosition, ItemEnum.WATER);
                         }
                     });
         }*/

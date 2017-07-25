@@ -80,7 +80,9 @@ public abstract class Item extends Observable {
         return new Item[0]; // TODO: finish
     }
 
-    public void setPosition(Position position) {
+    public Item setPosition(Position position) {
         this.position = position;
+
+        return this;
     }
 }

@@ -23,7 +23,7 @@ public class WorldManagerTest {
 
     @Test
     public void testWipeClean() {
-        WorldManager.getInstance().put(Position.ORIGIN, Item.AIR);
+        WorldManager.getInstance().add(Position.ORIGIN, Item.AIR);
         assertFalse(WorldManager.getInstance().isEmpty());
         assertEquals(1, WorldManager.getInstance().size());
         assertEquals(1, WorldManager.getInstance().get(Position.ORIGIN).size());
@@ -42,20 +42,20 @@ public class WorldManagerTest {
 
     @Test
     public void testAddTwice() {
-        WorldManager.getInstance().put(Position.UP, Item.AIR);
+        WorldManager.getInstance().add(Position.UP, Item.AIR);
         assertTrue(WorldManager.getInstance().contains(Position.UP, Item.AIR));
 
-        WorldManager.getInstance().put(Position.UP, Item.AIR);
+        WorldManager.getInstance().add(Position.UP, Item.AIR);
         assertTrue(WorldManager.getInstance().contains(Position.UP, Item.AIR));
     }
 
     @Test
     public void testAddDifferent() {
-        WorldManager.getInstance().put(Position.UP, Item.AIR);
+        WorldManager.getInstance().add(Position.UP, Item.AIR);
         assertTrue(WorldManager.getInstance().contains(Position.UP, Item.AIR));
         assertFalse(WorldManager.getInstance().contains(Position.UP, Item.WALL));
 
-        WorldManager.getInstance().put(Position.UP, Item.WALL);
+        WorldManager.getInstance().add(Position.UP, Item.WALL);
         assertFalse(WorldManager.getInstance().contains(Position.UP, Item.AIR));
         assertTrue(WorldManager.getInstance().contains(Position.UP, Item.WALL));
     }
@@ -69,7 +69,7 @@ public class WorldManagerTest {
 
     @Test
     public void testRemoveOne() {
-        WorldManager.getInstance().put(Position.DOWN, Item.AIR);
+        WorldManager.getInstance().add(Position.DOWN, Item.AIR);
         assertTrue(WorldManager.getInstance().contains(Position.DOWN, Item.AIR));
         assertFalse(WorldManager.getInstance().isEmpty());
         assertEquals(1, WorldManager.getInstance().size());
@@ -81,8 +81,8 @@ public class WorldManagerTest {
 
     @Test
     public void testRemoveOneFromMany() {
-        WorldManager.getInstance().put(Position.DOWN, Item.AIR);
-        WorldManager.getInstance().put(Position.DOWN, Item.PLAYER);
+        WorldManager.getInstance().add(Position.DOWN, Item.AIR);
+        WorldManager.getInstance().add(Position.DOWN, Item.PLAYER);
         assertTrue(WorldManager.getInstance().contains(Position.DOWN, Item.AIR));
         assertTrue(WorldManager.getInstance().contains(Position.DOWN, Item.PLAYER));
         assertFalse(WorldManager.getInstance().isEmpty());
@@ -96,7 +96,7 @@ public class WorldManagerTest {
 
     @Test
     public void testRemoveWall() {
-        WorldManager.getInstance().put(Position.ORIGIN, Item.WALL);
+        WorldManager.getInstance().add(Position.ORIGIN, Item.WALL);
         assertEquals(1, WorldManager.getInstance().size());
         WorldManager.getInstance().remove(Position.ORIGIN, Item.WALL);
         assertEquals(9, WorldManager.getInstance().size());

@@ -62,7 +62,7 @@ public class Plants implements Actor {
             WorldManager.getInstance().safePut(position, ItemEnum.MUSHROOM);
         }
         for (Position position : toRemove) {
-            WorldManager.getInstance().remove(position, ItemEnum.MUSHROOM);
+            WorldManager.getInstance().remove(ItemEnum.MUSHROOM);
         }
     }
 
@@ -101,7 +101,7 @@ public class Plants implements Actor {
      */
     private int getNeighboursSize(Position plant) {
         return (int) plant.getNeighbours().stream()
-                .filter(position -> WorldManager.getInstance().contains(position, ItemEnum.MUSHROOM))
+                .filter(position -> WorldManager.getInstance().contains(ItemEnum.MUSHROOM))
                 .count();
     }
 

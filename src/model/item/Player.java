@@ -46,21 +46,21 @@ public class Player extends Item {
     public void move(Position direction) {
         Position nextPosition = position.add(direction);
 
-        if (WorldManager.getInstance().isWalkable(nextPosition)
-                && !WorldManager.getInstance().contains(nextPosition, ItemEnum.PLAYER)) {
+        if (WorldManager.getInstance().isWalkable(nextPosition)) {
 
-            WorldManager.getInstance().remove(position, ItemEnum.PLAYER);
+            WorldManager.getInstance().remove(this);
 
             Set<Item> items = WorldManager.getInstance().get(nextPosition);
             if (items.contains(ItemEnum.MUSHROOM)) {
-                WorldManager.getInstance().remove(nextPosition, ItemEnum.MUSHROOM);
+                WorldManager.getInstance().remove(ItemEnum.MUSHROOM);
                 inventory.add(ItemEnum.MUSHROOM);
             }
 
             position = nextPosition;
             numberOfMoves++;
 
-            WorldManager.getInstance().put(nextPosition, ItemEnum.PLAYER);
+            setPosition(nextPosition);
+            WorldManager.getInstance().add(this);
 
             setChanged();
             notifyObservers();

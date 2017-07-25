@@ -106,20 +106,20 @@ public class Link {
         return result.toString();
     }
 
-    public static Map<Position, Set<Item>> decodeMap(Position from, Position to, String string) throws ParseException {
+    public static Set<Item> decodeMap(Position from, Position to, String string) throws ParseException {
         string = detachPayload(string);
 
-        Map<Position, Set<Item>> map = new HashMap<>();
+        Set<Item> items = new HashSet<>();
 
         Position currentPosition = from;
         for (String block : string.split(MAP_SPLITTER)) {
             if (!block.equals("")) {
-                map.put(currentPosition, decodeItems(block));
+                items.add(Item.valueOf(block).setPosition(currentPosition));
             }
             currentPosition = currentPosition.add1(from, to);
         }
 
-        return map;
+        return items;
     }
 
     private static String detachPayload(String string) {

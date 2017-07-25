@@ -10,12 +10,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import model.*;
 import model.item.Item;
-import model.item.ItemEnum;
 import model.item.Player;
 import model.world.WorldManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static javafx.scene.paint.Color.BLACK;
 
@@ -77,10 +77,12 @@ public class WorldRenderer implements Observer {
                 double x = getScreenX(position);
                 double y = getScreenY(position);
 
-                //graphicsContext.setFill(getColor(visiblePositions.get(position)));
+                List<Image> imageSequence = getImageSequence(visiblePositions.get(position));
+                for (int i = 0; i < imageSequence.size(); i++) {
+                    Image image = imageSequence.get(i);
 
-                //graphicsContext.fillRect(x, y, scale, scale);
-                graphicsContext.drawImage(getImage(visiblePositions.get(position)), x, y, scale, scale);
+                    graphicsContext.drawImage(image, x, y, scale, scale);
+                }
             }
 
             graphicsContext.setFill(Color.rgb(100, 100, 100, 0.5));
@@ -89,20 +91,21 @@ public class WorldRenderer implements Observer {
         }
     }
 
-    private Image getImage(Set<Item> items) {
-        float highestVolumeSoFar = -1;
-        Image highestColorSoFar = null;
+    private List<Image> getImageSequence(Set<Item> items) {
+        List<Item> result = new ArrayList<>(items);
+        result.sort((o1, o2) -> sign(o1.getVolume() - o2.getVolume()));
 
-        for (Item item : items) {
-            if (item.getVolume() > highestVolumeSoFar) {
-                highestColorSoFar = item.getImage();
-                highestVolumeSoFar = item.getVolume();
-            }
+        return result.stream().map(Item::getImage).collect(Collectors.toList());
+    }
+
+    private int sign(float v) {
+        if (v == 0) {
+            return 0;
+        } else if (v < 0) {
+            return -1;
+        } else {
+            return 1;
         }
-
-        assert highestColorSoFar != null;
-
-        return highestColorSoFar;
     }
 
     private double getScreenY(Position position) {

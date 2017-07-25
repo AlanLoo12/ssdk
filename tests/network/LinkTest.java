@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 public class LinkTest {
     private static final int MAX_ITERATIONS = 10;
     private Link link;
-
+/*
     @Before
     public void runBefore() {
         link = new Link();
@@ -146,5 +146,5 @@ public class LinkTest {
         assertEquals(36, truncated.size());
         assertTrue(truncated.containsKey(Position.ORIGIN));
         assertFalse(truncated.containsKey(new Position(10, 10)));
-    }
+    }*/
 }

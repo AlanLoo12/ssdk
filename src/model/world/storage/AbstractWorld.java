@@ -15,19 +15,17 @@ import java.util.Set;
 public abstract class AbstractWorld extends Observable {
     /**
      * Put the given item at specified position
-     * @param position position at which to store the item
      * @param item item to store
      * @return true if the world was modified, false otherwise
      */
-    public abstract boolean put(@NotNull Position position, @NotNull Item item);
+    public abstract boolean add(@NotNull Item item);
 
     /**
      * Remove the item from the specified position, if item exists.
      * Otherwise, do nothing
-     * @param position position at which to remove the item from
      * @param item item to be removed
      */
-    public abstract void remove(@NotNull Position position, @NotNull Item item);
+    public abstract void remove(@NotNull Item item);
 
     /**
      * Get all items at the given position
@@ -49,12 +47,11 @@ public abstract class AbstractWorld extends Observable {
     /**
      * Produce true if given item is present at the specified position,
      * false otherwise
-     * @param position position to check
      * @param item item to look for
      * @return true if given item is present at the specified position,
      * false otherwise
      */
-    public abstract boolean contains(@NotNull Position position, @NotNull Item item);
+    public abstract boolean contains(@NotNull Item item);
 
     /**
      * Produce the world generator
@@ -68,7 +65,9 @@ public abstract class AbstractWorld extends Observable {
      * @param to another corner
      * @return a map of all items inside the rectangle specified by the given positions
      */
-    public abstract Map<Position,Set<Item>> get(Position from, Position to);
+    @NotNull
+    public abstract Map<Position,Set<Item>> get(@NotNull Position from,
+                                                @NotNull Position to);
 
     /**
      * Produce true if given position was initialized
@@ -77,7 +76,5 @@ public abstract class AbstractWorld extends Observable {
      */
     public abstract boolean contains(@NotNull Position position);
 
-    public abstract void addAll(@NotNull Position position, Set<Item> items);
-
-    public abstract void addAll(Map<Position, Set<Item>> map);
+    public abstract void addAll(@NotNull Set<Item> items);
 }

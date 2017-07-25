@@ -1,6 +1,5 @@
 package model.world;
 
-import model.item.Floor;
 import model.item.Item;
 import model.Position;
 import model.world.generator.WorldGenerator;
@@ -19,7 +18,7 @@ import java.util.*;
  *
  * The actual world data could be stored locally or on another machine
  */
-public class WorldManager extends Observable implements Observer {
+public class WorldManager extends AbstractWorld implements Observer {
     private static WorldManager instance;
     private AbstractWorld world;
     private Change change;
@@ -47,27 +46,29 @@ public class WorldManager extends Observable implements Observer {
 
     /**
      * Put the given item at the specified position
-     * @param position position at which to store the item
      * @param item item to be stored
      */
-    public synchronized boolean put(Position position, Item item) {
-        change = Change.getAddChange(position, item);
-        return world.put(position, item);
+    @Override
+    public synchronized boolean add(Item item) {
+        change = Change.getAddChange(item.getPosition(), item);
+        return world.add(item);
     }
 
     /**
      * Remove the given entity at the specified position
-     * @param position position at which to remove the entity
      */
-    public synchronized void remove(Position position, Item item) {
-        change = Change.getRemoveChange(position, item);
-        world.remove(position, item);
+    @Override
+    public synchronized void remove(Item item) {
+        change = Change.getRemoveChange(item.getPosition(), item);
+        world.remove(item);
     }
 
+    @Override
     public Set<Item> get(Position position) {
         return world.get(position);
     }
 
+    @Override
     public boolean isWalkable(Position position) {
         return world.isWalkable(position);
     }
@@ -77,11 +78,13 @@ public class WorldManager extends Observable implements Observer {
         return 0;
     }
 
-    public boolean contains(@NotNull Position position, Item item) {
-        return world.contains(position, item);
+    @Override
+    public boolean contains(Item item) {
+        return world.contains(item);
     }
 
     // TODO: should we be able to access remote generator?
+    @Override
     public WorldGenerator getGenerator() {
         return world.getGenerator();
     }
@@ -100,8 +103,25 @@ public class WorldManager extends Observable implements Observer {
      * @param to another corner
      * @return a map of all items inside the rectangle specified by the given positions
      */
+    @Override
     public Map<Position, Set<Item>> get(Position from, Position to) {
         return world.get(from, to);
+    }
+
+    /**
+     * Produce true if given position was initialized
+     *
+     * @param position position to check for
+     * @return true if given position was initialized
+     */
+    @Override
+    public boolean contains(@NotNull Position position) {
+        return world.contains(position);
+    }
+
+    @Override
+    public void addAll(Set<Item> items) {
+        world.addAll(items);
     }
 
     /**
@@ -146,7 +166,7 @@ public class WorldManager extends Observable implements Observer {
             Position currentPosition = todo.poll();
 
             if (!visited.contains(currentPosition)) {
-                if (world.contains(currentPosition, item)) {
+                if (world.contains(item)) {
                     return Optional.of(currentPosition);
                 }
 
@@ -159,13 +179,13 @@ public class WorldManager extends Observable implements Observer {
     }
 
     /**
-     * Same as put, but only places the item if the givne position is walkable
+     * Same as add, but only places the item if the givne position is walkable
      * @param position position at which to store the item
      * @param item item to be stored
      * @return true if the item was stored, false otherwise
      */
     public boolean safePut(@NotNull Position position, Item item) {
-        return isWalkable(position) && put(position, item);
+        return isWalkable(position) && add(item);
     }
 
     public Optional<Position> findNear(Position position, Item item, int distance) {
@@ -183,15 +203,15 @@ public class WorldManager extends Observable implements Observer {
     public void commitChange(Change change) {
         switch (change.getType()) {
             case ADD:
-                put(change.getPosition(), change.getItem());
+                add(change.getItem());
                 break;
             case REMOVE:
-                remove(change.getPosition(), change.getItem());
+                remove(change.getItem());
                 break;
         }
     }
 
     public void put(Item item) {
-        put(item.getPosition(), item);
+        add(item);
     }
 }

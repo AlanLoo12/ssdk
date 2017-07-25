@@ -23,7 +23,7 @@ public class RandomWalker extends Actor {
      */
     @Override
     public void tick() {
-        WorldManager.getInstance().put(position, ItemEnum.AIR);
+        WorldManager.getInstance().add(ItemEnum.AIR);
         WorldGenerator.addWalls(position);
 
         for (RandomFillGenerator randomFillGenerator : WorldGenerator.getInstance().getRandomFillGenerators()) {

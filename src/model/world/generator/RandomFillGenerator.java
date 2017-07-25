@@ -1,7 +1,6 @@
 package model.world.generator;
 
 import model.item.Item;
-import model.item.ItemEnum;
 import model.Position;
 import model.world.WorldManager;
 
@@ -61,7 +60,7 @@ class RandomFillGenerator {
     boolean generate(Position position) {
         if (RANDOM.nextFloat() < density) {
             if (radius == 0) {
-                return WorldManager.getInstance().put(position, item);
+                return WorldManager.getInstance().add(item);
             } else {
                 return generateInRadius(position);
             }

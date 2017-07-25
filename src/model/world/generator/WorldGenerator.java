@@ -140,25 +140,25 @@ public class WorldGenerator implements Observer {
 
     private void buildTunnelBlock(Position tunnelWalker, Set<Position> walls) {
         for (Position neighbour : NEIGHBOURS) {
-            WorldManager.getInstance().put(tunnelWalker.add(neighbour), AIR);
+            WorldManager.getInstance().add(AIR);
         }
-        WorldManager.getInstance().put(tunnelWalker, AIR);
+        WorldManager.getInstance().add(AIR);
 
         for (Position wall : walls) {
-            WorldManager.getInstance().put(wall, WALL);
+            WorldManager.getInstance().add(WALL);
         }
     }
 
     private void generateTunnelBlock(Set<Position> toAdd, Position tunnelWalker, Set<Position> walls) {
         for (Position neighbour : NEIGHBOURS) {
             Position friend = tunnelWalker.add(neighbour);
-            if (WorldManager.getInstance().contains(friend, WALL)) {
+            if (WorldManager.getInstance().contains(WALL)) {
                 walls.add(friend);
-            } else if (!WorldManager.getInstance().contains(friend, AIR)) {
+            } else if (!WorldManager.getInstance().contains(AIR)) {
                 if (RANDOM.nextInt(2) == 1 &&
-                        !WorldManager.getInstance().contains(friend, AIR)
+                        !WorldManager.getInstance().contains(AIR)
                         && walls.size() <= 6) {
-                    WorldManager.getInstance().put(tunnelWalker.add(neighbour), WALL);
+                    WorldManager.getInstance().add(WALL);
                     walls.add(tunnelWalker.add(neighbour));
                 } else {
                     toAdd.add(tunnelWalker.add(neighbour.multiply(2)));
@@ -173,13 +173,13 @@ public class WorldGenerator implements Observer {
                 int walkerIndex = getWalkerIndex();
                 Position position = randomWalkers.get(walkerIndex);
 
-                world.put(position, Item.AIR);
+                world.add(position, Item.AIR);
 
                 addWalls(position);
 
                 for (Item item : randomFillGenerators.keySet()) {
                     if (RANDOM.nextFloat() < randomFillGenerators.get(item)) {
-                        world.put(position, item);
+                        world.add(position, item);
                         break;
                     }
                 }
@@ -203,8 +203,8 @@ public class WorldGenerator implements Observer {
     public static void addWalls(Position position) {
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
-                if (!WorldManager.getInstance().contains(position.add(x, y), AIR)) {
-                    WorldManager.getInstance().put(position.add(x, y), WALL);
+                if (!WorldManager.getInstance().contains(AIR)) {
+                    WorldManager.getInstance().add(WALL);
                 }
             }
         }
@@ -237,7 +237,7 @@ public class WorldGenerator implements Observer {
     }
 
     /*public void putAtTheWalkerTip(Item item) {
-        world.put(randomWalkers.get(getWalkerIndex()), item);
+        world.add(randomWalkers.get(getWalkerIndex()), item);
     }*/
 
     public void tick(int initialMapSize) {

@@ -55,7 +55,7 @@ public class RemoteWorld extends AbstractWorld {
             Position from = position.add(-1, -1).multiply(CHUNK_SIZE);
             Position to = position.add(1, 1).multiply(CHUNK_SIZE);
 
-            cacheWorld.addAll(getChunk(from, to));
+            getChunk(from, to);
             cachedChunks.add(position);
         }
     }
@@ -63,16 +63,15 @@ public class RemoteWorld extends AbstractWorld {
     /**
      * Put the given item at specified position
      *
-     * @param position position at which to store the item
      * @param item     item to store
      */
     @Override
-    public synchronized boolean put(@NotNull Position position, @NotNull Item item) {
-        updateChunks(position);
+    public synchronized boolean add(@NotNull Item item) {
+        updateChunks(item.getPosition());
 
-        if (!cacheWorld.contains(position, item)) {
-            out.println("PUT " + position + " " + item);
-            cacheWorld.put(position, item);
+        if (!cacheWorld.contains(item)) {
+            out.println("PUT " + item.getPosition() + " " + item);
+            cacheWorld.add(item);
         }
 
         return true; // TODO: get boolean from the server
@@ -82,16 +81,15 @@ public class RemoteWorld extends AbstractWorld {
      * Remove the item from the specified position, if item exists.
      * Otherwise, do nothing
      *
-     * @param position position at which to remove the item from
      * @param item     item to be removed
      */
     @Override
-    public synchronized void remove(@NotNull Position position, @NotNull Item item) {
-        updateChunks(position);
+    public synchronized void remove(@NotNull Item item) {
+        updateChunks(item.getPosition());
 
-        if (cacheWorld.contains(position, item)) {
-            out.println("REMOVE " + position + " " + item);
-            cacheWorld.remove(position, item);
+        if (cacheWorld.contains(item)) {
+            out.println("REMOVE " + item.getPosition() + " " + item);
+            cacheWorld.remove(item);
         }
     }
 
@@ -129,17 +127,16 @@ public class RemoteWorld extends AbstractWorld {
      * Produce true if given item is present at the specified position,
      * false otherwise
      *
-     * @param position position to check
      * @param item     item to look for
      * @return true if given item is present at the specified position,
      * false otherwise
      */
     @Override
-    public synchronized boolean contains(@NotNull Position position, @NotNull Item item) {
-        updateChunks(position);
+    public synchronized boolean contains(@NotNull Item item) {
+        updateChunks(item.getPosition());
 
-        assert  (cacheWorld.contains(position));
-        return cacheWorld.contains(position, item);
+        assert  (cacheWorld.contains(item.getPosition()));
+        return cacheWorld.contains(item);
     }
 
     @Override
@@ -165,15 +162,14 @@ public class RemoteWorld extends AbstractWorld {
         return cacheWorld.get(from, to);
     }
 
-    private Map<Position, Set<Item>> getChunk(Position from, Position to) {
-        Map<Position, Set<Item>> map = new HashMap<>();
+    private void getChunk(Position from, Position to) {
+        Set<Item> items = new HashSet<>();
         try {
             out.println("GET " + from + " " + to);
-            map.putAll(Link.decodeMap(from, to, in.readLine()));
+            items.addAll(Link.decodeMap(from, to, in.readLine()));
         } catch (IOException | ParseException ignored) {}
 
-        cacheWorld.addAll(map);
-        return map;
+        cacheWorld.addAll(items);
     }
 
     private void updateChunks(Position position) {
@@ -203,17 +199,10 @@ public class RemoteWorld extends AbstractWorld {
     }
 
     @Override
-    public void addAll(@NotNull Position position, Set<Item> items) {
+    public void addAll(Set<Item> items) {
         for (Item item : items) {
-            put(position, item);
+            add(item);
             // TODO: write a faster implementation
-        }
-    }
-
-    @Override
-    public void addAll(Map<Position, Set<Item>> map) {
-        for (Position position : map.keySet()) {
-            addAll(position, map.get(position));
         }
     }
 }

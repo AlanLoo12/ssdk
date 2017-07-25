@@ -2,15 +2,12 @@ package model.world.storage;
 
 import model.item.Air;
 import model.item.Item;
-import model.item.Item;
 import model.Position;
 import model.item.Wall;
 import model.world.generator.WorldGenerator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 import static model.item.ItemEnum.AIR;
 import static model.item.ItemEnum.WALL;
@@ -40,24 +37,21 @@ public class LocalWorld extends AbstractWorld {
     /**
      * Put the given item at specified position
      *
-     * @param position position at which to store the item
      * @param item     item to store
      */
     @Override
-    public boolean put(@NotNull Position position, @NotNull Item item) {
-        item.setPosition(position);
-
+    public boolean add(@NotNull Item item) {
         if (item instanceof Wall) {
-            world.remove(new Air(position));
+            world.remove(new Air(item.getPosition()));
         }
         if (item instanceof Air) {
-            world.remove(new Wall(position));
+            world.remove(new Wall(item.getPosition()));
         }
 
         boolean returnVal = world.add(item);
 
         setChanged();
-        notifyObservers(position);
+        notifyObservers(item);
 
         return returnVal;
     }
@@ -66,19 +60,18 @@ public class LocalWorld extends AbstractWorld {
      * Remove the item from the specified position, if item exists.
      * Otherwise, do nothing
      *
-     * @param position position at which to remove the item from
      * @param item     item to be removed
      */
     @Override
-    public void remove(@NotNull Position position, @NotNull Item item) {
+    public void remove(@NotNull Item item) {
         if (item.equals(WALL)) {
-            WorldGenerator.addWalls(position);
-            put(position, AIR);
+            WorldGenerator.addWalls(item.getPosition());
+            add(AIR);
         }
 
         if (world.remove(item)) {
             setChanged();
-            notifyObservers(position);
+            notifyObservers(item);
         }
     }
 
@@ -119,13 +112,12 @@ public class LocalWorld extends AbstractWorld {
      * Produce true if given item is present at the specified position,
      * false otherwise
      *
-     * @param position position to check
      * @param item     item to look for
      * @return true if given item is present at the specified position,
      * false otherwise
      */
     @Override
-    public boolean contains(@NotNull Position position, @NotNull Item item) {
+    public boolean contains(@NotNull Item item) {
         return world.contains(item);
     }
 
@@ -170,14 +162,7 @@ public class LocalWorld extends AbstractWorld {
     }
 
     @Override
-    public void addAll(@NotNull Position position, Set<Item> items) {
+    public void addAll(Set<Item> items) {
         world.addAll(items);
-    }
-
-    @Override
-    public void addAll(Map<Position, Set<Item>> map) {
-        for (Position position : map.keySet()) {
-            addAll(position, map.get(position));
-        }
     }
 }
