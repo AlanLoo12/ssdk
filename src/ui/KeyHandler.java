@@ -1,6 +1,8 @@
 package ui;
 
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import model.item.Player;
 
 import static model.Position.*;
@@ -22,7 +24,18 @@ class KeyHandler {
      * @param scene scene to which to add a key handler
      */
     void registerScene(Scene scene) {
-        scene.setOnKeyPressed(event -> {
+        scene.setOnKeyPressed(new PlayerKeyHandler());
+    }
+
+    private class PlayerKeyHandler implements EventHandler<KeyEvent> {
+        /**
+         * Invoked when a specific event of the type for which this handler is
+         * registered happens.
+         *
+         * @param event the event which occurred
+         */
+        @Override
+        public void handle(KeyEvent event) {
             switch (event.getCode()) {
                 case UP:
                     player.move(UP);
@@ -83,7 +96,7 @@ class KeyHandler {
                     player.useItem();
                 default:
                     break;
-                }
-        });
+            }
+        }
     }
 }

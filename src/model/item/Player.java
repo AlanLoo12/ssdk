@@ -3,19 +3,24 @@ package model.item;
 import javafx.scene.image.Image;
 import model.Inventory;
 import model.Position;
-import model.world.WorldManager;
+import model.item.Item;
+import model.item.PickAxe;
+import model.world.Area;
 
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
  *
  */
-public class Player extends Item {
-    private Inventory inventory;
+public class Player extends Item implements WorldObserver {
     private int numberOfMoves;
+    @Deprecated // TODO: see the uml diagram
     private long initialTime;
+    @Deprecated // TODO: move to inventory
     private int selectedItem;
+    private Inventory inventory;
     private Position lookDirection;
 
     public Player(Position position) {
@@ -24,15 +29,9 @@ public class Player extends Item {
         initPlayer();
     }
 
-    public Player() {
-        super();
-
-        initPlayer();
-    }
-
     private void initPlayer() {
         inventory = new Inventory();
-        inventory.add(ItemEnum.PICK_AXE);
+        inventory.add(new PickAxe(getPosition()));
 
         numberOfMoves = 0;
         initialTime = System.currentTimeMillis();
@@ -43,32 +42,26 @@ public class Player extends Item {
         setVolume(0.6f);
     }
 
+    //  ___________________________________________________________________
+    // |                        _       _   _                              |
+    // |        _ __    _   _  | |__   | | (_)   ___                       |
+    // |       | '_ \  | | | | | '_ \  | | | |  / __|                      |
+    // |       | |_) | | |_| | | |_) | | | | | | (__                       |
+    // |       | .__/   \__,_| |_.__/  |_| |_|  \___|                      |
+    // |       |_|                                                         |
+    // |___________________________________________________________________|
+
     public void move(Position direction) {
-        Position nextPosition = position.add(direction);
+        Position nextPosition = getPosition().add(direction);
 
-        if (WorldManager.getInstance().isWalkable(nextPosition)) {
-
-            WorldManager.getInstance().remove(this);
-
-            Set<Item> items = WorldManager.getInstance().get(nextPosition);
-            if (items.contains(ItemEnum.MUSHROOM)) {
-                WorldManager.getInstance().remove(ItemEnum.MUSHROOM);
-                inventory.add(ItemEnum.MUSHROOM);
-            }
-
-            position = nextPosition;
+        //if (WorldManager.getInstance().isWalkable(nextPosition)) {
             numberOfMoves++;
 
             setPosition(nextPosition);
-            WorldManager.getInstance().add(this);
 
             setChanged();
             notifyObservers();
-        }
-    }
-
-    public Position getPosition() {
-        return position;
+        //}
     }
 
     /**
@@ -91,6 +84,7 @@ public class Player extends Item {
         return inventory;
     }
 
+    @Deprecated
     public void selectPreviousItem() {
         if (inventory.size() > 0) {
             selectedItem = selectedItem - 1;
@@ -103,6 +97,7 @@ public class Player extends Item {
         }
     }
 
+    @Deprecated
     public void selectNextItem() {
         if (inventory.size() > 0) {
             selectedItem = (selectedItem + 1) % inventory.size();
@@ -112,6 +107,7 @@ public class Player extends Item {
         }
     }
 
+    @Deprecated
     public int getSelectedItem() {
         return selectedItem;
     }
@@ -132,12 +128,21 @@ public class Player extends Item {
     /**
      * Uses the selected inventory item
      */
+    @Deprecated
     public void useItem() {
         //inventory.get(selectedItem).ifPresent(Item -> Item.use(this));
         // TODO: finish
     }
 
-    public void setVolume(float volume) {
-        this.volume = volume;
+    /**
+     * Get all the visible items, limiting the set using the given parameters
+     *
+     * @param height maximum height difference of the visible positions
+     * @param width  maximum width difference of the visible positions
+     * @return visible items
+     */
+    @Override
+    public Set<Item> getVisibleItems(int height, int width) {
+        return new HashSet<>(); // TODO: finish
     }
 }

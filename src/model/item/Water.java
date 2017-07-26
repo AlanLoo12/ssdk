@@ -9,8 +9,4 @@ public class Water extends Item {
     public Water(Position position) {
         super(position);
     }
-
-    public Water() {
-        super();
-    }
 }

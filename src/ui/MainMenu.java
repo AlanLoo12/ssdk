@@ -3,7 +3,6 @@ package ui;
 import model.Position;
 import model.item.Floor;
 import model.item.Player;
-import network.Server;
 import ui.gui_elements.FloatField;
 import ui.gui_elements.IntegerField;
 import javafx.animation.AnimationTimer;
@@ -17,13 +16,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.world.WorldManager;
-import model.world.generator.WorldGenerator;
 
 import java.io.IOException;
 import java.net.InetAddress;
-
-import static model.item.ItemEnum.*;
 
 /**
  * A controller class for the main menu
@@ -40,18 +35,8 @@ public class MainMenu {
     @FXML public IntegerField serverPort;
 
     @FXML public void handleStartButtonAction(ActionEvent actionEvent) {
-        WorldManager world = WorldManager.getInstance();
-        WorldGenerator worldGenerator = world.getGenerator();
 
-        // Configure the generator
-        worldGenerator.generateRandomly(MUSHROOM, 0.00005f, 3, 0.5f);
-        worldGenerator.generateRandomly(WATER, 0.00001f, 10);
-        worldGenerator.setBreedRandomWalkers(breedRandomWalkers.isSelected());
-        worldGenerator.setRandomWalkersBirthChance(randomWalkersBirthChance.getValue());
-        worldGenerator.setRandomWalkersDeathChance(randomWalkersDeathChance.getValue());
-        worldGenerator.setRandomWalkersToTick((Integer) activeRandomWalkers.getValue());
-
-        generateStubWorld(world);
+        generateStubWorld();
 
         // Generate
         //worldGenerator.tick(initialMapSize.getValue());
@@ -63,31 +48,18 @@ public class MainMenu {
         //    worldGenerator.start();
         //}
 
-        Player player = new Player();
-        world.put(player);
+        Player player = new Player(Position.ORIGIN);
         setUpUI(player);
     }
 
-    private void generateStubWorld(WorldManager world) {
+    private void generateStubWorld() {
         int RADIUS = 20;
 
         for (int x = -RADIUS; x < RADIUS; x++) {
             for (int y = -RADIUS; y < RADIUS; y++) {
-                world.put(new Floor(new Position(x, y)));
+                new Floor(new Position(x, y));
             }
         }
-    }
-
-    public void handleConnectButtonAction(ActionEvent actionEvent) {
-        try {
-            WorldManager.getInstance().connect(InetAddress.getByName(serverAddress.getText()), serverPort.getValue());
-        } catch (IOException e) {
-            System.out.println("Connection failed");
-            System.exit(1);
-        }
-
-        Player player = new Player();
-        setUpUI(player);
     }
 
     private void setUpUI(Player player) {
@@ -140,17 +112,5 @@ public class MainMenu {
 
         KeyHandler keyHandler = new KeyHandler(player, worldRenderer);
         keyHandler.registerScene(scene);
-    }
-
-    public void handleStartServerButtonAction(ActionEvent actionEvent) {
-        try {
-            Server server = new Server(serverPort.getValue());
-
-            setUpUI(new Player());
-        } catch (IOException e) {
-            System.out.println("Failed to start server");
-            e.printStackTrace();
-            System.exit(1);
-        }
     }
 }

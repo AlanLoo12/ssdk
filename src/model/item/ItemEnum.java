@@ -7,13 +7,6 @@ import org.jetbrains.annotations.Contract;
  * Some legacy static constants for the items
  */
 public class ItemEnum {
-    public static final Item AIR = new Air();
-    public static final Item WATER = new Water();
-    public static final Item PLAYER = new Player();
-    public static final Item MUSHROOM = new Mushroom();
-    public static final Item WALL = new Wall();
-    public static final Item PICK_AXE = new PickAxe();
-
     private ItemEnum() {}
 
     /**
@@ -35,6 +28,6 @@ public class ItemEnum {
     }
 
     private static Item[] values() {
-        return new Item[]{AIR, WATER, PLAYER, MUSHROOM, WALL, PICK_AXE};
+        return new Item[]{};
     }
 }

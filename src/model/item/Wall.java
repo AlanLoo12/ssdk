@@ -12,13 +12,8 @@ public class Wall extends Item {
     public Wall(Position position) {
         super(position);
 
-        volume = 0.7f; // you need wall + floor to occupy the whole block
-
-        image = new Image(Paths.get("assets", "tiles", "dc-dngn", "wall",
-                "brick_brown0.png").toUri().toString());
-    }
-
-    public Wall() {
-        super();
+        setVolume(0.7f);
+        setImage(new Image(Paths.get("assets", "tiles", "dc-dngn", "wall",
+                "brick_brown0.png").toUri().toString()));
     }
 }
