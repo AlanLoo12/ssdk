@@ -3,16 +3,15 @@ package model.item;
 import javafx.scene.image.Image;
 import model.Inventory;
 import model.Position;
-import model.item.Item;
-import model.item.PickAxe;
-import model.world.Area;
+import model.world.area.Area;
+import model.world.area.AreaFactory;
 
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * The entity controlled by the user. It can see the world.
  */
 public class Player extends Item implements WorldObserver {
     private int numberOfMoves;
@@ -143,6 +142,6 @@ public class Player extends Item implements WorldObserver {
      */
     @Override
     public Set<Item> getVisibleItems(int height, int width) {
-        return new HashSet<>(); // TODO: finish
+        return getWorld().get(AreaFactory.getRectangle(getPosition().sub(width / 2, height / 2), height, width));
     }
 }

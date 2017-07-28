@@ -29,7 +29,6 @@ class WorldRenderer {
     private final WorldObserver worldObserver;
 
     private Canvas worldCanvas;
-    private Position localWorldCenter;
     private Point2D center;
     private Group group;
     private boolean changed;
@@ -100,44 +99,16 @@ class WorldRenderer {
     }
 
     private double getScreenY(Position position) {
-        return (position.getY() - localWorldCenter.getY()) * scale + center.getY();
+        return (position.getY() - worldObserver.getPosition().getY()) * scale + center.getY();
     }
 
     private double getScreenX(Position position) {
-        return (position.getX() - localWorldCenter.getX()) * scale + center.getX();
-    }
-
-
-    private Set<Position> computeVisiblePositions() {
-        Set<Position> visiblePositions = new HashSet<>();
-        for (int x = (int) (-center.getX() / scale - 1); x < center.getX() / scale; x++) {
-            for (int y = (int) (-center.getY() / scale - 1); y < center.getY() / scale; y++) {
-                Position visiblePosition = new Position(
-                        x + localWorldCenter.getX(),
-                        y + localWorldCenter.getY());
-
-                visiblePositions.add(visiblePosition);
-            }
-        }
-
-
-        return visiblePositions;
+        return (position.getX() - worldObserver.getPosition().getX()) * scale + center.getX();
     }
 
     private void clearCanvas(GraphicsContext graphicsContext) {
         graphicsContext.setFill(BLACK);
         graphicsContext.fillRect(0,0, worldCanvas.getWidth(), worldCanvas.getHeight());
-    }
-
-    /**
-     * Produce true if the given position is on the screen
-     */
-    private boolean isOnScreen(@NotNull Position position) {
-        int x = (position.getX() - localWorldCenter.getX());
-        int y = (position.getY() - localWorldCenter.getY());
-
-        return ((- center.getX() / scale <= x && x <= center.getX() / scale) &&
-                (- center.getY() / scale <= y && y <= center.getY() / scale));
     }
 
     void zoomIn() {

@@ -29,6 +29,12 @@ public abstract class Item extends Observable {
 
     /**
      * Construct the item with the given position and add it to the world
+     *
+     * Fill the fields with default values:
+     *  * random image
+     *  * NoPush as pushBehavior
+     *  * NoTick as tickBehavior
+     *
      * @param position position of the item
      */
     public Item(Position position) {

@@ -1,6 +1,6 @@
 package model.item;
 
-import model.world.Area;
+import model.Position;
 
 import java.util.Set;
 
@@ -16,4 +16,6 @@ public interface WorldObserver {
      * @return visible items
      */
     Set<Item> getVisibleItems(int height, int width);
+
+    Position getPosition();
 }

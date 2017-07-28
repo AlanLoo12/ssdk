@@ -2,6 +2,7 @@ package model.world;
 
 import model.Position;
 import model.item.Item;
+import model.world.area.Area;
 
 import java.util.Set;
 

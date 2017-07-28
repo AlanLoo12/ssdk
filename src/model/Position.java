@@ -3,10 +3,7 @@ package model;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A position in 2d integer space
@@ -229,13 +226,7 @@ public final class Position implements Comparable {
 
     @Contract(pure = true)
     private int sign(int i) {
-        if (i < 0) {
-            return -1;
-        } else if (i > 0) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return Integer.compare(i, 0);
     }
 
     /**
@@ -258,6 +249,24 @@ public final class Position implements Comparable {
 
     public Position divide(int factor) {
         return new Position(x / factor, y / factor);
+    }
+
+    public Position sub(Position that) {
+        return this.add(-that.getX(), -that.getY());
+    }
+
+    public static Position getRandomPosition() {
+        Random random = new Random();
+        return new Position(random.nextInt(), random.nextInt());
+    }
+
+    public static Position getRandomPosition(int bound) {
+        Random random = new Random();
+        return new Position(random.nextInt(bound), random.nextInt(bound));
+    }
+
+    public Position sub(int x, int y) {
+        return this.sub(new Position(x, y));
     }
 
     private static class PositionIterator implements Iterator<Position> {
